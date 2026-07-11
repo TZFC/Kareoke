@@ -19,8 +19,8 @@ This app separates any song into **vocals** and **backing tracks**, allowing you
 ## 🚀 How to Run the App (For Users)
 
 1. **Start the Application:**
-   * **Run from source:** Open a terminal in the project folder and run `npm install` then `npm start`.
-   * **Build the app:** Run `npm run dist` to create a standalone installer inside the `release/` folder.
+   * **Source Version:** Simply double-click the `Start.bat` file in the folder. It will automatically install dependencies and launch the app.
+   * **Packaged Version:** If you downloaded the pre-built standalone version, simply double-click `PeachyKareoke.exe` to launch it instantly.
 2. **Add a Song:**
    * Simply drag and drop any `.mp3` or `.wav` music file directly into the drop zone on the screen.
 3. **Configure Your Devices:**
