@@ -1,7 +1,7 @@
-export type Locale = 'en' | 'zh';
+export type Locale = 'en-US' | 'zh-CN';
 
 const translations = {
-  en: {
+  'en-US': {
     appTitle: 'PeachyKareoke',
     dropHint: 'Drop WAV or MP3 here to start separation',
     processing: 'Processing',
@@ -32,8 +32,8 @@ const translations = {
     notes: 'Notes / Score',
     autoScroll: 'Auto-scroll notes by play position',
     language: 'Language',
-    english: 'English',
-    chinese: '中文',
+    english: 'English (US)',
+    chinese: '简体中文 (CN)',
     overwrite: 'Overwrite',
     rename: 'Rename',
     cancel: 'Cancel',
@@ -44,7 +44,7 @@ const translations = {
     selectDevices: 'Select devices to include them instantly.',
     feedback: 'Drag / hover for hints, settings are saved automatically.'
   },
-  zh: {
+  'zh-CN': {
     appTitle: '桃子卡拉OK',
     dropHint: '将 WAV 或 MP3 文件拖到此处开始分离',
     processing: '处理中',
@@ -75,8 +75,8 @@ const translations = {
     notes: '乐谱 / 笔记',
     autoScroll: '根据播放位置自动滚动',
     language: '语言',
-    english: 'English',
-    chinese: '中文',
+    english: 'English (US)',
+    chinese: '简体中文 (CN)',
     overwrite: '覆盖',
     rename: '重命名',
     cancel: '取消',
@@ -89,6 +89,7 @@ const translations = {
   }
 };
 
-export function t(locale: Locale, key: keyof typeof translations['en']) {
-  return translations[locale][key] || translations.en[key];
+export function t(locale: Locale | string, key: keyof typeof translations['en-US']) {
+  const norm = (locale && (locale.startsWith('zh') || locale === 'zh-CN')) ? 'zh-CN' : 'en-US';
+  return translations[norm][key] || translations['en-US'][key];
 }

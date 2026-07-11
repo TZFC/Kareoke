@@ -179,7 +179,7 @@ const formatTime = (seconds: number) => {
 
 
 function App() {
-  const [locale, setLocale] = useState<Locale>('en');
+  const [locale, setLocale] = useState<Locale>('en-US');
   const [songs, setSongs] = useState<SongItem[]>([]);
   const [selectedSong, setSelectedSong] = useState<SongItem | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -196,7 +196,7 @@ function App() {
     micBass: 0,
     micTreble: 0,
     micReverb: 0.3,
-    language: 'en'
+    language: 'en-US'
   });
   const [songConfig, setSongConfig] = useState<SongConfig>(defaultSongConfig);
   const [duration, setDuration] = useState(0);
@@ -303,7 +303,7 @@ function App() {
   const loadGlobalConfig = async () => {
     const config = await window.electronAPI.loadGlobalConfig();
     setGlobalConfig(config);
-    setLocale(config.language || 'en');
+    setLocale(config.language || 'en-US');
   };
 
   const restoreConfig = (song: SongItem | null) => {
@@ -721,8 +721,8 @@ function App() {
             setLocale(language);
             saveGlobal({ ...globalConfig, language });
           }}>
-            <option value="en">{t(locale, 'english')}</option>
-            <option value="zh">{t(locale, 'chinese')}</option>
+            <option value="en-US">{t(locale, 'english')}</option>
+            <option value="zh-CN">{t(locale, 'chinese')}</option>
           </select>
         </div>
       </div>
