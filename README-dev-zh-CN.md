@@ -32,13 +32,12 @@
 
 ---
 
-## 📂 目录结构
-
-* `/src/main.ts`: Electron 主进程入口，管理窗口、注册自定义流协议、保存全局和单曲配置、以及模拟极速音轨分离进度。
-* `/src/preload.ts`: 负责安全地向渲染进程全局上下文暴露出 IPC API 绑定。
-* `/src/renderer/App.tsx`: 主 React 组件，包含了核心 UI 页面、交互逻辑、与 Web Audio API 音频图。
-* `/src/renderer/i18n.ts`: 多语言字典文件（支持中/英文切换）。
-* `/src/renderer/styles.css`: 统一的暗黑色调样式表，包含卡片组件、滑块、按钮微动画以及响应式网格布局。
+* `src/main.ts`: 主进程源码文件。编译输出为 `dist/main.js`（`package.json` 中配置的应用程序入口点）。
+* `src/preload.ts`: 负责向渲染进程安全暴露 Electron 原生 IPC 接口的预加载脚本。
+* `src/renderer/main.tsx`: React 前端页面入口点。
+* `src/renderer/App.tsx`: 主 React 应用组件，包含 UI 布局与 Web Audio 混音音频图。
+* `src/renderer/i18n.ts`: 多语言（en-US / zh-CN）国际化翻译字典与助手函数。
+* `src/renderer/styles.css`: 统一的暗黑色调样式表，包含卡片组件、滑块、按钮微动画以及响应式网格布局。
 
 ---
 

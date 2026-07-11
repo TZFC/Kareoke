@@ -32,13 +32,12 @@ We capture raw audio by turning off default browser filters (`echoCancellation: 
 
 ---
 
-## 📂 Project Layout
-
-* `/src/main.ts`: Electron entry point, manages IPC handles, protocol registrations, configuration saving/loading, and mock file processing.
-* `/src/preload.ts`: Exposes Electron API bindings safely to the window context.
-* `/src/renderer/App.tsx`: Main React component containing UI layouts, reactive states, and the Web Audio DSP Graph.
-* `/src/renderer/i18n.ts`: Localized translation dictionaries (English & Chinese).
-* `/src/renderer/styles.css`: Dark mode layout tokens, sliders, custom buttons, and page animations.
+* `src/main.ts`: Main process source file. Compiles to `dist/main.js`, which is the entry point defined in `package.json`.
+* `src/preload.ts`: Preload script exposing safe Electron IPC bindings.
+* `src/renderer/main.tsx`: React frontend entry point.
+* `src/renderer/App.tsx`: Main React application component containing UI layouts and Web Audio graphs.
+* `src/renderer/i18n.ts`: Localization dictionaries and helper functions.
+* `src/renderer/styles.css`: Dark mode layout tokens, sliders, custom buttons, and page animations.
 
 ---
 

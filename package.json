@@ -7,9 +7,7 @@
     "dev": "cross-env NODE_OPTIONS=--throw-deprecation npm_config_loglevel=error concurrently \"tsc -p tsconfig.main.json --watch\" \"vite\" \"wait-on http://localhost:5173 && electron .\"",
     "build": "cross-env NODE_OPTIONS=--throw-deprecation npm_config_loglevel=error tsc -p tsconfig.main.json && vite build --logLevel error",
     "start": "electron .",
-    "dist": "npm run build && electron-builder",
-    "package:win": "npm run build && electron-packager . PeachyKareoke --overwrite --asar.unpackDir=backend --platform=win32 --arch=x64 --out=release --prune=true --icon=build/icon.ico",
-    "uninstall": "node scripts/uninstall.js"
+    "dist": "npm run build && electron-builder"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
@@ -37,17 +35,8 @@
     },
     "files": [
       "dist/**/*",
-      "backend/**/*",
       "package.json"
     ],
-    "extraResources": [
-      {
-        "from": "backend",
-        "to": "backend",
-        "filter": ["**/*"]
-      }
-    ],
-    "asarUnpack": ["backend/**"],
     "win": {
       "target": ["nsis"],
       "artifactName": "${productName}-Setup-${version}.exe"
