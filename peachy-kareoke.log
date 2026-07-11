@@ -1,0 +1,213 @@
+[2026-07-10 23:02:55.949] [info]  Application Starting...
+[2026-07-10 23:02:55.980] [info]  Local media HTTP server started on port 42899
+[2026-07-10 23:02:56.214] [info]  Backend: Saving global config
+[2026-07-10 23:02:58.395] [info]  Backend: Loading global config
+[2026-07-10 23:02:58.397] [info]  Backend: Loading song list
+[2026-07-10 23:02:58.398] [info]  Backend: Saving global config
+[2026-07-10 23:03:00.608] [info]  Backend: Saving global config
+[2026-07-10 23:03:00.609] [info]  Backend: Saving global config
+[2026-07-10 23:03:14.037] [info]  New song dragged in: C:\Users\chenf\Downloads\1.mp3
+[2026-07-10 23:03:15.560] [info]  Starting stem separation for 1...
+[2026-07-10 23:04:33.214] [info]  Stored stems for 1 successfully.
+[2026-07-10 23:04:33.220] [info]  Backend: Loading song list
+[2026-07-10 23:04:33.222] [info]  UI successfully updated for newly processed song: 1.mp3
+[2026-07-10 23:04:33.222] [info]  [Renderer Info] UI successfully updated for newly processed song: 1.mp3
+[2026-07-10 23:05:04.826] [info]  User input: Selected song "1"
+[2026-07-10 23:05:04.826] [info]  [Renderer Info] User input: Selected song "1"
+[2026-07-10 23:05:04.827] [info]  loadBuffers: Starting for "1"
+[2026-07-10 23:05:04.827] [info]  [Renderer Info] loadBuffers: Starting for "1"
+[2026-07-10 23:05:04.828] [info]  loadBuffers: Instrumental path: F:\Kareoke\Kareoke\PeachyKareoke\instrumental\1.wav
+[2026-07-10 23:05:04.828] [info]  [Renderer Info] loadBuffers: Instrumental path: F:\Kareoke\Kareoke\PeachyKareoke\instrumental\1.wav
+[2026-07-10 23:05:04.828] [info]  loadBuffers: Vocal path: F:\Kareoke\Kareoke\PeachyKareoke\vocal\1.wav
+[2026-07-10 23:05:04.828] [info]  [Renderer Info] loadBuffers: Vocal path: F:\Kareoke\Kareoke\PeachyKareoke\vocal\1.wav
+[2026-07-10 23:05:04.829] [info]  loadBuffers: Building AudioContext
+[2026-07-10 23:05:04.829] [info]  [Renderer Info] loadBuffers: Building AudioContext
+[2026-07-10 23:05:04.849] [info]  loadBuffers: AudioContext state=running, sampleRate=48000
+[2026-07-10 23:05:04.849] [info]  [Renderer Info] loadBuffers: AudioContext state=running, sampleRate=48000
+[2026-07-10 23:05:04.849] [info]  loadBuffers: Fetching instrumental buffer
+[2026-07-10 23:05:04.850] [info]  [Renderer Info] loadBuffers: Fetching instrumental buffer
+[2026-07-10 23:05:04.850] [info]  loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\instrumental\1.wav
+[2026-07-10 23:05:04.851] [info]  [Renderer Info] loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\instrumental\1.wav
+[2026-07-10 23:05:04.852] [info]  Backend: Saving song config for "1"
+[2026-07-10 23:05:04.858] [info]  loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\1.wav
+[2026-07-10 23:05:04.858] [info]  [Renderer Info] loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\1.wav
+[2026-07-10 23:05:04.945] [info]  loadAudioBuffer: ArrayBuffer received, size=45674540 bytes. Parsing WAV...
+[2026-07-10 23:05:04.945] [info]  [Renderer Info] loadAudioBuffer: ArrayBuffer received, size=45674540 bytes. Parsing WAV...
+[2026-07-10 23:05:04.945] [info]  parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=11418624
+[2026-07-10 23:05:04.946] [info]  [Renderer Info] parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=11418624
+[2026-07-10 23:05:05.030] [info]  loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\1.wav, duration=258.93s
+[2026-07-10 23:05:05.031] [info]  [Renderer Info] loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\1.wav, duration=258.93s
+[2026-07-10 23:05:05.031] [info]  loadBuffers: Instrumental loaded. duration=258.93s, channels=2
+[2026-07-10 23:05:05.031] [info]  [Renderer Info] loadBuffers: Instrumental loaded. duration=258.93s, channels=2
+[2026-07-10 23:05:05.032] [info]  loadBuffers: Fetching vocal buffer
+[2026-07-10 23:05:05.032] [info]  [Renderer Info] loadBuffers: Fetching vocal buffer
+[2026-07-10 23:05:05.033] [info]  loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\vocal\1.wav
+[2026-07-10 23:05:05.033] [info]  [Renderer Info] loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\vocal\1.wav
+[2026-07-10 23:05:05.035] [info]  loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\vocal\1.wav
+[2026-07-10 23:05:05.035] [info]  [Renderer Info] loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\vocal\1.wav
+[2026-07-10 23:05:05.120] [info]  loadAudioBuffer: ArrayBuffer received, size=45674540 bytes. Parsing WAV...
+[2026-07-10 23:05:05.121] [info]  [Renderer Info] loadAudioBuffer: ArrayBuffer received, size=45674540 bytes. Parsing WAV...
+[2026-07-10 23:05:05.121] [info]  parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=11418624
+[2026-07-10 23:05:05.121] [info]  [Renderer Info] parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=11418624
+[2026-07-10 23:05:05.194] [info]  loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\vocal\1.wav, duration=258.93s
+[2026-07-10 23:05:05.195] [info]  [Renderer Info] loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\vocal\1.wav, duration=258.93s
+[2026-07-10 23:05:05.195] [info]  loadBuffers: Vocal loaded. duration=258.93s, channels=2
+[2026-07-10 23:05:05.196] [info]  [Renderer Info] loadBuffers: Vocal loaded. duration=258.93s, channels=2
+[2026-07-10 23:05:05.196] [info]  loadBuffers: Complete for "1"
+[2026-07-10 23:05:05.196] [info]  [Renderer Info] loadBuffers: Complete for "1"
+[2026-07-10 23:05:11.525] [info]  startPlayback: Initiated
+[2026-07-10 23:05:11.525] [info]  [Renderer Info] startPlayback: Initiated
+[2026-07-10 23:05:11.526] [warn]  startPlayback: Please select the following device(s) before playing: Microphone, Audience Speaker, Monitor Headphones
+[2026-07-10 23:05:11.526] [warn]  [Renderer Warn] startPlayback: Please select the following device(s) before playing: Microphone, Audience Speaker, Monitor Headphones
+[2026-07-10 23:05:11.527] [info]  User input: Clicked button "Play"
+[2026-07-10 23:05:11.527] [info]  [Renderer Info] User input: Clicked button "Play"
+[2026-07-10 23:05:15.851] [info]  User input: Clicked microphone device dropdown
+[2026-07-10 23:05:15.852] [info]  [Renderer Info] User input: Clicked microphone device dropdown
+[2026-07-10 23:05:16.754] [info]  User input: Selected microphone device: default
+[2026-07-10 23:05:16.755] [info]  [Renderer Info] User input: Selected microphone device: default
+[2026-07-10 23:05:16.756] [info]  Backend: Saving global config
+[2026-07-10 23:05:16.756] [info]  Backend: Saving global config
+[2026-07-10 23:05:16.757] [info]  User input: Clicked microphone device dropdown
+[2026-07-10 23:05:16.757] [info]  [Renderer Info] User input: Clicked microphone device dropdown
+[2026-07-10 23:05:17.491] [info]  User input: Clicked audience device dropdown
+[2026-07-10 23:05:17.492] [info]  [Renderer Info] User input: Clicked audience device dropdown
+[2026-07-10 23:05:21.167] [info]  User input: Selected audience device: 37a756757f845dc964d7f3bb43b8ef4113f0da0df919c6e069d78e1a05e56e36
+[2026-07-10 23:05:21.167] [info]  [Renderer Info] User input: Selected audience device: 37a756757f845dc964d7f3bb43b8ef4113f0da0df919c6e069d78e1a05e56e36
+[2026-07-10 23:05:21.169] [info]  Backend: Saving global config
+[2026-07-10 23:05:21.169] [info]  Backend: Saving global config
+[2026-07-10 23:05:21.169] [info]  User input: Clicked audience device dropdown
+[2026-07-10 23:05:21.170] [info]  [Renderer Info] User input: Clicked audience device dropdown
+[2026-07-10 23:05:21.875] [info]  User input: Clicked monitor device dropdown
+[2026-07-10 23:05:21.876] [info]  [Renderer Info] User input: Clicked monitor device dropdown
+[2026-07-10 23:05:22.769] [info]  User input: Selected monitor device: d1dc62018d1e699c59f432bad443df4b1ec95dbbd51012f6b0deea62c50f9402
+[2026-07-10 23:05:22.770] [info]  [Renderer Info] User input: Selected monitor device: d1dc62018d1e699c59f432bad443df4b1ec95dbbd51012f6b0deea62c50f9402
+[2026-07-10 23:05:22.771] [info]  Backend: Saving global config
+[2026-07-10 23:05:22.772] [info]  Backend: Saving global config
+[2026-07-10 23:05:22.772] [info]  User input: Clicked monitor device dropdown
+[2026-07-10 23:05:22.772] [info]  [Renderer Info] User input: Clicked monitor device dropdown
+[2026-07-10 23:05:23.862] [info]  startPlayback: Initiated
+[2026-07-10 23:05:23.863] [info]  [Renderer Info] startPlayback: Initiated
+[2026-07-10 23:05:23.863] [info]  startPlayback: Ensuring AudioContexts are built
+[2026-07-10 23:05:23.863] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
+[2026-07-10 23:05:23.864] [info]  startPlayback: Pitch shifting to 0
+[2026-07-10 23:05:23.864] [info]  [Renderer Info] startPlayback: Pitch shifting to 0
+[2026-07-10 23:05:23.865] [info]  User input: Clicked button "Play"
+[2026-07-10 23:05:23.865] [info]  [Renderer Info] User input: Clicked button "Play"
+[2026-07-10 23:05:23.920] [info]  startPlayback: Stopping existing sources
+[2026-07-10 23:05:23.921] [info]  [Renderer Info] startPlayback: Stopping existing sources
+[2026-07-10 23:05:23.922] [info]  startPlayback: Connecting backing track to audience
+[2026-07-10 23:05:23.922] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
+[2026-07-10 23:05:23.922] [info]  startPlayback: Connecting backing track to monitor
+[2026-07-10 23:05:23.922] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
+[2026-07-10 23:05:23.923] [info]  startPlayback: Connecting vocal track to monitor
+[2026-07-10 23:05:23.923] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
+[2026-07-10 23:05:23.924] [info]  startPlayback: Starting Mic Input
+[2026-07-10 23:05:23.924] [info]  [Renderer Info] startPlayback: Starting Mic Input
+[2026-07-10 23:05:23.978] [info]  startPlayback: Executing audio source start commands. instStartAt=19.050666666666668, instOffset=0, vocStartAt=19.050666666666668, vocOffset=0
+[2026-07-10 23:05:23.979] [info]  [Renderer Info] startPlayback: Executing audio source start commands. instStartAt=19.050666666666668, instOffset=0, vocStartAt=19.050666666666668, vocOffset=0
+[2026-07-10 23:05:23.980] [info]  startPlayback: Success
+[2026-07-10 23:05:23.980] [info]  [Renderer Info] startPlayback: Success
+[2026-07-10 23:08:07.878] [info]  User input: Updated config keys: offsetMs
+[2026-07-10 23:08:07.879] [info]  [Renderer Info] User input: Updated config keys: offsetMs
+[2026-07-10 23:08:07.879] [info]  Backend: Saving song config for "1"
+[2026-07-10 23:08:07.973] [info]  User input: Updated config keys: offsetMs
+[2026-07-10 23:08:07.975] [info]  [Renderer Info] User input: Updated config keys: offsetMs
+[2026-07-10 23:08:07.976] [info]  Backend: Saving song config for "1"
+[2026-07-10 23:08:07.993] [info]  User input: Updated config keys: offsetMs
+[2026-07-10 23:08:07.994] [info]  [Renderer Info] User input: Updated config keys: offsetMs
+[2026-07-10 23:08:07.995] [info]  Backend: Saving song config for "1"
+[2026-07-10 23:08:08.010] [info]  User input: Updated config keys: offsetMs
+[2026-07-10 23:08:08.011] [info]  [Renderer Info] User input: Updated config keys: offsetMs
+[2026-07-10 23:08:08.012] [info]  Backend: Saving song config for "1"
+[2026-07-10 23:08:08.027] [info]  User input: Updated config keys: offsetMs
+[2026-07-10 23:08:08.027] [info]  [Renderer Info] User input: Updated config keys: offsetMs
+[2026-07-10 23:08:08.028] [info]  Backend: Saving song config for "1"
+[2026-07-10 23:08:08.043] [info]  User input: Updated config keys: offsetMs
+[2026-07-10 23:08:08.044] [info]  [Renderer Info] User input: Updated config keys: offsetMs
+[2026-07-10 23:08:08.044] [info]  Backend: Saving song config for "1"
+[2026-07-10 23:08:08.060] [info]  User input: Updated config keys: offsetMs
+[2026-07-10 23:08:08.061] [info]  [Renderer Info] User input: Updated config keys: offsetMs
+[2026-07-10 23:08:08.061] [info]  Backend: Saving song config for "1"
+[2026-07-10 23:08:08.077] [info]  User input: Updated config keys: offsetMs
+[2026-07-10 23:08:08.077] [info]  [Renderer Info] User input: Updated config keys: offsetMs
+[2026-07-10 23:08:08.081] [info]  Backend: Saving song config for "1"
+[2026-07-10 23:08:08.093] [info]  User input: Updated config keys: offsetMs
+[2026-07-10 23:08:08.094] [info]  [Renderer Info] User input: Updated config keys: offsetMs
+[2026-07-10 23:08:08.124] [info]  Backend: Saving song config for "1"
+[2026-07-10 23:08:08.124] [info]  User input: Updated config keys: offsetMs
+[2026-07-10 23:08:08.125] [info]  [Renderer Info] User input: Updated config keys: offsetMs
+[2026-07-10 23:08:08.125] [info]  Backend: Saving song config for "1"
+[2026-07-10 23:08:08.386] [info]  Backend: Saving song config for "1"
+[2026-07-10 23:08:15.219] [info]  User input: pausePlayback
+[2026-07-10 23:08:15.219] [info]  [Renderer Info] User input: pausePlayback
+[2026-07-10 23:08:15.221] [info]  User input: Clicked button "Play"
+[2026-07-10 23:08:15.221] [info]  [Renderer Info] User input: Clicked button "Play"
+[2026-07-10 23:08:16.248] [info]  User input: Selected song "2"
+[2026-07-10 23:08:16.248] [info]  [Renderer Info] User input: Selected song "2"
+[2026-07-10 23:08:16.249] [info]  loadBuffers: Starting for "2"
+[2026-07-10 23:08:16.249] [info]  [Renderer Info] loadBuffers: Starting for "2"
+[2026-07-10 23:08:16.250] [info]  loadBuffers: Instrumental path: F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
+[2026-07-10 23:08:16.250] [info]  [Renderer Info] loadBuffers: Instrumental path: F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
+[2026-07-10 23:08:16.251] [info]  loadBuffers: Vocal path: F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
+[2026-07-10 23:08:16.251] [info]  [Renderer Info] loadBuffers: Vocal path: F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
+[2026-07-10 23:08:16.251] [info]  loadBuffers: Building AudioContext
+[2026-07-10 23:08:16.251] [info]  [Renderer Info] loadBuffers: Building AudioContext
+[2026-07-10 23:08:16.252] [info]  loadBuffers: AudioContext state=running, sampleRate=48000
+[2026-07-10 23:08:16.252] [info]  [Renderer Info] loadBuffers: AudioContext state=running, sampleRate=48000
+[2026-07-10 23:08:16.252] [info]  loadBuffers: Fetching instrumental buffer
+[2026-07-10 23:08:16.252] [info]  [Renderer Info] loadBuffers: Fetching instrumental buffer
+[2026-07-10 23:08:16.253] [info]  loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
+[2026-07-10 23:08:16.253] [info]  [Renderer Info] loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
+[2026-07-10 23:08:16.254] [info]  Backend: Saving song config for "2"
+[2026-07-10 23:08:16.255] [info]  loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
+[2026-07-10 23:08:16.256] [info]  [Renderer Info] loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
+[2026-07-10 23:08:16.308] [info]  loadAudioBuffer: ArrayBuffer received, size=24952876 bytes. Parsing WAV...
+[2026-07-10 23:08:16.309] [info]  [Renderer Info] loadAudioBuffer: ArrayBuffer received, size=24952876 bytes. Parsing WAV...
+[2026-07-10 23:08:16.309] [info]  parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=6238208
+[2026-07-10 23:08:16.309] [info]  [Renderer Info] parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=6238208
+[2026-07-10 23:08:16.349] [info]  loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav, duration=141.46s
+[2026-07-10 23:08:16.352] [info]  [Renderer Info] loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav, duration=141.46s
+[2026-07-10 23:08:16.352] [info]  loadBuffers: Instrumental loaded. duration=141.46s, channels=2
+[2026-07-10 23:08:16.353] [info]  [Renderer Info] loadBuffers: Instrumental loaded. duration=141.46s, channels=2
+[2026-07-10 23:08:16.353] [info]  loadBuffers: Fetching vocal buffer
+[2026-07-10 23:08:16.354] [info]  [Renderer Info] loadBuffers: Fetching vocal buffer
+[2026-07-10 23:08:16.354] [info]  loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
+[2026-07-10 23:08:16.354] [info]  [Renderer Info] loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
+[2026-07-10 23:08:16.357] [info]  loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
+[2026-07-10 23:08:16.358] [info]  [Renderer Info] loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
+[2026-07-10 23:08:16.413] [info]  loadAudioBuffer: ArrayBuffer received, size=24952876 bytes. Parsing WAV...
+[2026-07-10 23:08:16.414] [info]  [Renderer Info] loadAudioBuffer: ArrayBuffer received, size=24952876 bytes. Parsing WAV...
+[2026-07-10 23:08:16.414] [info]  parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=6238208
+[2026-07-10 23:08:16.414] [info]  [Renderer Info] parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=6238208
+[2026-07-10 23:08:16.456] [info]  loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav, duration=141.46s
+[2026-07-10 23:08:16.457] [info]  [Renderer Info] loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav, duration=141.46s
+[2026-07-10 23:08:16.457] [info]  loadBuffers: Vocal loaded. duration=141.46s, channels=2
+[2026-07-10 23:08:16.457] [info]  [Renderer Info] loadBuffers: Vocal loaded. duration=141.46s, channels=2
+[2026-07-10 23:08:16.458] [info]  loadBuffers: Complete for "2"
+[2026-07-10 23:08:16.458] [info]  [Renderer Info] loadBuffers: Complete for "2"
+[2026-07-10 23:08:22.049] [info]  startPlayback: Initiated
+[2026-07-10 23:08:22.049] [info]  [Renderer Info] startPlayback: Initiated
+[2026-07-10 23:08:22.050] [info]  startPlayback: Ensuring AudioContexts are built
+[2026-07-10 23:08:22.050] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
+[2026-07-10 23:08:22.050] [info]  startPlayback: Pitch shifting to 0
+[2026-07-10 23:08:22.051] [info]  [Renderer Info] startPlayback: Pitch shifting to 0
+[2026-07-10 23:08:22.051] [info]  User input: Clicked button "Play"
+[2026-07-10 23:08:22.052] [info]  [Renderer Info] User input: Clicked button "Play"
+[2026-07-10 23:08:22.109] [info]  startPlayback: Stopping existing sources
+[2026-07-10 23:08:22.109] [info]  [Renderer Info] startPlayback: Stopping existing sources
+[2026-07-10 23:08:22.110] [info]  startPlayback: Connecting backing track to audience
+[2026-07-10 23:08:22.110] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
+[2026-07-10 23:08:22.110] [info]  startPlayback: Connecting backing track to monitor
+[2026-07-10 23:08:22.110] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
+[2026-07-10 23:08:22.111] [info]  startPlayback: Connecting vocal track to monitor
+[2026-07-10 23:08:22.111] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
+[2026-07-10 23:08:22.111] [info]  startPlayback: Starting Mic Input
+[2026-07-10 23:08:22.112] [info]  [Renderer Info] startPlayback: Starting Mic Input
+[2026-07-10 23:08:22.161] [info]  startPlayback: Executing audio source start commands. instStartAt=198.24, instOffset=0, vocStartAt=197.24, vocOffset=-1
+[2026-07-10 23:08:22.161] [info]  [Renderer Info] startPlayback: Executing audio source start commands. instStartAt=198.24, instOffset=0, vocStartAt=197.24, vocOffset=-1
+[2026-07-10 23:08:22.162] [info]  startPlayback: Success
+[2026-07-10 23:08:22.162] [info]  [Renderer Info] startPlayback: Success
+[2026-07-10 23:08:30.444] [info]  User input: pausePlayback
+[2026-07-10 23:08:30.445] [info]  [Renderer Info] User input: pausePlayback
+[2026-07-10 23:08:30.446] [info]  User input: Clicked button "Play"
+[2026-07-10 23:08:30.446] [info]  [Renderer Info] User input: Clicked button "Play"

@@ -1,18 +1,28 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { t, Locale } from './i18n';
 
+// Global Error Catching
+window.addEventListener('error', (event) => {
+  window.electronAPI.log('error', `Global Error: ${event.message} at ${event.filename}:${event.lineno}`);
+});
+window.addEventListener('unhandledrejection', (event) => {
+  window.electronAPI.log('error', `Unhandled Promise Rejection: ${event.reason}`);
+});
+window.addEventListener('click', (event) => {
+  const target = event.target as HTMLElement;
+  const btn = target.closest('button');
+  if (btn) {
+    const btnText = btn.innerText?.trim() || btn.title?.trim() || 'Unknown Button';
+    window.electronAPI.log('info', `User input: Clicked button "${btnText}"`);
+  }
+});
+
 type SongConfig = {
+  displayName?: string;
   instrumentalVolume: number;
   instrumentalPitch: number;
   vocalVolume: number;
   vocalPitch: number;
-  reverb: {
-    dry: number;
-    wet: number;
-    roomSize: number;
-    damping: number;
-  };
-  reverbBypass: boolean;
   offsetMs: number;
   notes: string;
   lrcText?: string;
@@ -54,13 +64,6 @@ const defaultSongConfig: SongConfig = {
   instrumentalPitch: 0,
   vocalVolume: 0.95,
   vocalPitch: 0,
-  reverb: {
-    dry: 0.4,
-    wet: 0.18,
-    roomSize: 0.55,
-    damping: 0.45
-  },
-  reverbBypass: false,
   offsetMs: 0,
   notes: '',
   lrcText: '',
@@ -68,11 +71,67 @@ const defaultSongConfig: SongConfig = {
   routeBackingToMonitor: true
 };
 
-const loadAudioBuffer = async (path: string, context: AudioContext): Promise<AudioBuffer> => {
-  const url = `local-media://${encodeURIComponent(path)}`;
+const parseWavToAudioBuffer = (arrayBuffer: ArrayBuffer, context: AudioContext): AudioBuffer => {
+  const view = new DataView(arrayBuffer);
+  // Read WAV header
+  const numChannels = view.getUint16(22, true);
+  const sampleRate = view.getUint32(24, true);
+  const bitsPerSample = view.getUint16(34, true);
+
+  // Find 'data' chunk
+  let dataOffset = 12;
+  let dataSize = 0;
+  while (dataOffset < view.byteLength - 8) {
+    const chunkId = String.fromCharCode(
+      view.getUint8(dataOffset), view.getUint8(dataOffset + 1),
+      view.getUint8(dataOffset + 2), view.getUint8(dataOffset + 3)
+    );
+    const chunkSize = view.getUint32(dataOffset + 4, true);
+    if (chunkId === 'data') {
+      dataSize = chunkSize;
+      dataOffset += 8;
+      break;
+    }
+    dataOffset += 8 + chunkSize;
+  }
+
+  const bytesPerSample = bitsPerSample / 8;
+  const totalSamples = dataSize / bytesPerSample;
+  const samplesPerChannel = totalSamples / numChannels;
+
+  window.electronAPI.log('info', `parseWav: channels=${numChannels}, sampleRate=${sampleRate}, bits=${bitsPerSample}, samples/ch=${samplesPerChannel}`);
+
+  const audioBuffer = context.createBuffer(numChannels, samplesPerChannel, sampleRate);
+
+  for (let ch = 0; ch < numChannels; ch++) {
+    const channelData = audioBuffer.getChannelData(ch);
+    for (let i = 0; i < samplesPerChannel; i++) {
+      const byteIndex = dataOffset + (i * numChannels + ch) * bytesPerSample;
+      if (bitsPerSample === 16) {
+        channelData[i] = view.getInt16(byteIndex, true) / 32768;
+      } else if (bitsPerSample === 32) {
+        channelData[i] = view.getFloat32(byteIndex, true);
+      } else if (bitsPerSample === 24) {
+        const s = (view.getUint8(byteIndex) | (view.getUint8(byteIndex + 1) << 8) | (view.getInt8(byteIndex + 2) << 16));
+        channelData[i] = s / 8388608;
+      }
+    }
+  }
+
+  return audioBuffer;
+};
+
+const loadAudioBuffer = async (filePath: string, context: AudioContext): Promise<AudioBuffer> => {
+  const url = `http://127.0.0.1:42899/?path=${encodeURIComponent(filePath)}`;
+  window.electronAPI.log('info', `loadAudioBuffer: Fetching ${filePath}`);
   const response = await fetch(url);
+  if (!response.ok) throw new Error(`HTTP error ${response.status} for ${filePath}`);
+  window.electronAPI.log('info', `loadAudioBuffer: HTTP OK, reading arrayBuffer for ${filePath}`);
   const arrayBuffer = await response.arrayBuffer();
-  return await context.decodeAudioData(arrayBuffer);
+  window.electronAPI.log('info', `loadAudioBuffer: ArrayBuffer received, size=${arrayBuffer.byteLength} bytes. Parsing WAV...`);
+  const audioBuffer = parseWavToAudioBuffer(arrayBuffer, context);
+  window.electronAPI.log('info', `loadAudioBuffer: Parsed successfully for ${filePath}, duration=${audioBuffer.duration.toFixed(2)}s`);
+  return audioBuffer;
 };
 
 // Simple OLA-based Time-Stretching in time-domain
@@ -266,7 +325,10 @@ function App() {
   const searchResults = useMemo(() => {
     if (!searchTerm.trim()) return songs.slice(0, 5);
     const lower = searchTerm.toLowerCase();
-    return songs.filter((song) => song.name.toLowerCase().includes(lower)).slice(0, 5);
+    return songs.filter((song) => {
+      const display = (song.config?.displayName || song.name).toLowerCase();
+      return display.includes(lower) || song.name.toLowerCase().includes(lower);
+    }).slice(0, 5);
   }, [searchTerm, songs]);
 
 
@@ -312,7 +374,12 @@ function App() {
 
   const restoreConfig = (song: SongItem | null) => {
     if (!song) return;
-    setSongConfig(song.config || defaultSongConfig);
+    const incoming = song.config || {};
+    const safeConfig: SongConfig = {
+      ...defaultSongConfig,
+      ...incoming
+    };
+    setSongConfig(safeConfig);
   };
 
   const shiftedInstrumentRef = useRef<AudioBuffer | null>(null);
@@ -343,18 +410,35 @@ function App() {
   };
 
   const loadBuffers = async (song: SongItem) => {
-    await needBuildAudioContext();
-    const context = audienceContextRef.current!;
-    const [instrumental, vocal] = await Promise.all([
-      loadAudioBuffer(song.instrumentalPath, context),
-      loadAudioBuffer(song.vocalPath, context)
-    ]);
-    instrumentBufferRef.current = instrumental;
-    vocalBufferRef.current = vocal;
-    shiftedInstrumentRef.current = null;
-    shiftedVocalRef.current = null;
-    currentShiftedPitchRef.current = 999;
-    setDuration(Math.max(instrumental.duration, vocal.duration));
+    try {
+      window.electronAPI.log('info', `loadBuffers: Starting for "${song.name}"`);
+      window.electronAPI.log('info', `loadBuffers: Instrumental path: ${song.instrumentalPath}`);
+      window.electronAPI.log('info', `loadBuffers: Vocal path: ${song.vocalPath}`);
+
+      window.electronAPI.log('info', 'loadBuffers: Building AudioContext');
+      await needBuildAudioContext();
+      const context = audienceContextRef.current!;
+      window.electronAPI.log('info', `loadBuffers: AudioContext state=${context.state}, sampleRate=${context.sampleRate}`);
+
+      window.electronAPI.log('info', 'loadBuffers: Fetching instrumental buffer');
+      const instrumental = await loadAudioBuffer(song.instrumentalPath, context);
+      window.electronAPI.log('info', `loadBuffers: Instrumental loaded. duration=${instrumental.duration.toFixed(2)}s, channels=${instrumental.numberOfChannels}`);
+
+      window.electronAPI.log('info', 'loadBuffers: Fetching vocal buffer');
+      const vocal = await loadAudioBuffer(song.vocalPath, context);
+      window.electronAPI.log('info', `loadBuffers: Vocal loaded. duration=${vocal.duration.toFixed(2)}s, channels=${vocal.numberOfChannels}`);
+
+      instrumentBufferRef.current = instrumental;
+      vocalBufferRef.current = vocal;
+      shiftedInstrumentRef.current = null;
+      shiftedVocalRef.current = null;
+      currentShiftedPitchRef.current = 999;
+      setDuration(Math.max(instrumental.duration, vocal.duration));
+      window.electronAPI.log('info', `loadBuffers: Complete for "${song.name}"`);
+    } catch (err: any) {
+      window.electronAPI.log('error', `loadBuffers CRASHED: ${err.message}\n${err.stack}`);
+      setStatusMessage(`Failed to load audio: ${err.message}`);
+    }
   };
 
   const updateMicParams = () => {
@@ -522,118 +606,131 @@ function App() {
   };
 
   const startPlayback = async () => {
-    if (!selectedSong || !instrumentBufferRef.current || !vocalBufferRef.current) {
-      setStatusMessage(t(locale, 'errorNoSong'));
-      return;
-    }
-    await needBuildAudioContext();
-    const audienceCtx = audienceContextRef.current!;
-    const monitorCtx = monitorContextRef.current!;
+    try {
+      window.electronAPI.log('info', 'startPlayback: Initiated');
+      if (!selectedSong || !instrumentBufferRef.current || !vocalBufferRef.current) {
+        window.electronAPI.log('warn', 'startPlayback: Missing song or buffers');
+        setStatusMessage(t(locale, 'errorNoSong'));
+        return;
+      }
 
-    if (audienceCtx.state === 'suspended') await audienceCtx.resume();
-    if (monitorCtx.state === 'suspended') await monitorCtx.resume();
-
-    const keyShift = songConfig.instrumentalPitch;
-
-    if (currentShiftedPitchRef.current !== keyShift || !shiftedInstrumentRef.current || !shiftedVocalRef.current) {
-      setStatusMessage("Pitch shifting audio...");
-      await new Promise(resolve => setTimeout(resolve, 50));
-      shiftedInstrumentRef.current = pitchShiftBuffer(instrumentBufferRef.current!, keyShift, audienceCtx);
-      shiftedVocalRef.current = pitchShiftBuffer(vocalBufferRef.current!, keyShift, audienceCtx);
-      currentShiftedPitchRef.current = keyShift;
-      setStatusMessage("Ready");
-    }
-
-    const instBuffer = shiftedInstrumentRef.current!;
-    const vocBuffer = shiftedVocalRef.current!;
-    const now = audienceCtx.currentTime;
-
-    // Stop existing sources
-    playSourcesRef.current.forEach(src => {
-      try { src.stop(); } catch {}
-    });
-    playSourcesRef.current = [];
-
-    // 1. Play backing track to Audience Context
-    const audInstSource = audienceCtx.createBufferSource();
-    audInstSource.buffer = instBuffer;
-    const audInstGain = audienceCtx.createGain();
-    audInstGain.gain.value = songConfig.instrumentalVolume;
-    audInstSource.connect(audInstGain);
-    audInstGain.connect(audienceCtx.destination);
-
-    // 2. Play backing track to Monitor Context (optional)
-    let monInstSource: AudioBufferSourceNode | null = null;
-    if (songConfig.routeBackingToMonitor) {
-      monInstSource = monitorCtx.createBufferSource();
-      monInstSource.buffer = instBuffer;
-      const monInstGain = monitorCtx.createGain();
-      monInstGain.gain.value = songConfig.instrumentalVolume;
-      monInstSource.connect(monInstGain);
-      monInstGain.connect(monitorCtx.destination);
-    }
-
-    // 3. Play vocal track to Monitor Context
-    const monVocSource = monitorCtx.createBufferSource();
-    monVocSource.buffer = vocBuffer;
-    const monVocGain = monitorCtx.createGain();
-    monVocGain.gain.value = songConfig.vocalVolume;
-    
-    // Add Reverb to Vocal track if reverb is not bypassed
-    let finalVocalNode: AudioNode = monVocGain;
-    if (!songConfig.reverbBypass) {
-      const vocDelay = monitorCtx.createDelay();
-      vocDelay.delayTime.value = 0.22;
-      const vocFeedback = monitorCtx.createGain();
-      vocFeedback.gain.value = 0.35;
-      const vocWetGain = monitorCtx.createGain();
-      vocWetGain.gain.value = songConfig.reverb.wet;
+      const missingDevices: string[] = [];
+      if (!globalConfig.microphoneDevice) missingDevices.push('Microphone');
+      if (!globalConfig.audienceDevice) missingDevices.push('Audience Speaker');
+      if (!globalConfig.monitorDevice) missingDevices.push('Monitor Headphones');
+      if (missingDevices.length > 0) {
+        const msg = `Please select the following device(s) before playing: ${missingDevices.join(', ')}`;
+        window.electronAPI.log('warn', `startPlayback: ${msg}`);
+        setStatusMessage(msg);
+        return;
+      }
       
-      monVocGain.connect(vocDelay);
-      vocDelay.connect(vocFeedback);
-      vocFeedback.connect(vocDelay);
-      vocDelay.connect(vocWetGain);
+      window.electronAPI.log('info', 'startPlayback: Ensuring AudioContexts are built');
+      await needBuildAudioContext();
+      const audienceCtx = audienceContextRef.current!;
+      const monitorCtx = monitorContextRef.current!;
+
+      if (audienceCtx.state === 'suspended') {
+        window.electronAPI.log('info', 'startPlayback: Resuming Audience Context');
+        await audienceCtx.resume();
+      }
+      if (monitorCtx.state === 'suspended') {
+        window.electronAPI.log('info', 'startPlayback: Resuming Monitor Context');
+        await monitorCtx.resume();
+      }
+
+      const keyShift = songConfig.instrumentalPitch;
+
+      if (currentShiftedPitchRef.current !== keyShift || !shiftedInstrumentRef.current || !shiftedVocalRef.current) {
+        window.electronAPI.log('info', `startPlayback: Pitch shifting to ${keyShift}`);
+        setStatusMessage("Pitch shifting audio...");
+        await new Promise(resolve => setTimeout(resolve, 50));
+        shiftedInstrumentRef.current = pitchShiftBuffer(instrumentBufferRef.current!, keyShift, audienceCtx);
+        shiftedVocalRef.current = pitchShiftBuffer(vocalBufferRef.current!, keyShift, audienceCtx);
+        currentShiftedPitchRef.current = keyShift;
+        setStatusMessage("Ready");
+      }
+
+      const instBuffer = shiftedInstrumentRef.current!;
+      const vocBuffer = shiftedVocalRef.current!;
+      const now = audienceCtx.currentTime;
+
+      window.electronAPI.log('info', 'startPlayback: Stopping existing sources');
+      playSourcesRef.current.forEach(src => {
+        try { src.stop(); } catch {}
+      });
+      playSourcesRef.current = [];
+
+      window.electronAPI.log('info', 'startPlayback: Connecting backing track to audience');
+      const audInstSource = audienceCtx.createBufferSource();
+      audInstSource.buffer = instBuffer;
+      const audInstGain = audienceCtx.createGain();
+      audInstGain.gain.value = songConfig.instrumentalVolume;
+      audInstSource.connect(audInstGain);
+      audInstGain.connect(audienceCtx.destination);
+
+      let monInstSource: AudioBufferSourceNode | null = null;
+      if (songConfig.routeBackingToMonitor) {
+        window.electronAPI.log('info', 'startPlayback: Connecting backing track to monitor');
+        monInstSource = monitorCtx.createBufferSource();
+        monInstSource.buffer = instBuffer;
+        const monInstGain = monitorCtx.createGain();
+        monInstGain.gain.value = songConfig.instrumentalVolume;
+        monInstSource.connect(monInstGain);
+        monInstGain.connect(monitorCtx.destination);
+      }
+
+      window.electronAPI.log('info', 'startPlayback: Connecting vocal track to monitor');
+      const monVocSource = monitorCtx.createBufferSource();
+      monVocSource.buffer = vocBuffer;
+      const monVocGain = monitorCtx.createGain();
+      monVocGain.gain.value = songConfig.vocalVolume;
+      monVocSource.connect(monVocGain);
+      monVocGain.connect(monitorCtx.destination);
+
+      window.electronAPI.log('info', 'startPlayback: Starting Mic Input');
+      await startMicInput(audienceCtx, monitorCtx);
+
+      const offsetSeconds = songConfig.offsetMs / 1000;
+      const startOffset = pauseOffsetRef.current;
+
+      const instStartAt = now + Math.max(0, -offsetSeconds);
+      const vocStartAt = now + Math.max(0, offsetSeconds);
+
+      const instOffset = startOffset;
+      const vocOffset = startOffset + Math.max(0, offsetSeconds) - Math.max(0, -offsetSeconds);
+
+      window.electronAPI.log('info', `startPlayback: Executing audio source start commands. instStartAt=${instStartAt}, instOffset=${instOffset}, vocStartAt=${vocStartAt}, vocOffset=${vocOffset}`);
       
-      vocWetGain.connect(monitorCtx.destination);
+      audInstSource.start(instStartAt, Math.max(0, instOffset));
+      if (monInstSource) {
+        monInstSource.start(instStartAt, Math.max(0, instOffset));
+      }
+      monVocSource.start(vocStartAt, Math.max(0, vocOffset));
+
+      window.electronAPI.log('info', 'startPlayback: Success');
+      playSourcesRef.current = [audInstSource, monVocSource];
+      if (monInstSource) {
+        playSourcesRef.current.push(monInstSource);
+      }
+      playStartRef.current = now;
+      setPlaying(true);
+      setStatusMessage(`${t(locale, 'playback')} · ${formatTime(pauseOffsetRef.current)}`);
+      if (autoScrollFrame.current) cancelAnimationFrame(autoScrollFrame.current);
+      autoScrollFrame.current = requestAnimationFrame(syncProgress);
+    } catch (err: any) {
+      window.electronAPI.log('error', `startPlayback crashed: ${err.message}\n${err.stack}`);
+      setStatusMessage(`Error: ${err.message}`);
     }
-    
-    monVocSource.connect(monVocGain);
-    finalVocalNode.connect(monitorCtx.destination);
-
-    // Start Microphone input
-    await startMicInput(audienceCtx, monitorCtx);
-
-    const offsetSeconds = songConfig.offsetMs / 1000;
-    const startOffset = pauseOffsetRef.current;
-
-    const instStartAt = now + Math.max(0, -offsetSeconds);
-    const vocStartAt = now + Math.max(0, offsetSeconds);
-
-    const instOffset = startOffset;
-    const vocOffset = startOffset + Math.max(0, offsetSeconds) - Math.max(0, -offsetSeconds);
-
-    audInstSource.start(instStartAt, instOffset);
-    if (monInstSource) {
-      monInstSource.start(instStartAt, instOffset);
-    }
-    monVocSource.start(vocStartAt, Math.max(0, vocOffset));
-
-    playSourcesRef.current = [audInstSource, monVocSource];
-    if (monInstSource) {
-      playSourcesRef.current.push(monInstSource);
-    }
-    playStartRef.current = now;
-    setPlaying(true);
-    setStatusMessage(`${t(locale, 'playback')} · ${formatTime(pauseOffsetRef.current)}`);
-    if (autoScrollFrame.current) cancelAnimationFrame(autoScrollFrame.current);
-    autoScrollFrame.current = requestAnimationFrame(syncProgress);
   };
 
   const pausePlayback = () => {
+    window.electronAPI.log('info', 'User input: pausePlayback');
     stopPlayback();
   };
 
   const seekTo = (time: number) => {
+    window.electronAPI.log('info', `User input: seekTo ${time.toFixed(2)}s`);
     const clamped = Math.max(0, Math.min(time, duration));
     setCurrentTime(clamped);
     pauseOffsetRef.current = clamped;
@@ -651,6 +748,7 @@ function App() {
     try {
       await window.electronAPI.processFile(file.path);
       await refreshSongList();
+      window.electronAPI.log('info', `UI successfully updated for newly processed song: ${file.name}`);
       setProgress(100);
       setStatusMessage('Completed');
     } catch (error) {
@@ -665,10 +763,8 @@ function App() {
   };
 
   const updateConfig = (changes: Partial<SongConfig>) => {
+    window.electronAPI.log('info', `User input: Updated config keys: ${Object.keys(changes).join(', ')}`);
     const next = { ...songConfig, ...changes };
-    if (changes.reverb) {
-      next.reverb = { ...songConfig.reverb, ...changes.reverb };
-    }
     setSongConfig(next);
     if (selectedSong) {
       if (savePendingRef.current) clearTimeout(savePendingRef.current);
@@ -677,22 +773,25 @@ function App() {
   };
 
   useEffect(() => {
-    loadGlobalConfig();
-    refreshSongList();
-    initializeDevices();
+    const init = async () => {
+      await initializeDevices();
+      await loadGlobalConfig();
+      await refreshSongList();
+    };
+    init();
     window.electronAPI.onProgress((_, data) => setProgress(data.percent));
     window.electronAPI.onStatus((_, data) => setStatusMessage(data.message));
   }, []);
 
   useEffect(() => {
     if (selectedSong) restoreConfig(selectedSong);
-  }, [selectedSong]);
+  }, [selectedSong?.name]);
 
   useEffect(() => {
     if (selectedSong) {
       loadBuffers(selectedSong).catch(() => setStatusMessage('Unable to load audio buffers.'));
     }
-  }, [selectedSong]);
+  }, [selectedSong?.name]);
 
   useEffect(() => {
     if (!selectedSong) return;
@@ -714,10 +813,59 @@ function App() {
   }, [locale]);
 
   const selectedSongDuration = formatTime(duration);
+
+  const handleDeleteSong = async (e: React.MouseEvent, songName: string) => {
+    e.stopPropagation();
+    if (window.confirm(`Are you sure you want to delete "${songName}"?`)) {
+      await window.electronAPI.deleteSong(songName);
+      const newSongs = await window.electronAPI.loadSongList();
+      setSongs(newSongs);
+      if (selectedSong?.name === songName) {
+        setSelectedSong(null);
+      }
+    }
+  };
+
+  const handleRenameSong = async (e: React.MouseEvent, song: SongItem) => {
+    e.stopPropagation();
+    const currentName = song.config?.displayName || song.name;
+    const newName = window.prompt('Rename song:', currentName);
+    if (newName && newName.trim() && newName.trim() !== currentName) {
+      window.electronAPI.log('info', `User input: Renamed song "${song.name}" to "${newName.trim()}"`);
+      const updatedConfig = { ...(song.config || defaultSongConfig), displayName: newName.trim() };
+      await window.electronAPI.saveSongConfig(song.name, updatedConfig);
+      await refreshSongList();
+    }
+  };
+
   const suggestionElements = searchResults.map((song) => (
-    <div key={song.name} className={`suggestion ${selectedSong?.name === song.name ? 'active' : ''}`} onClick={() => setSelectedSong(song)}>
-      <span>{song.name}</span>
-      <span>{song.config ? t(locale, 'statusReady') : t(locale, 'processing')}</span>
+    <div 
+      key={song.name} 
+      className={`suggestion ${selectedSong?.name === song.name ? 'active' : ''}`} 
+      onClick={() => {
+        window.electronAPI.log('info', `User input: Selected song "${song.name}"`);
+        setSelectedSong(song);
+      }}
+      style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+    >
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <span>{song.config?.displayName || song.name}</span>
+        <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>{song.config ? t(locale, 'statusReady') : t(locale, 'processing')}</span>
+      </div>
+      <div style={{ display: 'flex', gap: 4 }}>
+        <button 
+          onClick={(e) => handleRenameSong(e, song)}
+          style={{ padding: '4px 8px', background: 'rgba(59, 130, 246, 0.2)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.5)', borderRadius: 4, cursor: 'pointer', zIndex: 10 }}
+        >
+          Rename
+        </button>
+        <button 
+          onClick={(e) => handleDeleteSong(e, song.name)}
+          style={{ padding: '4px 8px', background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.5)', borderRadius: 4, cursor: 'pointer', zIndex: 10 }}
+        >
+          Delete
+        </button>
+      </div>
     </div>
   ));
 
@@ -772,6 +920,10 @@ function App() {
             <button onClick={() => (playing ? pausePlayback() : startPlayback())}>{playing ? 'Pause' : 'Play'}</button>
             <button onClick={() => seekTo(0)}>Reset</button>
           </div>
+          <label className="range-label" style={{ marginTop: 10 }}>
+            <span>{t(locale, 'offsetMs')}: {songConfig.offsetMs} ms {songConfig.offsetMs < 0 ? `(${t(locale, 'early')})` : `(${t(locale, 'inSync')})`}</span>
+            <input type="range" min="-1000" max="0" step="10" value={songConfig.offsetMs} onChange={(e) => updateConfig({ offsetMs: Number(e.target.value) })} />
+          </label>
         </div>
 
         <div className="control-group">
@@ -799,34 +951,8 @@ function App() {
             <div className="value-label">{songConfig.vocalPitch} st</div>
           </div>
           <label className="checkbox-row">
-            <input type="checkbox" checked={songConfig.reverbBypass} onChange={(e) => updateConfig({ reverbBypass: e.target.checked })} />
-            <span>{t(locale, 'bypassReverb')}</span>
-          </label>
-          <label className="checkbox-row">
             <input type="checkbox" checked={songConfig.routeBackingToMonitor} onChange={(e) => updateConfig({ routeBackingToMonitor: e.target.checked })} />
             <span>{t(locale, 'routeBackingToMonitor')}</span>
-          </label>
-          <div className="control-group">
-            <label className="range-label">
-              <span>{t(locale, 'dryness')}: {songConfig.reverb.dry.toFixed(2)}</span>
-              <input type="range" min="0" max="1" step="0.01" value={songConfig.reverb.dry} onChange={(e) => updateConfig({ reverb: { ...songConfig.reverb, dry: Number(e.target.value) } })} />
-            </label>
-            <label className="range-label">
-              <span>{t(locale, 'wetness')}: {songConfig.reverb.wet.toFixed(2)}</span>
-              <input type="range" min="0" max="1" step="0.01" value={songConfig.reverb.wet} onChange={(e) => updateConfig({ reverb: { ...songConfig.reverb, wet: Number(e.target.value) } })} />
-            </label>
-            <label className="range-label">
-              <span>{t(locale, 'roomSize')}: {songConfig.reverb.roomSize.toFixed(2)}</span>
-              <input type="range" min="0" max="1" step="0.01" value={songConfig.reverb.roomSize} onChange={(e) => updateConfig({ reverb: { ...songConfig.reverb, roomSize: Number(e.target.value) } })} />
-            </label>
-            <label className="range-label">
-              <span>{t(locale, 'damping')}: {songConfig.reverb.damping.toFixed(2)}</span>
-              <input type="range" min="0" max="1" step="0.01" value={songConfig.reverb.damping} onChange={(e) => updateConfig({ reverb: { ...songConfig.reverb, damping: Number(e.target.value) } })} />
-            </label>
-          </div>
-          <label className="range-label">
-            <span>{t(locale, 'offsetMs')}: {songConfig.offsetMs} ms {songConfig.offsetMs < 0 ? `(${t(locale, 'early')})` : `(${t(locale, 'inSync')})`}</span>
-            <input type="range" min="-1000" max="0" step="10" value={songConfig.offsetMs} onChange={(e) => updateConfig({ offsetMs: Number(e.target.value) })} />
           </label>
         </div>
       </div>
@@ -836,9 +962,14 @@ function App() {
         <div className="control-group">
           <label className="range-label">
             <span>{t(locale, 'microphoneDevice')}</span>
-            <select value={globalConfig.microphoneDevice} onChange={(e) => {
-              saveGlobal({ ...globalConfig, microphoneDevice: e.target.value });
-            }}>
+            <select 
+              value={globalConfig.microphoneDevice} 
+              onClick={() => window.electronAPI.log('info', 'User input: Clicked microphone device dropdown')}
+              onChange={(e) => {
+                window.electronAPI.log('info', `User input: Selected microphone device: ${e.target.value || 'none'}`);
+                saveGlobal({ ...globalConfig, microphoneDevice: e.target.value });
+              }}
+            >
               <option value="">-- Select Microphone --</option>
               {devices.filter((device) => device.kind === 'audioinput').map((device) => (
                 <option key={device.deviceId} value={device.deviceId}>{device.label || 'Microphone'}</option>
@@ -857,9 +988,14 @@ function App() {
         <div className="control-group">
           <label className="range-label">
             <span>{t(locale, 'audienceDevice')}</span>
-            <select value={globalConfig.audienceDevice} onChange={(e) => {
-              saveGlobal({ ...globalConfig, audienceDevice: e.target.value });
-            }}>
+            <select 
+              value={globalConfig.audienceDevice} 
+              onClick={() => window.electronAPI.log('info', 'User input: Clicked audience device dropdown')}
+              onChange={(e) => {
+                window.electronAPI.log('info', `User input: Selected audience device: ${e.target.value || 'none'}`);
+                saveGlobal({ ...globalConfig, audienceDevice: e.target.value });
+              }}
+            >
               <option value="">-- Select Audience Speaker --</option>
               {devices.filter((device) => device.kind === 'audiooutput').map((device) => (
                 <option key={device.deviceId} value={device.deviceId}>{device.label || 'Output Device'}</option>
@@ -869,9 +1005,14 @@ function App() {
 
           <label className="range-label" style={{ marginTop: 12 }}>
             <span>{t(locale, 'monitorDevice')}</span>
-            <select value={globalConfig.monitorDevice} onChange={(e) => {
-              saveGlobal({ ...globalConfig, monitorDevice: e.target.value });
-            }}>
+            <select 
+              value={globalConfig.monitorDevice} 
+              onClick={() => window.electronAPI.log('info', 'User input: Clicked monitor device dropdown')}
+              onChange={(e) => {
+                window.electronAPI.log('info', `User input: Selected monitor device: ${e.target.value || 'none'}`);
+                saveGlobal({ ...globalConfig, monitorDevice: e.target.value });
+              }}
+            >
               <option value="">-- Select Monitor Headphones --</option>
               {devices.filter((device) => device.kind === 'audiooutput').map((device) => (
                 <option key={device.deviceId} value={device.deviceId}>{device.label || 'Output Device'}</option>
@@ -879,8 +1020,10 @@ function App() {
             </select>
           </label>
         </div>
+      </div>
 
-        <h3 className="panel-title" style={{ marginTop: 12 }}>Microphone Live Mix</h3>
+      <div className="panel note-panel" style={{ flexGrow: 1, minHeight: 0 }}>
+        <h3 className="panel-title">Microphone Live Mix</h3>
         <div className="control-group">
           <label className="range-label">
             <span>{t(locale, 'micVolume')}: {globalConfig.micVolume.toFixed(2)}</span>
@@ -907,9 +1050,6 @@ function App() {
             }} />
           </label>
         </div>
-      </div>
-
-      <div className="panel note-panel" style={{ flexGrow: 1, minHeight: 0 }}>
         <div style={{ display: 'flex', gap: 10, borderBottom: '1px solid var(--border)', paddingBottom: 10 }}>
           <button 
             style={{ flex: 1, background: activeTab === 'lyrics' ? 'var(--accent)' : 'transparent', borderColor: activeTab === 'lyrics' ? 'var(--accent)' : 'var(--border)' }}
@@ -995,4 +1135,35 @@ function App() {
   );
 }
 
-export default App;
+class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean, error: Error | null}> {
+  constructor(props: {children: React.ReactNode}) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    if (window.electronAPI) {
+      window.electronAPI.log('error', `React Render Error: ${error.message}\n${error.stack}\n${info.componentStack}`);
+    } else {
+      console.error(error);
+    }
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: 40, color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0a0d12' }}>
+          <h2>UI Crash Recovered</h2>
+          <pre style={{ color: '#ef4444', maxWidth: '80%', overflowX: 'auto', background: '#1e1e1e', padding: 15, borderRadius: 8 }}>{this.state.error?.message}</pre>
+          <button onClick={() => window.location.reload()} style={{ marginTop: 20, padding: '10px 20px', fontSize: '1.1rem' }}>Reload App</button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+export default function WrappedApp() {
+  return <ErrorBoundary><App /></ErrorBoundary>;
+}

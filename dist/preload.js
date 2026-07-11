@@ -7,6 +7,8 @@ electron_1.contextBridge.exposeInMainWorld('electronAPI', {
     saveGlobalConfig: (config) => electron_1.ipcRenderer.invoke('save-global-config', config),
     saveSongConfig: (name, config) => electron_1.ipcRenderer.invoke('save-song-config', name, config),
     processFile: (filePath) => electron_1.ipcRenderer.invoke('process-file', filePath),
+    deleteSong: (name) => electron_1.ipcRenderer.invoke('delete-song', name),
     onProgress: (callback) => electron_1.ipcRenderer.on('processing-progress', callback),
-    onStatus: (callback) => electron_1.ipcRenderer.on('processing-status', callback)
+    onStatus: (callback) => electron_1.ipcRenderer.on('processing-status', callback),
+    log: (level, message) => electron_1.ipcRenderer.sendSync('log-message', level, message)
 });

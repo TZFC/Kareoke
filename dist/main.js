@@ -32,14 +32,41 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 const path = __importStar(require("path"));
 const fs_1 = require("fs");
-const url_1 = require("url");
-electron_1.protocol.registerSchemesAsPrivileged([
-    { scheme: 'local-media', privileges: { bypassCSP: true, stream: true, supportFetchAPI: true, corsEnabled: true } }
-]);
+const http = __importStar(require("http"));
+const electron_log_1 = __importDefault(require("electron-log"));
+const fluent_ffmpeg_1 = __importDefault(require("fluent-ffmpeg"));
+const ffmpeg_static_1 = __importDefault(require("ffmpeg-static"));
+const loadESM = async (modulePath) => {
+    return await new Function('modulePath', 'return import(modulePath)')(modulePath);
+};
+// Clear old logs on startup
+try {
+    (0, fs_1.writeFileSync)(path.join(process.cwd(), 'peachy-kareoke.log'), '');
+}
+catch { }
+try {
+    (0, fs_1.writeFileSync)(path.join(process.cwd(), 'error.log'), '');
+}
+catch { }
+// Setup Logging
+electron_log_1.default.transports.file.resolvePathFn = () => path.join(process.cwd(), 'peachy-kareoke.log');
+Object.assign(console, electron_log_1.default.functions);
+electron_log_1.default.info('Application Starting...');
+if (ffmpeg_static_1.default) {
+    fluent_ffmpeg_1.default.setFfmpegPath(ffmpeg_static_1.default);
+}
+else {
+    electron_log_1.default.error('ffmpeg-static path is null!');
+}
+// Increase renderer memory limit for large audio file decoding
+electron_1.app.commandLine.appendSwitch('js-flags', '--max-old-space-size=4096');
 const storeRoot = path.join(electron_1.app.isPackaged ? electron_1.app.getPath('userData') : process.cwd(), 'PeachyKareoke');
 const sourceDir = path.join(storeRoot, 'source');
 const vocalDir = path.join(storeRoot, 'vocal');
@@ -74,10 +101,42 @@ function createWindow() {
     win.on('ready-to-show', () => win.show());
 }
 electron_1.app.whenReady().then(async () => {
-    electron_1.protocol.handle('local-media', (request) => {
-        const urlPath = request.url.slice('local-media://'.length);
-        const decodedPath = decodeURIComponent(urlPath);
-        return electron_1.net.fetch((0, url_1.pathToFileURL)(decodedPath).toString());
+    const mediaServer = http.createServer((req, res) => {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        if (req.method === 'OPTIONS') {
+            res.writeHead(200);
+            res.end();
+            return;
+        }
+        try {
+            const url = new URL(req.url || '/', `http://localhost:42899`);
+            const filePath = url.searchParams.get('path');
+            if (!filePath) {
+                res.writeHead(400);
+                res.end('Missing path');
+                return;
+            }
+            const absolutePath = decodeURIComponent(filePath);
+            const stat = (0, fs_1.statSync)(absolutePath);
+            if (!stat.isFile()) {
+                res.writeHead(404);
+                res.end('Not a file');
+                return;
+            }
+            res.writeHead(200, {
+                'Content-Type': 'audio/wav',
+                'Content-Length': stat.size
+            });
+            (0, fs_1.createReadStream)(absolutePath).pipe(res);
+        }
+        catch (err) {
+            electron_log_1.default.error(`Local HTTP media fetch failed for ${req.url}: ${err.message}`);
+            res.writeHead(404);
+            res.end('File not found');
+        }
+    });
+    mediaServer.listen(42899, '127.0.0.1', () => {
+        electron_log_1.default.info('Local media HTTP server started on port 42899');
     });
     electron_1.nativeTheme.themeSource = 'system';
     await ensureDirectories();
@@ -86,6 +145,15 @@ electron_1.app.whenReady().then(async () => {
         if (electron_1.BrowserWindow.getAllWindows().length === 0)
             createWindow();
     });
+    electron_1.ipcMain.on('log-message', (event, level, message) => {
+        if (level === 'error')
+            electron_log_1.default.error(`[Renderer Error] ${message}`);
+        else if (level === 'warn')
+            electron_log_1.default.warn(`[Renderer Warn] ${message}`);
+        else
+            electron_log_1.default.info(`[Renderer Info] ${message}`);
+        event.returnValue = true;
+    });
 });
 electron_1.app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
@@ -93,6 +161,7 @@ electron_1.app.on('window-all-closed', () => {
     }
 });
 electron_1.ipcMain.handle('load-song-list', async () => {
+    electron_log_1.default.info('Backend: Loading song list');
     await ensureDirectories();
     const files = await fs_1.promises.readdir(sourceDir);
     const songs = await Promise.all(files
@@ -119,6 +188,7 @@ electron_1.ipcMain.handle('load-song-list', async () => {
     return songs;
 });
 electron_1.ipcMain.handle('load-global-config', async () => {
+    electron_log_1.default.info('Backend: Loading global config');
     await ensureDirectories();
     try {
         const raw = await fs_1.promises.readFile(globalConfigPath, 'utf-8');
@@ -155,17 +225,46 @@ electron_1.ipcMain.handle('load-global-config', async () => {
     }
 });
 electron_1.ipcMain.handle('save-global-config', async (_, config) => {
+    electron_log_1.default.info('Backend: Saving global config');
     await ensureDirectories();
     await fs_1.promises.writeFile(globalConfigPath, JSON.stringify(config, null, 2), 'utf-8');
     return true;
 });
 electron_1.ipcMain.handle('save-song-config', async (_, name, config) => {
+    electron_log_1.default.info(`Backend: Saving song config for "${name}"`);
     await ensureDirectories();
     const configPath = path.join(configDir, `${name}.json`);
     await fs_1.promises.writeFile(configPath, JSON.stringify(config, null, 2), 'utf-8');
     return true;
 });
+electron_1.ipcMain.on('log-message', (event, level, message) => {
+    if (level === 'error')
+        electron_log_1.default.error(message);
+    else if (level === 'warn')
+        electron_log_1.default.warn(message);
+    else
+        electron_log_1.default.info(message);
+    event.returnValue = true;
+});
+electron_1.ipcMain.handle('delete-song', async (_, name) => {
+    electron_log_1.default.info(`Deleting song: ${name}`);
+    await ensureDirectories();
+    const configPath = path.join(configDir, `${name}.json`);
+    const vocalFilePath = path.join(vocalDir, `${name}.wav`);
+    const instFilePath = path.join(instrumentalDir, `${name}.wav`);
+    const sourceFiles = await fs_1.promises.readdir(sourceDir);
+    const sourceFile = sourceFiles.find(f => path.basename(f, path.extname(f)) === name);
+    if (sourceFile) {
+        await fs_1.promises.unlink(path.join(sourceDir, sourceFile)).catch(() => { });
+    }
+    await fs_1.promises.unlink(configPath).catch(() => { });
+    await fs_1.promises.unlink(vocalFilePath).catch(() => { });
+    await fs_1.promises.unlink(instFilePath).catch(() => { });
+    electron_log_1.default.info(`Deleted song completely: ${name}`);
+    return true;
+});
 electron_1.ipcMain.handle('process-file', async (_, originalPath) => {
+    electron_log_1.default.info(`New song dragged in: ${originalPath}`);
     await ensureDirectories();
     const extension = path.extname(originalPath).toLowerCase();
     if (!['.mp3', '.wav'].includes(extension)) {
@@ -212,15 +311,87 @@ electron_1.ipcMain.handle('process-file', async (_, originalPath) => {
             win.webContents.send('processing-status', { type: 'status', message });
         });
     };
-    sendProgress(10, 'Initializing stem separation engine...');
-    await new Promise((resolve) => setTimeout(resolve, 400));
-    sendProgress(40, 'Separating vocal track...');
-    await fs_1.promises.copyFile(targetPath, path.join(vocalDir, `${targetName}.wav`));
-    await new Promise((resolve) => setTimeout(resolve, 400));
-    sendProgress(80, 'Separating instrumental track...');
-    await fs_1.promises.copyFile(targetPath, path.join(instrumentalDir, `${targetName}.wav`));
-    await new Promise((resolve) => setTimeout(resolve, 400));
-    sendProgress(100, 'Separation complete');
+    const tempWavPath = path.join(electron_1.app.getPath('temp'), `peachy_${Date.now()}.wav`);
+    sendProgress(5, 'Normalizing audio format...');
+    await new Promise((resolve, reject) => {
+        (0, fluent_ffmpeg_1.default)(targetPath)
+            .toFormat('wav')
+            .audioFrequency(44100)
+            .audioChannels(2)
+            .on('end', () => resolve())
+            .on('error', (err) => reject(new Error(`FFmpeg error: ${err.message}`)))
+            .save(tempWavPath);
+    });
+    try {
+        const { ONNXHTDemucs } = await loadESM('demucs/dist/onnx-htdemucs.js');
+        const { separateTracks } = await loadESM('demucs/dist/apply.js');
+        const { wavToSamples, samplesToWav } = await loadESM('demucs/dist/wav-utils.js');
+        sendProgress(15, 'Loading AI model...');
+        const modelPath = electron_1.app.isPackaged
+            ? path.join(process.resourcesPath, 'app.asar.unpacked', 'node_modules', 'demucs', 'htdemucs.onnx')
+            : path.join(process.cwd(), 'node_modules', 'demucs', 'htdemucs.onnx');
+        // In some packaging setups, it might be inside the ASAR directly or just node_modules.
+        // Try multiple paths just in case:
+        const possibleModelPaths = [
+            modelPath,
+            path.join(electron_1.app.getAppPath(), 'node_modules', 'demucs', 'htdemucs.onnx'),
+            path.join(__dirname, '..', 'node_modules', 'demucs', 'htdemucs.onnx')
+        ];
+        let actualModelPath = '';
+        for (const p of possibleModelPaths) {
+            if ((0, fs_1.existsSync)(p)) {
+                actualModelPath = p;
+                break;
+            }
+        }
+        if (!actualModelPath) {
+            throw new Error("Could not locate ONNX model file (htdemucs.onnx).");
+        }
+        const modelBuffer = await fs_1.promises.readFile(actualModelPath);
+        const model = await ONNXHTDemucs.init(modelBuffer.buffer);
+        sendProgress(25, 'Loading audio into memory...');
+        const wavBuffer = await fs_1.promises.readFile(tempWavPath);
+        const rawAudio = wavToSamples(wavBuffer);
+        electron_log_1.default.info(`Starting stem separation for ${targetName}...`);
+        sendProgress(30, 'Running AI separation (this will take a while)...');
+        const separated = await separateTracks(model, rawAudio, (step, total) => {
+            const progress = 30 + Math.floor((step / total) * 60);
+            sendProgress(progress, `Running AI separation... (${Math.floor((step / total) * 100)}%)`);
+        });
+        sendProgress(92, 'Generating vocal track...');
+        const vocalRaw = separated['vocals'];
+        const vocalWav = samplesToWav(vocalRaw.channelData, vocalRaw.sampleRate);
+        const finalVocalPath = path.join(vocalDir, `${targetName}.wav`);
+        await fs_1.promises.writeFile(finalVocalPath, vocalWav);
+        sendProgress(95, 'Mixing backing track...');
+        // Sum drums, bass, and other
+        const drums = separated['drums'].channelData;
+        const bass = separated['bass'].channelData;
+        const other = separated['other'].channelData;
+        const instChannels = [];
+        for (let c = 0; c < model.audioChannels; c++) {
+            const len = drums[c].length;
+            const combined = new Float32Array(len);
+            for (let i = 0; i < len; i++) {
+                combined[i] = drums[c][i] + bass[c][i] + other[c][i];
+            }
+            instChannels.push(combined);
+        }
+        const instWav = samplesToWav(instChannels, vocalRaw.sampleRate);
+        const finalInstPath = path.join(instrumentalDir, `${targetName}.wav`);
+        await fs_1.promises.writeFile(finalInstPath, instWav);
+        electron_log_1.default.info(`Stored stems for ${targetName} successfully.`);
+        sendProgress(100, 'Separation complete');
+    }
+    catch (err) {
+        electron_log_1.default.error(`Separation failed: ${err.message}\n${err.stack}`);
+        throw err;
+    }
+    finally {
+        if ((0, fs_1.existsSync)(tempWavPath)) {
+            await fs_1.promises.unlink(tempWavPath).catch(() => { });
+        }
+    }
     const defaultConfig = {
         instrumentalVolume: 0.85,
         instrumentalPitch: 0,
