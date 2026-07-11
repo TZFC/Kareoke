@@ -17,6 +17,7 @@ type SongConfig = {
   notes: string;
   lrcText?: string;
   autoScroll: boolean;
+  routeBackingToMonitor: boolean;
 };
 
 type SongItem = {
@@ -62,7 +63,8 @@ const defaultSongConfig: SongConfig = {
   offsetMs: 0,
   notes: '',
   lrcText: '',
-  autoScroll: true
+  autoScroll: true,
+  routeBackingToMonitor: true
 };
 
 const loadAudioBuffer = async (path: string, context: AudioContext): Promise<AudioBuffer> => {
@@ -556,13 +558,16 @@ function App() {
     audInstSource.connect(audInstGain);
     audInstGain.connect(audienceCtx.destination);
 
-    // 2. Play backing track to Monitor Context
-    const monInstSource = monitorCtx.createBufferSource();
-    monInstSource.buffer = instBuffer;
-    const monInstGain = monitorCtx.createGain();
-    monInstGain.gain.value = songConfig.instrumentalVolume;
-    monInstSource.connect(monInstGain);
-    monInstGain.connect(monitorCtx.destination);
+    // 2. Play backing track to Monitor Context (optional)
+    let monInstSource: AudioBufferSourceNode | null = null;
+    if (songConfig.routeBackingToMonitor) {
+      monInstSource = monitorCtx.createBufferSource();
+      monInstSource.buffer = instBuffer;
+      const monInstGain = monitorCtx.createGain();
+      monInstGain.gain.value = songConfig.instrumentalVolume;
+      monInstSource.connect(monInstGain);
+      monInstGain.connect(monitorCtx.destination);
+    }
 
     // 3. Play vocal track to Monitor Context
     const monVocSource = monitorCtx.createBufferSource();
@@ -604,10 +609,15 @@ function App() {
     const vocOffset = startOffset + Math.max(0, offsetSeconds) - Math.max(0, -offsetSeconds);
 
     audInstSource.start(instStartAt, instOffset);
-    monInstSource.start(instStartAt, instOffset);
+    if (monInstSource) {
+      monInstSource.start(instStartAt, instOffset);
+    }
     monVocSource.start(vocStartAt, Math.max(0, vocOffset));
 
-    playSourcesRef.current = [audInstSource, monInstSource, monVocSource];
+    playSourcesRef.current = [audInstSource, monVocSource];
+    if (monInstSource) {
+      playSourcesRef.current.push(monInstSource);
+    }
     playStartRef.current = now;
     setPlaying(true);
     setStatusMessage(`${t(locale, 'playback')} · ${formatTime(pauseOffsetRef.current)}`);
@@ -787,6 +797,10 @@ function App() {
           <label className="checkbox-row">
             <input type="checkbox" checked={songConfig.reverbBypass} onChange={(e) => updateConfig({ reverbBypass: e.target.checked })} />
             <span>{t(locale, 'bypassReverb')}</span>
+          </label>
+          <label className="checkbox-row">
+            <input type="checkbox" checked={songConfig.routeBackingToMonitor} onChange={(e) => updateConfig({ routeBackingToMonitor: e.target.checked })} />
+            <span>{t(locale, 'routeBackingToMonitor')}</span>
           </label>
           <div className="control-group">
             <label className="range-label">

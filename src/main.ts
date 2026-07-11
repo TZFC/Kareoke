@@ -219,7 +219,8 @@ ipcMain.handle('process-file', async (_, originalPath: string) => {
     offsetMs: 0,
     notes: '',
     lrcText: '',
-    autoScroll: true
+    autoScroll: true,
+    routeBackingToMonitor: true
   };
   const configPath = path.join(configDir, `${targetName}.json`);
   await fs.writeFile(configPath, JSON.stringify(defaultConfig, null, 2), 'utf-8');
