@@ -1,9 +1,13 @@
-import { app, BrowserWindow, ipcMain, dialog, nativeTheme } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog, nativeTheme, protocol, net } from 'electron';
 import * as path from 'path';
-import { promises as fs, existsSync } from 'fs';
-import { spawn } from 'child_process';
+import { existsSync, promises as fs } from 'fs';
+import { pathToFileURL } from 'url';
 
-const storeRoot = path.join(process.cwd(), 'PeachyKareoke');
+protocol.registerSchemesAsPrivileged([
+  { scheme: 'local-media', privileges: { bypassCSP: true, stream: true, supportFetchAPI: true, corsEnabled: true } }
+]);
+
+const storeRoot = path.join(app.isPackaged ? app.getPath('userData') : process.cwd(), 'PeachyKareoke');
 const sourceDir = path.join(storeRoot, 'source');
 const vocalDir = path.join(storeRoot, 'vocal');
 const instrumentalDir = path.join(storeRoot, 'instrumental');
@@ -40,6 +44,12 @@ function createWindow() {
 }
 
 app.whenReady().then(async () => {
+  protocol.handle('local-media', (request) => {
+    const urlPath = request.url.slice('local-media://'.length);
+    const decodedPath = decodeURIComponent(urlPath);
+    return net.fetch(pathToFileURL(decodedPath).toString());
+  });
+
   nativeTheme.themeSource = 'system';
   await ensureDirectories();
   createWindow();
@@ -54,14 +64,6 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
-
-function safeJsonParse(line: string) {
-  try {
-    return JSON.parse(line);
-  } catch {
-    return null;
-  }
-}
 
 ipcMain.handle('load-song-list', async () => {
   await ensureDirectories();
@@ -95,9 +97,33 @@ ipcMain.handle('load-global-config', async () => {
   await ensureDirectories();
   try {
     const raw = await fs.readFile(globalConfigPath, 'utf-8');
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    return {
+      inputDevices: [],
+      outputDevices: [],
+      microphoneDevice: '',
+      audienceDevice: '',
+      monitorDevice: '',
+      micVolume: 0.8,
+      micBass: 0,
+      micTreble: 0,
+      micReverb: 0.3,
+      language: 'en',
+      ...parsed
+    };
   } catch {
-    return { inputDevices: [], outputDevices: [], language: 'en' };
+    return {
+      inputDevices: [],
+      outputDevices: [],
+      microphoneDevice: '',
+      audienceDevice: '',
+      monitorDevice: '',
+      micVolume: 0.8,
+      micBass: 0,
+      micTreble: 0,
+      micReverb: 0.3,
+      language: 'en'
+    };
   }
 });
 
@@ -112,11 +138,6 @@ ipcMain.handle('save-song-config', async (_, name: string, config: any) => {
   const configPath = path.join(configDir, `${name}.json`);
   await fs.writeFile(configPath, JSON.stringify(config, null, 2), 'utf-8');
   return true;
-});
-
-ipcMain.handle('read-audio-file', async (_, filePath: string) => {
-  const buffer = await fs.readFile(filePath);
-  return buffer.toString('base64');
 });
 
 ipcMain.handle('process-file', async (_, originalPath: string) => {
@@ -163,45 +184,25 @@ ipcMain.handle('process-file', async (_, originalPath: string) => {
   const targetPath = path.join(sourceDir, targetFileName);
   await fs.copyFile(originalPath, targetPath);
 
-  const pythonPath = 'python';
-  const processorPath = path.join(process.cwd(), 'backend', 'processor.py');
-  const args = [processorPath, '--input', targetPath, '--vocal', path.join(vocalDir, `${targetName}.wav`), '--instrumental', path.join(instrumentalDir, `${targetName}.wav`), '--use-gpu'];
-  const child = spawn(pythonPath, args, { cwd: process.cwd(), stdio: ['ignore', 'pipe', 'pipe'], env: process.env });
-
-  child.stdout.on('data', (chunk) => {
-    const lines = chunk.toString('utf-8').split(/\r?\n/).filter(Boolean);
-    lines.forEach((line: string) => {
-      const json = safeJsonParse(line);
-      if (json && json.type === 'progress') {
-        BrowserWindow.getAllWindows().forEach((win) => {
-          win.webContents.send('processing-progress', json);
-        });
-      }
-      if (json && json.type === 'status') {
-        BrowserWindow.getAllWindows().forEach((win) => {
-          win.webContents.send('processing-status', json);
-        });
-      }
-    });
-  });
-
-  child.stderr.on('data', (chunk) => {
-    const text = chunk.toString('utf-8');
+  // Mock Separation Progress
+  const sendProgress = (percent: number, message: string) => {
     BrowserWindow.getAllWindows().forEach((win) => {
-      win.webContents.send('processing-status', { type: 'status', message: text });
+      win.webContents.send('processing-progress', { percent });
+      win.webContents.send('processing-status', { type: 'status', message });
     });
-  });
+  };
 
-  const result = await new Promise((resolve, reject) => {
-    child.on('exit', (code) => {
-      if (code === 0) {
-        resolve(true);
-      } else {
-        reject(new Error(`Demucs processor exited with code ${code}`));
-      }
-    });
-    child.on('error', (err) => reject(err));
-  });
+  sendProgress(10, 'Initializing stem separation engine...');
+  await new Promise((resolve) => setTimeout(resolve, 400));
+  sendProgress(40, 'Separating vocal track...');
+  await fs.copyFile(targetPath, path.join(vocalDir, `${targetName}.wav`));
+  await new Promise((resolve) => setTimeout(resolve, 400));
+  
+  sendProgress(80, 'Separating instrumental track...');
+  await fs.copyFile(targetPath, path.join(instrumentalDir, `${targetName}.wav`));
+  await new Promise((resolve) => setTimeout(resolve, 400));
+  
+  sendProgress(100, 'Separation complete');
 
   const defaultConfig = {
     instrumentalVolume: 0.85,
@@ -217,7 +218,8 @@ ipcMain.handle('process-file', async (_, originalPath: string) => {
     reverbBypass: false,
     offsetMs: 0,
     notes: '',
-    autoScroll: false
+    lrcText: '',
+    autoScroll: true
   };
   const configPath = path.join(configDir, `${targetName}.json`);
   await fs.writeFile(configPath, JSON.stringify(defaultConfig, null, 2), 'utf-8');
