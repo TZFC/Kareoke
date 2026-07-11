@@ -39,6 +39,7 @@ type GlobalConfig = {
   micBass: number;
   micTreble: number;
   micReverb: number;
+  routeMicToMonitor: boolean;
   language: Locale;
 };
 
@@ -198,6 +199,7 @@ function App() {
     micBass: 0,
     micTreble: 0,
     micReverb: 0.3,
+    routeMicToMonitor: false,
     language: 'en-US'
   });
   const [songConfig, setSongConfig] = useState<SongConfig>(defaultSongConfig);
@@ -454,13 +456,15 @@ function App() {
       monSource.connect(monBass);
       monBass.connect(monTreble);
       monTreble.connect(monGain);
-      monGain.connect(monitorCtx.destination);
 
-      monGain.connect(monDelay);
-      monDelay.connect(monFeedback);
-      monFeedback.connect(monDelay);
-      monDelay.connect(monDelayGain);
-      monDelayGain.connect(monitorCtx.destination);
+      if (globalConfig.routeMicToMonitor) {
+        monGain.connect(monitorCtx.destination);
+        monGain.connect(monDelay);
+        monDelay.connect(monFeedback);
+        monFeedback.connect(monDelay);
+        monDelay.connect(monDelayGain);
+        monDelayGain.connect(monitorCtx.destination);
+      }
 
       micNodesRef.current = {
         audienceGain: audGain,
@@ -840,6 +844,12 @@ function App() {
                 <option key={device.deviceId} value={device.deviceId}>{device.label || 'Microphone'}</option>
               ))}
             </select>
+          </label>
+          <label className="checkbox-row" style={{ marginTop: 6 }}>
+            <input type="checkbox" checked={globalConfig.routeMicToMonitor} onChange={(e) => {
+              saveGlobal({ ...globalConfig, routeMicToMonitor: e.target.checked });
+            }} />
+            <span>{t(locale, 'routeMicToMonitor')}</span>
           </label>
         </div>
 

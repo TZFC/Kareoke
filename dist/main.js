@@ -133,7 +133,8 @@ electron_1.ipcMain.handle('load-global-config', async () => {
             micBass: 0,
             micTreble: 0,
             micReverb: 0.3,
-            language: 'en',
+            routeMicToMonitor: false,
+            language: 'en-US',
             ...parsed
         };
     }
@@ -148,7 +149,8 @@ electron_1.ipcMain.handle('load-global-config', async () => {
             micBass: 0,
             micTreble: 0,
             micReverb: 0.3,
-            language: 'en'
+            routeMicToMonitor: false,
+            language: 'en-US'
         };
     }
 });
