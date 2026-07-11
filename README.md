@@ -10,7 +10,7 @@ This app separates any song into **vocals** and **backing tracks**, allowing you
 
 * **Dual-Audio Output:** Send the vocal stem to your monitor headphones (so you can hear yourself clearly) while playing only the backing track (instrumental) and your microphone (with studio reverb/EQ) to the audience speakers!
 * **Studio-Quality Voice Effects:** Adjust microphone volume, bass, treble, and add high-fidelity reverb (echo) in real time.
-* **Smart Pitch Shifting:** Change the key of any song up or down without changing the speed of the music.
+* **Smart Pitch Shifting:** Change the key of any song up or down.
 * **Synchronized Lyrics:** Load standard `.lrc` lyric files and watch them scroll and highlight automatically as the song plays.
 * **Super Simple Setup:** No complex software, virtual cables, or installation drivers needed. Just open the app and start singing!
 
@@ -27,8 +27,9 @@ This app separates any song into **vocals** and **backing tracks**, allowing you
    * **Audience Speaker:** Select the main room speakers or sound system where the audience sits.
    * **Singer Monitor:** Select the headphones you are wearing to hear yourself sing in sync.
 4. **Customize Your Mix:**
-   * Adjust the vocal and instrumental volumes.
-   * Change the pitch (key) using the **Pitch +1** and **Pitch -1** buttons.
-   * Fine-tune the microphone sound using the **Microphone Live Mix** sliders on the panel.
+    * Adjust the vocal and instrumental volumes.
+    * Change the pitch (key) using the **Pitch +1** and **Pitch -1** buttons.
+    * Use the **Vocal Offset** slider (ranges from `-1000 ms` early to `0 ms` in-sync) to make the original reference singer's vocals arrive slightly early in your headphones. This helps you anticipate the entry timings.
+    * Fine-tune the microphone sound using the **Microphone Live Mix** sliders on the panel.
 5. **Add Lyrics:**
    * Click on the **Lyrics (.lrc)** tab, select **Edit Lyrics**, paste your `.lrc` text, and click **Done Editing**. They will scroll automatically!

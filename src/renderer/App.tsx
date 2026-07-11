@@ -825,8 +825,8 @@ function App() {
             </label>
           </div>
           <label className="range-label">
-            <span>{t(locale, 'offsetMs')}: {songConfig.offsetMs}</span>
-            <input type="number" value={songConfig.offsetMs} onChange={(e) => updateConfig({ offsetMs: Number(e.target.value) })} />
+            <span>{t(locale, 'offsetMs')}: {songConfig.offsetMs} ms {songConfig.offsetMs < 0 ? `(${t(locale, 'early')})` : `(${t(locale, 'inSync')})`}</span>
+            <input type="range" min="-1000" max="0" step="10" value={songConfig.offsetMs} onChange={(e) => updateConfig({ offsetMs: Number(e.target.value) })} />
           </label>
         </div>
       </div>
