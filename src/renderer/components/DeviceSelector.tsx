@@ -1,0 +1,84 @@
+import React from 'react';
+import { t } from '../i18n';
+import { GlobalConfig, DeviceItem } from '../types';
+
+interface DeviceSelectorProps {
+  locale: string;
+  globalConfig: GlobalConfig;
+  devices: DeviceItem[];
+  saveGlobal: (config: GlobalConfig) => void;
+}
+
+export const DeviceSelector: React.FC<DeviceSelectorProps> = ({
+  locale,
+  globalConfig,
+  devices,
+  saveGlobal
+}) => {
+  return (
+    <div className="panel">
+      <h3 className="panel-title">{t(locale, 'inputDevices')}</h3>
+      <div className="control-group">
+        <label className="range-label">
+          <span>{t(locale, 'microphoneDevice')}</span>
+          <select 
+            value={globalConfig.microphoneDevice} 
+            onClick={() => window.electronAPI.log('info', 'User input: Clicked microphone device dropdown')}
+            onChange={(e) => {
+              window.electronAPI.log('info', `User input: Selected microphone device: ${e.target.value || 'none'}`);
+              saveGlobal({ ...globalConfig, microphoneDevice: e.target.value });
+            }}
+          >
+            <option value="">{t(locale, 'selectMicrophone')}</option>
+            {devices.filter((device) => device.kind === 'audioinput').map((device) => (
+              <option key={device.deviceId} value={device.deviceId}>{device.label || t(locale, 'microphoneDevice')}</option>
+            ))}
+          </select>
+        </label>
+        <label className="checkbox-row" style={{ marginTop: 6 }}>
+          <input type="checkbox" checked={globalConfig.routeMicToMonitor} onChange={(e) => {
+            saveGlobal({ ...globalConfig, routeMicToMonitor: e.target.checked });
+          }} />
+          <span>{t(locale, 'routeMicToMonitor')}</span>
+        </label>
+      </div>
+
+      <h3 className="panel-title">{t(locale, 'outputDevices')}</h3>
+      <div className="control-group">
+        <label className="range-label">
+          <span>{t(locale, 'audienceDevice')}</span>
+          <select 
+            value={globalConfig.audienceDevice} 
+            onClick={() => window.electronAPI.log('info', 'User input: Clicked audience device dropdown')}
+            onChange={(e) => {
+              window.electronAPI.log('info', `User input: Selected audience device: ${e.target.value || 'none'}`);
+              saveGlobal({ ...globalConfig, audienceDevice: e.target.value });
+            }}
+          >
+            <option value="">{t(locale, 'selectAudience')}</option>
+            {devices.filter((device) => device.kind === 'audiooutput').map((device) => (
+              <option key={device.deviceId} value={device.deviceId}>{device.label || t(locale, 'outputDevice')}</option>
+            ))}
+          </select>
+        </label>
+
+        <label className="range-label" style={{ marginTop: 12 }}>
+          <span>{t(locale, 'monitorDevice')}</span>
+          <select 
+            value={globalConfig.monitorDevice} 
+            onClick={() => window.electronAPI.log('info', 'User input: Clicked monitor device dropdown')}
+            onChange={(e) => {
+              window.electronAPI.log('info', `User input: Selected monitor device: ${e.target.value || 'none'}`);
+              saveGlobal({ ...globalConfig, monitorDevice: e.target.value });
+            }}
+          >
+            <option value="">{t(locale, 'selectMonitor')}</option>
+            {devices.filter((device) => device.kind === 'audiooutput').map((device) => (
+              <option key={device.deviceId} value={device.deviceId}>{device.label || t(locale, 'outputDevice')}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+    </div>
+  );
+};

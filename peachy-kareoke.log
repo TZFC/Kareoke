@@ -211,3 +211,31 @@
 [2026-07-10 23:08:30.445] [info]  [Renderer Info] User input: pausePlayback
 [2026-07-10 23:08:30.446] [info]  User input: Clicked button "Play"
 [2026-07-10 23:08:30.446] [info]  [Renderer Info] User input: Clicked button "Play"
+[2026-07-10 23:09:00.173] [info]  User input: Clicked monitor device dropdown
+[2026-07-10 23:09:00.173] [info]  [Renderer Info] User input: Clicked monitor device dropdown
+[2026-07-10 23:09:02.202] [info]  User input: Clicked monitor device dropdown
+[2026-07-10 23:09:02.203] [info]  [Renderer Info] User input: Clicked monitor device dropdown
+[2026-07-10 23:09:06.018] [info]  startPlayback: Initiated
+[2026-07-10 23:09:06.019] [info]  [Renderer Info] startPlayback: Initiated
+[2026-07-10 23:09:06.019] [info]  startPlayback: Ensuring AudioContexts are built
+[2026-07-10 23:09:06.020] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
+[2026-07-10 23:09:06.020] [info]  startPlayback: Stopping existing sources
+[2026-07-10 23:09:06.020] [info]  [Renderer Info] startPlayback: Stopping existing sources
+[2026-07-10 23:09:06.021] [info]  startPlayback: Connecting backing track to audience
+[2026-07-10 23:09:06.021] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
+[2026-07-10 23:09:06.021] [info]  startPlayback: Connecting backing track to monitor
+[2026-07-10 23:09:06.022] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
+[2026-07-10 23:09:06.022] [info]  startPlayback: Connecting vocal track to monitor
+[2026-07-10 23:09:06.022] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
+[2026-07-10 23:09:06.022] [info]  startPlayback: Starting Mic Input
+[2026-07-10 23:09:06.022] [info]  [Renderer Info] startPlayback: Starting Mic Input
+[2026-07-10 23:09:06.023] [info]  User input: Clicked button "Play"
+[2026-07-10 23:09:06.023] [info]  [Renderer Info] User input: Clicked button "Play"
+[2026-07-10 23:09:06.069] [info]  startPlayback: Executing audio source start commands. instStartAt=242.14933333333335, instOffset=0, vocStartAt=241.14933333333335, vocOffset=-1
+[2026-07-10 23:09:06.070] [info]  [Renderer Info] startPlayback: Executing audio source start commands. instStartAt=242.14933333333335, instOffset=0, vocStartAt=241.14933333333335, vocOffset=-1
+[2026-07-10 23:09:06.071] [info]  startPlayback: Success
+[2026-07-10 23:09:06.071] [info]  [Renderer Info] startPlayback: Success
+[2026-07-10 23:09:13.413] [info]  User input: pausePlayback
+[2026-07-10 23:09:13.413] [info]  [Renderer Info] User input: pausePlayback
+[2026-07-10 23:09:13.414] [info]  User input: Clicked button "Play"
+[2026-07-10 23:09:13.415] [info]  [Renderer Info] User input: Clicked button "Play"
