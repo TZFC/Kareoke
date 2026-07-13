@@ -266,6 +266,8 @@ electron_1.ipcMain.handle('delete-song', async (_, name) => {
 electron_1.ipcMain.handle('process-file', async (_, originalPath) => {
     electron_log_1.default.info(`New song dragged in: ${originalPath}`);
     await ensureDirectories();
+    let generatedLrc = '';
+    let generatedNmn = '';
     const extension = path.extname(originalPath).toLowerCase();
     if (!['.mp3', '.wav'].includes(extension)) {
         throw new Error('只支持 WAV 和 MP3 文件 / Only WAV and MP3 files are supported.');
@@ -304,7 +306,7 @@ electron_1.ipcMain.handle('process-file', async (_, originalPath) => {
     const targetFileName = `${targetName}${extension}`;
     const targetPath = path.join(sourceDir, targetFileName);
     await fs_1.promises.copyFile(originalPath, targetPath);
-    // Mock Separation Progress
+    // Progress Dispatcher for UI Updates
     const sendProgress = (percent, message) => {
         electron_1.BrowserWindow.getAllWindows().forEach((win) => {
             win.webContents.send('processing-progress', { percent });
@@ -323,63 +325,36 @@ electron_1.ipcMain.handle('process-file', async (_, originalPath) => {
             .save(tempWavPath);
     });
     try {
-        const { ONNXHTDemucs } = await loadESM('demucs/dist/onnx-htdemucs.js');
-        const { separateTracks } = await loadESM('demucs/dist/apply.js');
-        const { wavToSamples, samplesToWav } = await loadESM('demucs/dist/wav-utils.js');
-        sendProgress(15, 'Loading AI model...');
-        const modelPath = electron_1.app.isPackaged
-            ? path.join(process.resourcesPath, 'app.asar.unpacked', 'node_modules', 'demucs', 'htdemucs.onnx')
-            : path.join(process.cwd(), 'node_modules', 'demucs', 'htdemucs.onnx');
-        // In some packaging setups, it might be inside the ASAR directly or just node_modules.
-        // Try multiple paths just in case:
-        const possibleModelPaths = [
-            modelPath,
-            path.join(electron_1.app.getAppPath(), 'node_modules', 'demucs', 'htdemucs.onnx'),
-            path.join(__dirname, '..', 'node_modules', 'demucs', 'htdemucs.onnx')
-        ];
-        let actualModelPath = '';
-        for (const p of possibleModelPaths) {
-            if ((0, fs_1.existsSync)(p)) {
-                actualModelPath = p;
-                break;
-            }
+        const { separateStems } = await Promise.resolve().then(() => __importStar(require('./ai/separateStems')));
+        const { finalVocalPath } = await separateStems(tempWavPath, targetName, vocalDir, instrumentalDir, sendProgress, electron_log_1.default);
+        try {
+            sendProgress(96, 'Generating lyrics from vocals (AI)...');
+            // Dynamic import to avoid holding models in memory when not used
+            const { generateLRC } = await Promise.resolve().then(() => __importStar(require('./ai/generateLRC')));
+            generatedLrc = await generateLRC(finalVocalPath, sendProgress);
         }
-        if (!actualModelPath) {
-            throw new Error("Could not locate ONNX model file (htdemucs.onnx).");
+        catch (e) {
+            electron_log_1.default.error('LRC Generation failed: ' + e.message);
         }
-        const modelBuffer = await fs_1.promises.readFile(actualModelPath);
-        const model = await ONNXHTDemucs.init(modelBuffer.buffer);
-        sendProgress(25, 'Loading audio into memory...');
-        const wavBuffer = await fs_1.promises.readFile(tempWavPath);
-        const rawAudio = wavToSamples(wavBuffer);
-        electron_log_1.default.info(`Starting stem separation for ${targetName}...`);
-        sendProgress(30, 'Running AI separation (this will take a while)...');
-        const separated = await separateTracks(model, rawAudio, (step, total) => {
-            const progress = 30 + Math.floor((step / total) * 60);
-            sendProgress(progress, `Running AI separation... (${Math.floor((step / total) * 100)}%)`);
-        });
-        sendProgress(92, 'Generating vocal track...');
-        const vocalRaw = separated['vocals'];
-        const vocalWav = samplesToWav(vocalRaw.channelData, vocalRaw.sampleRate);
-        const finalVocalPath = path.join(vocalDir, `${targetName}.wav`);
-        await fs_1.promises.writeFile(finalVocalPath, vocalWav);
-        sendProgress(95, 'Mixing backing track...');
-        // Sum drums, bass, and other
-        const drums = separated['drums'].channelData;
-        const bass = separated['bass'].channelData;
-        const other = separated['other'].channelData;
-        const instChannels = [];
-        for (let c = 0; c < model.audioChannels; c++) {
-            const len = drums[c].length;
-            const combined = new Float32Array(len);
-            for (let i = 0; i < len; i++) {
-                combined[i] = drums[c][i] + bass[c][i] + other[c][i];
-            }
-            instChannels.push(combined);
+        try {
+            sendProgress(98, 'Extracting musical notation (AI)...');
+            const { generateNMN } = await Promise.resolve().then(() => __importStar(require('./ai/generateNMN')));
+            const f32leRawPath = path.join(electron_1.app.getPath('temp'), `peachy_nmn_${Date.now()}.raw`);
+            await new Promise((resolve, reject) => {
+                (0, fluent_ffmpeg_1.default)(finalVocalPath)
+                    .toFormat('f32le')
+                    .audioFrequency(22050)
+                    .audioChannels(1)
+                    .on('end', () => resolve())
+                    .on('error', (err) => reject(new Error(`FFmpeg error: ${err.message}`)))
+                    .save(f32leRawPath);
+            });
+            generatedNmn = await generateNMN(f32leRawPath, sendProgress);
+            await fs_1.promises.unlink(f32leRawPath).catch(() => { });
         }
-        const instWav = samplesToWav(instChannels, vocalRaw.sampleRate);
-        const finalInstPath = path.join(instrumentalDir, `${targetName}.wav`);
-        await fs_1.promises.writeFile(finalInstPath, instWav);
+        catch (e) {
+            electron_log_1.default.error('NMN Generation failed: ' + e.message);
+        }
         electron_log_1.default.info(`Stored stems for ${targetName} successfully.`);
         sendProgress(100, 'Separation complete');
     }
@@ -392,7 +367,17 @@ electron_1.ipcMain.handle('process-file', async (_, originalPath) => {
             await fs_1.promises.unlink(tempWavPath).catch(() => { });
         }
     }
-    const defaultConfig = {
+    const configPath = path.join(configDir, `${targetName}.json`);
+    let existingConfig = {};
+    if ((0, fs_1.existsSync)(configPath)) {
+        try {
+            existingConfig = JSON.parse(await fs_1.promises.readFile(configPath, 'utf-8'));
+        }
+        catch (e) {
+            electron_log_1.default.error(`Failed to parse existing config for ${targetName}`);
+        }
+    }
+    const finalConfig = {
         instrumentalVolume: 0.85,
         instrumentalPitch: 0,
         vocalVolume: 0.95,
@@ -405,18 +390,18 @@ electron_1.ipcMain.handle('process-file', async (_, originalPath) => {
         },
         reverbBypass: false,
         offsetMs: 0,
-        notes: '',
-        lrcText: '',
         autoScroll: true,
-        routeBackingToMonitor: true
+        routeBackingToMonitor: true,
+        ...existingConfig,
+        notes: existingConfig.notes || generatedNmn,
+        lrcText: existingConfig.lrcText || generatedLrc,
     };
-    const configPath = path.join(configDir, `${targetName}.json`);
-    await fs_1.promises.writeFile(configPath, JSON.stringify(defaultConfig, null, 2), 'utf-8');
+    await fs_1.promises.writeFile(configPath, JSON.stringify(finalConfig, null, 2), 'utf-8');
     return {
         name: targetName,
         sourcePath: targetPath,
         vocalPath: path.join(vocalDir, `${targetName}.wav`),
         instrumentalPath: path.join(instrumentalDir, `${targetName}.wav`),
-        config: defaultConfig
+        config: finalConfig
     };
 });
