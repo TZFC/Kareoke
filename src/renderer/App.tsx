@@ -167,7 +167,7 @@ function App() {
       if (savePendingRef.current) clearTimeout(savePendingRef.current);
       savePendingRef.current = setTimeout(() => saveSongConfig(next, selectedSong.name), 250);
     }
-    if (playing && (changes.instrumentalPitch !== undefined || changes.vocalPitch !== undefined || changes.offsetMs !== undefined)) {
+    if (playing && changes.offsetMs !== undefined) {
       window.electronAPI.log('info', `Live playback parameter changed. Triggering audio graph rebuild via seekTo().`);
       seekTo(currentTime);
     }

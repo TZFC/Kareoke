@@ -1,66 +1,52 @@
-# PeachyKareoke — Developer Documentation
+# PeachyKareoke Developer Guide
 
-This document outlines the architecture, code layout, and setup guide for developers working on the **PeachyKareoke** desktop client.
+This document outlines how to setup, build, and contribute to the PeachyKareoke codebase.
 
-## 🛠️ Tech Stack
+## Tech Stack
+- **Electron**: Application framework
+- **React 18**: UI rendering
+- **Vite**: Frontend bundler and dev server
+- **TypeScript**: Static typing for both Main and Renderer processes
+- **Web Audio API**: Advanced audio processing and routing matrix
+- **SoundTouchJS**: State-of-the-art AudioWorklet for real-time pitch shifting
+- **Demucs**: Local automated vocal/instrumental audio separation
 
-* **Shell & Native Windowing:** Electron 28
-* **Frontend View Layer:** React 18 with TypeScript 5
-* **Bundler & Dev Server:** Vite 5
-* **Audio Processing Engine:** Web Audio API (native browser thread)
-* **CSS Styling:** Custom Vanilla CSS
+## Project Structure
+```text
+PeachyKareoke/
+├── src/
+│   ├── main.ts              # Electron Main Process (System integration, HTTP server)
+│   ├── preload.ts           # Context Bridge API (window.electronAPI)
+│   └── renderer/            # React UI (Renderer Process)
+│       ├── components/      # UI component modules (DeviceSelector, PlaybackControls, etc.)
+│       ├── hooks/           # Core audio and logic hooks (useAudioEngine.ts)
+│       ├── utils/           # Helper scripts (audio processing, LRC parsing)
+│       └── App.tsx          # Main React Application entry point
+├── dist/                    # Compiled source output
+├── package.json             # NPM dependencies and scripts
+└── vite.config.ts           # Vite bundler config
+```
 
----
+## Setup & Running
 
-## 🏗️ Architectural Overview
-
-### 1. Zero-Copy Local Audio Streaming
-Instead of transferring entire audio buffers over IPC, which blocks the Electron main process and leaks memory, we register a custom protocol `local-media://` in [main.ts](file:///f:/Kareoke/Kareoke/src/main.ts). The frontend requests audio files directly via standard `fetch()`, which reads streams directly from disk under a secure sandboxed origin.
-
-### 2. Multi-Context Audio Device Routing
-Chromium does not support independent sub-device routing within a single `AudioContext`. To route instrumental stems to the audience speaker and vocals/mic-return to the monitor headphones, we initialize two separate contexts:
-* `audienceContext`: Bound to the audience output `sinkId`.
-* `monitorContext`: Bound to the performer monitor `sinkId`.
-
-Both contexts load and play the identical, context-neutral `AudioBuffer` objects, triggered at the same hardware epoch timestamp (`AudioContext.currentTime`) to prevent sample drift.
-
-### 3. Real-Time Time-Domain Pitch Shifting
-We implement a custom Overlap-Add (OLA) time-stretching algorithm in [App.tsx](file:///f:/Kareoke/Kareoke/src/renderer/App.tsx#L70-L144). Unlike standard `playbackRate` tweaks that speed up or slow down playback, this divides the signal into short overlapping windows (1024 samples) and crossfades them to shift the pitch (frequency) while preserving the tempo (duration).
-
-### 4. Low-Latency Mic Capture & Live FX
-We capture raw audio by turning off default browser filters (`echoCancellation: false`, `noiseSuppression: false`, `autoGainControl: false`). The stream is routed to standard Biquad Filters (Low Shelf for Bass, High Shelf for Treble) and a high-performance feedback Delay node to simulate natural reverb with sub-15ms round-trip latency.
-
----
-
-* `src/main.ts`: Main process source file. Compiles to `dist/main.js`, which is the entry point defined in `package.json`.
-* `src/preload.ts`: Preload script exposing safe Electron IPC bindings.
-* `src/renderer/main.tsx`: React frontend entry point.
-* `src/renderer/App.tsx`: Main React application component containing UI layouts and Web Audio graphs.
-* `src/renderer/i18n.ts`: Localization dictionaries and helper functions.
-* `src/renderer/styles.css`: Dark mode layout tokens, sliders, custom buttons, and page animations.
-
----
-
-## 💻 Get Started
-
-### Prerequisites
-* **Node.js:** v18.0.0 or later
-* **Package Manager:** npm
-
-### Development Setup
-1. Clone the repository.
-2. Install dependencies:
+1. **Install Node.js & NPM**
+2. **Install Dependencies**:
    ```bash
    npm install
    ```
-3. Start the application in development mode (with hot-reload):
+3. **Run in Development Mode**:
    ```bash
    npm run dev
    ```
+   This will concurrently run Vite, compile the TypeScript main process, and launch Electron with Hot Module Replacement (HMR) enabled for the React components.
 
-### Packaging & Distribution
-To compile assets and package the application into a standalone Windows installer (`.exe`):
+## Building for Production
+To package the app for distribution (generates `.exe` via NSIS by default on Windows):
 ```bash
 npm run dist
 ```
-Output files will be generated in the `/release` directory.
+
+## Architecture Notes
+- **Audio Routing**: The application uses separate Web `AudioContext`s for the "Audience" and "Monitor" output streams. This allows discrete physical device targets and isolated gain/filter chains.
+- **Pitch Shifting**: Avoid typical time-domain or delay-node methods. PeachyKareoke injects a custom `SoundTouchNode` into the graph to process phase-locked WSOLA pitch shifting dynamically on an independent audio thread.
+- **Local Data Storage**: During development, songs, configuration, and separated stems are saved in the `PeachyKareoke` folder at the root. In production, these are placed in the OS standard `app.getPath('userData')`.

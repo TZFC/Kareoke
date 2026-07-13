@@ -1,6 +1,8 @@
 import { useRef, useState, useEffect } from 'react';
 import { SongItem, SongConfig, GlobalConfig } from '../types';
-import { loadAudioBuffer, pitchShiftBuffer, cloneBufferForContext } from '../utils/audio';
+import { loadAudioBuffer } from '../utils/audio';
+import { SoundTouchNode } from '@soundtouchjs/audio-worklet';
+import soundtouchWorkletUrl from '@soundtouchjs/audio-worklet/processor?url';
 import { formatTime } from '../utils/helpers';
 import { t } from '../i18n';
 
@@ -51,18 +53,23 @@ export const useAudioEngine = (
     }
   }, [globalConfig.monitorDevice]);
 
-  // Apply live volume changes instantly
+  // Apply live volume and pitch changes instantly
   useEffect(() => {
     const nodes = playbackNodesRef.current;
     if (nodes.audInstGain) nodes.audInstGain.gain.value = songConfig.instrumentalVolume;
     if (nodes.monInstGain) nodes.monInstGain.gain.value = songConfig.instrumentalVolume;
     if (nodes.audVocGain) nodes.audVocGain.gain.value = songConfig.vocalVolume;
     if (nodes.monVocGain) nodes.monVocGain.gain.value = songConfig.vocalVolume;
+
+    if (nodes.stNodeAudInst) nodes.stNodeAudInst.pitchSemitones.value = songConfig.instrumentalPitch;
+    if (nodes.stNodeMonInst) nodes.stNodeMonInst.pitchSemitones.value = songConfig.instrumentalPitch;
+    if (nodes.stNodeAudVoc) nodes.stNodeAudVoc.pitchSemitones.value = songConfig.vocalPitch;
+    if (nodes.stNodeMonVoc) nodes.stNodeMonVoc.pitchSemitones.value = songConfig.vocalPitch;
     
     if (playingRef.current) {
-      window.electronAPI.log('info', `Live audio param updated: InstVol=${songConfig.instrumentalVolume.toFixed(2)}, VocVol=${songConfig.vocalVolume.toFixed(2)}`);
+      window.electronAPI.log('info', `Live audio param updated: InstVol=${songConfig.instrumentalVolume.toFixed(2)}, VocVol=${songConfig.vocalVolume.toFixed(2)}, InstPitch=${songConfig.instrumentalPitch}, VocPitch=${songConfig.vocalPitch}`);
     }
-  }, [songConfig.instrumentalVolume, songConfig.vocalVolume]);
+  }, [songConfig.instrumentalVolume, songConfig.vocalVolume, songConfig.instrumentalPitch, songConfig.vocalPitch]);
 
   const audienceContextRef = useRef<AudioContext | null>(null);
   const monitorContextRef = useRef<AudioContext | null>(null);
@@ -75,6 +82,10 @@ export const useAudioEngine = (
     monInstGain?: GainNode;
     audVocGain?: GainNode;
     monVocGain?: GainNode;
+    stNodeAudInst?: SoundTouchNode;
+    stNodeMonInst?: SoundTouchNode;
+    stNodeAudVoc?: SoundTouchNode;
+    stNodeMonVoc?: SoundTouchNode;
   }>({});
   
   const micNodesRef = useRef<{
@@ -99,6 +110,7 @@ export const useAudioEngine = (
   const needBuildAudioContext = async () => {
     if (!audienceContextRef.current) {
       audienceContextRef.current = new AudioContext({ latencyHint: 'interactive' });
+      try { await SoundTouchNode.register(audienceContextRef.current, soundtouchWorkletUrl); } catch (e) { window.electronAPI.log('warn', `Failed to register SoundTouchNode on audienceCtx`); }
       if (globalConfigRef.current.audienceDevice) {
         try {
           await (audienceContextRef.current as any).setSinkId(globalConfigRef.current.audienceDevice);
@@ -109,6 +121,7 @@ export const useAudioEngine = (
     }
     if (!monitorContextRef.current) {
       monitorContextRef.current = new AudioContext({ latencyHint: 'interactive' });
+      try { await SoundTouchNode.register(monitorContextRef.current, soundtouchWorkletUrl); } catch (e) { window.electronAPI.log('warn', `Failed to register SoundTouchNode on monitorCtx`); }
       if (globalConfigRef.current.monitorDevice) {
         try {
           await (monitorContextRef.current as any).setSinkId(globalConfigRef.current.monitorDevice);
@@ -322,29 +335,8 @@ export const useAudioEngine = (
         await monitorCtx.resume();
       }
 
-      const instPitch = sConfig.instrumentalPitch;
-      const vocPitch = sConfig.vocalPitch;
-
-      if (currentShiftedInstPitchRef.current !== instPitch || !shiftedInstrumentRef.current) {
-        window.electronAPI.log('info', `startPlayback: Pitch shifting instrumental to ${instPitch}`);
-        setStatusMessage(t(locale, 'pitchShifting'));
-        await new Promise(resolve => setTimeout(resolve, 50));
-        shiftedInstrumentRef.current = pitchShiftBuffer(instrumentBufferRef.current!, instPitch, audienceCtx);
-        currentShiftedInstPitchRef.current = instPitch;
-        setStatusMessage(t(locale, 'statusReady'));
-      }
-      if (currentShiftedVocPitchRef.current !== vocPitch || !shiftedVocalRef.current) {
-        window.electronAPI.log('info', `startPlayback: Pitch shifting vocal to ${vocPitch}`);
-        setStatusMessage(t(locale, 'pitchShifting'));
-        await new Promise(resolve => setTimeout(resolve, 50));
-        shiftedVocalRef.current = pitchShiftBuffer(vocalBufferRef.current!, vocPitch, audienceCtx);
-        currentShiftedVocPitchRef.current = vocPitch;
-        setStatusMessage(t(locale, 'statusReady'));
-      }
-
-      // AudioBuffers can be used across multiple contexts natively
-      const instBuffer = shiftedInstrumentRef.current!;
-      const vocBuffer = shiftedVocalRef.current!;
+      const instBuffer = instrumentBufferRef.current!;
+      const vocBuffer = vocalBufferRef.current!;
 
       const audienceNow = audienceCtx.currentTime;
       const monitorNow = monitorCtx.currentTime;
@@ -357,49 +349,65 @@ export const useAudioEngine = (
 
       let audInstSource: AudioBufferSourceNode | null = null;
       let audInstGain: GainNode | null = null;
+      let stNodeAudInst: SoundTouchNode | null = null;
       if (sConfig.routeBackingToAudience) {
         window.electronAPI.log('info', 'startPlayback: Connecting backing track to audience');
         audInstSource = audienceCtx.createBufferSource();
         audInstSource.buffer = instBuffer;
+        stNodeAudInst = new SoundTouchNode({ context: audienceCtx });
+        stNodeAudInst.pitchSemitones.value = sConfig.instrumentalPitch;
         audInstGain = audienceCtx.createGain();
         audInstGain.gain.value = sConfig.instrumentalVolume;
-        audInstSource.connect(audInstGain);
+        audInstSource.connect(stNodeAudInst);
+        stNodeAudInst.connect(audInstGain);
         audInstGain.connect(audienceCtx.destination);
       }
 
       let monInstSource: AudioBufferSourceNode | null = null;
       let monInstGain: GainNode | null = null;
+      let stNodeMonInst: SoundTouchNode | null = null;
       if (sConfig.routeBackingToMonitor) {
         window.electronAPI.log('info', 'startPlayback: Connecting backing track to monitor');
         monInstSource = monitorCtx.createBufferSource();
         monInstSource.buffer = instBuffer;
+        stNodeMonInst = new SoundTouchNode({ context: monitorCtx });
+        stNodeMonInst.pitchSemitones.value = sConfig.instrumentalPitch;
         monInstGain = monitorCtx.createGain();
         monInstGain.gain.value = sConfig.instrumentalVolume;
-        monInstSource.connect(monInstGain);
+        monInstSource.connect(stNodeMonInst);
+        stNodeMonInst.connect(monInstGain);
         monInstGain.connect(monitorCtx.destination);
       }
 
       let audVocSource: AudioBufferSourceNode | null = null;
       let audVocGain: GainNode | null = null;
+      let stNodeAudVoc: SoundTouchNode | null = null;
       if (sConfig.routeVocalToAudience) {
         window.electronAPI.log('info', 'startPlayback: Connecting vocal track to audience');
         audVocSource = audienceCtx.createBufferSource();
         audVocSource.buffer = vocBuffer;
+        stNodeAudVoc = new SoundTouchNode({ context: audienceCtx });
+        stNodeAudVoc.pitchSemitones.value = sConfig.vocalPitch;
         audVocGain = audienceCtx.createGain();
         audVocGain.gain.value = sConfig.vocalVolume;
-        audVocSource.connect(audVocGain);
+        audVocSource.connect(stNodeAudVoc);
+        stNodeAudVoc.connect(audVocGain);
         audVocGain.connect(audienceCtx.destination);
       }
 
       let monVocSource: AudioBufferSourceNode | null = null;
       let monVocGain: GainNode | null = null;
+      let stNodeMonVoc: SoundTouchNode | null = null;
       if (sConfig.routeVocalToMonitor) {
         window.electronAPI.log('info', 'startPlayback: Connecting vocal track to monitor');
         monVocSource = monitorCtx.createBufferSource();
         monVocSource.buffer = vocBuffer;
+        stNodeMonVoc = new SoundTouchNode({ context: monitorCtx });
+        stNodeMonVoc.pitchSemitones.value = sConfig.vocalPitch;
         monVocGain = monitorCtx.createGain();
         monVocGain.gain.value = sConfig.vocalVolume;
-        monVocSource.connect(monVocGain);
+        monVocSource.connect(stNodeMonVoc);
+        stNodeMonVoc.connect(monVocGain);
         monVocGain.connect(monitorCtx.destination);
       }
 
@@ -407,7 +415,11 @@ export const useAudioEngine = (
         audInstGain: audInstGain || undefined,
         monInstGain: monInstGain || undefined,
         audVocGain: audVocGain || undefined,
-        monVocGain: monVocGain || undefined
+        monVocGain: monVocGain || undefined,
+        stNodeAudInst: stNodeAudInst || undefined,
+        stNodeMonInst: stNodeMonInst || undefined,
+        stNodeAudVoc: stNodeAudVoc || undefined,
+        stNodeMonVoc: stNodeMonVoc || undefined
       };
 
       window.electronAPI.log('info', 'startPlayback: Starting Mic Input');

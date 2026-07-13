@@ -24,6 +24,8 @@
     "wait-on": "^8.0.5"
   },
   "dependencies": {
+    "@soundtouchjs/audio-worklet": "^2.1.0",
+    "@soundtouchjs/core": "^2.1.0",
     "@types/fluent-ffmpeg": "^2.1.28",
     "demucs": "^1.0.0",
     "electron-log": "^5.4.4",

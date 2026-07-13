@@ -1,36 +1,22 @@
-# 🍑 PeachyKareoke
+# PeachyKareoke
 
-Welcome to **PeachyKareoke**, a simple, user-friendly karaoke application designed for singers, performers, and hosts. 
+PeachyKareoke is a modern, cross-platform Karaoke application built on Electron and React. It brings studio-quality vocal separation, real-time pitch shifting, and advanced audio routing to your desktop.
 
-This app separates any song into **vocals** and **backing tracks**, allowing you to route them to different audio devices in perfect sync.
+## Key Features
 
----
+- **Automated Stem Separation**: Drag and drop any MP3 or WAV file. The app automatically separates the song into high-quality Instrumental and Vocal stems.
+- **Advanced Audio Matrix**: Independently route your Microphone, Instrumental track, and Vocal track to different physical outputs (e.g., your Audience Speakers vs. your Monitor Headphones).
+- **Zero-Latency Pitch Shifting**: Change the key of the backing track or vocals in real-time without altering the tempo. Powered by the industry-standard SoundTouch algorithm via an optimized AudioWorklet.
+- **Monitoring Latency Compensation**: Align your live microphone feed perfectly with the backing tracks using the real-time Monitoring Offset slider.
+- **Lyrics & Notes**: Built-in LRC lyric viewer and inline editor to help you perform flawlessly.
 
-## 🌟 What makes this special?
+## Installation & Usage
 
-* **Dual-Audio Output:** Send the vocal stem to your monitor headphones (so you can hear yourself clearly) while playing only the backing track (instrumental) and your microphone (with studio reverb/EQ) to the audience speakers!
-* **Studio-Quality Voice Effects:** Adjust microphone volume, bass, treble, and add high-fidelity reverb (echo) in real time.
-* **Smart Pitch Shifting:** Change the key of any song up or down.
-* **Synchronized Lyrics:** Load standard `.lrc` lyric files and watch them scroll and highlight automatically as the song plays.
-* **Super Simple Setup:** No complex software, virtual cables, or installation drivers needed. Just open the app and start singing!
+1. Download the latest installer from the Releases page.
+2. Run the installer and launch PeachyKareoke.
+3. Use the **Device Settings** panel to select your Microphone, Audience Speakers, and Monitor Headphones.
+4. Drag and drop a song into the Song list on the left to begin processing.
+5. Click Play!
 
----
-
-## 🚀 How to Run the App (For Users)
-
-1. **Start the Application:**
-   * **Source Version:** Simply double-click the `Start.bat` file in the folder. It will automatically install dependencies and launch the app.
-   * **Packaged Version:** If you downloaded the pre-built standalone version, simply double-click `PeachyKareoke.exe` to launch it instantly.
-2. **Add a Song:**
-   * Simply drag and drop any `.mp3` or `.wav` music file directly into the drop zone on the screen.
-3. **Configure Your Devices:**
-   * **Microphone Input:** Select the microphone you are singing into.
-   * **Audience Speaker:** Select the main room speakers or sound system where the audience sits.
-   * **Singer Monitor:** Select the headphones you are wearing to hear yourself sing in sync.
-4. **Customize Your Mix:**
-    * Adjust the vocal and instrumental volumes.
-    * Change the pitch (key) using the **Pitch +1** and **Pitch -1** buttons.
-    * Use the **Vocal Offset** slider (ranges from `-1000 ms` early to `0 ms` in-sync) to make the original reference singer's vocals arrive slightly early in your headphones. This helps you anticipate the entry timings.
-    * Fine-tune the microphone sound using the **Microphone Live Mix** sliders on the panel.
-5. **Add Lyrics:**
-   * Click on the **Lyrics (.lrc)** tab, select **Edit Lyrics**, paste your `.lrc` text, and click **Done Editing**. They will scroll automatically!
+## Feedback and Contributions
+We welcome feedback and bug reports. Please use the GitHub Issues page to report any problems you encounter while using PeachyKareoke.
