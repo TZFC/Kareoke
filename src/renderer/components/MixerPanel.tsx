@@ -61,14 +61,6 @@ export const MixerPanel: React.FC<MixerPanelProps> = ({
           </button>
           <div className="value-label">{songConfig.vocalPitch} st</div>
         </div>
-        <label className="checkbox-row">
-          <input 
-            type="checkbox" 
-            checked={songConfig.routeBackingToMonitor} 
-            onChange={(e) => updateConfig({ routeBackingToMonitor: e.target.checked })} 
-          />
-          <span>{t(locale, 'routeBackingToMonitor')}</span>
-        </label>
       </div>
     </>
   );

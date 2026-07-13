@@ -10,7 +10,10 @@ export type SongConfig = {
   notes: string;
   lrcText?: string;
   autoScroll: boolean;
+  routeBackingToAudience: boolean;
   routeBackingToMonitor: boolean;
+  routeVocalToAudience: boolean;
+  routeVocalToMonitor: boolean;
 };
 
 export type SongItem = {
@@ -32,6 +35,7 @@ export type GlobalConfig = {
   micBass: number;
   micTreble: number;
   micReverb: number;
+  routeMicToAudience: boolean;
   routeMicToMonitor: boolean;
   language: Locale;
 };

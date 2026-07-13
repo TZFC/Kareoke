@@ -38,7 +38,10 @@ const defaultSongConfig: SongConfig = {
   notes: '',
   lrcText: '',
   autoScroll: true,
-  routeBackingToMonitor: true
+  routeBackingToAudience: true,
+  routeBackingToMonitor: true,
+  routeVocalToAudience: false,
+  routeVocalToMonitor: true
 };
 
 function App() {
@@ -59,6 +62,7 @@ function App() {
     micBass: 0,
     micTreble: 0,
     micReverb: 0.3,
+    routeMicToAudience: true,
     routeMicToMonitor: false,
     language: 'en-US'
   });
@@ -156,12 +160,16 @@ function App() {
   };
 
   const updateConfig = (changes: Partial<SongConfig>) => {
-    window.electronAPI.log('info', `User input: Updated config keys: ${Object.keys(changes).join(', ')}`);
+    window.electronAPI.log('info', `User input: Updated config keys: ${Object.keys(changes).map(k => `${k}=${(changes as any)[k]}`).join(', ')}`);
     const next = { ...songConfig, ...changes };
     setSongConfig(next);
     if (selectedSong) {
       if (savePendingRef.current) clearTimeout(savePendingRef.current);
       savePendingRef.current = setTimeout(() => saveSongConfig(next, selectedSong.name), 250);
+    }
+    if (playing && (changes.instrumentalPitch !== undefined || changes.vocalPitch !== undefined || changes.offsetMs !== undefined)) {
+      window.electronAPI.log('info', `Live playback parameter changed. Triggering audio graph rebuild via seekTo().`);
+      seekTo(currentTime);
     }
   };
 
@@ -182,7 +190,7 @@ function App() {
 
   useEffect(() => {
     if (selectedSong) {
-      loadBuffers(selectedSong).catch(() => setStatusMessage('Unable to load audio buffers.'));
+      loadBuffers(selectedSong).catch(() => setStatusMessage(t(locale, 'unableToLoadAudioBuffers')));
     }
   }, [selectedSong?.name]);
 
@@ -238,7 +246,7 @@ function App() {
       await window.electronAPI.processFile(file.path);
       await refreshSongList();
     } catch (e: any) {
-      setStatusMessage(e.message || 'Error occurred');
+      setStatusMessage(e.message || t(locale, 'errorOccurred'));
     }
   };
 
@@ -304,8 +312,10 @@ function App() {
         <DeviceSelector
           locale={locale}
           globalConfig={globalConfig}
+          songConfig={songConfig}
           devices={devices}
           saveGlobal={saveGlobal}
+          updateConfig={updateConfig}
         />
 
         <div className="panel note-panel" style={{ flexGrow: 1, minHeight: 0 }}>

@@ -130,3 +130,11 @@ export const pitchShiftBuffer = (buffer: AudioBuffer, semitones: number, context
   }
   return shiftedBuffer;
 };
+
+export const cloneBufferForContext = (buffer: AudioBuffer, context: AudioContext): AudioBuffer => {
+  const cloned = context.createBuffer(buffer.numberOfChannels, buffer.length, buffer.sampleRate);
+  for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+    cloned.getChannelData(ch).set(buffer.getChannelData(ch));
+  }
+  return cloned;
+};

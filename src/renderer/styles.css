@@ -117,6 +117,13 @@ select {
   outline: none;
 }
 
+input[type="range"] {
+  padding: 0;
+  background: transparent;
+  border: none;
+  accent-color: var(--accent);
+}
+
 input:focus,
 textarea:focus,
 select:focus {

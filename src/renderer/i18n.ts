@@ -19,7 +19,7 @@ const translations = {
     roomSize: 'Room Size',
     damping: 'Damping',
     bypassReverb: 'Bypass Reverb',
-    offsetMs: 'Vocal Offset (ms)',
+    offsetMs: 'Monitoring Offset (ms)',
     early: 'Early',
     inSync: 'In Sync',
     routeBackingToMonitor: 'Route Backing to Headphones',
@@ -65,7 +65,18 @@ const translations = {
     deleteConfirm: 'Are you sure you want to delete "{name}"?',
     uiCrashRecovered: 'UI Crash Recovered',
     uiCrashMessage: 'Something went wrong in the user interface. Settings have been preserved.',
-    reloadApp: 'Reload App'
+    reloadApp: 'Reload App',
+    selectDevicesBeforePlay: 'Please select the following device(s) before playing: {devices}',
+    pitchShifting: 'Pitch shifting audio...',
+    failedToLoadAudio: 'Failed to load audio: {error}',
+    errorOccurred: 'Error occurred',
+    unableToLoadAudioBuffers: 'Unable to load audio buffers.',
+    audioRouting: 'Audio Routing Matrix',
+    routingOutput: 'Output (Audience)',
+    routingMonitor: 'Monitor (Singer)',
+    instrumentalStem: 'Instrumental Track',
+    vocalStem: 'Vocal Track',
+    microphone: 'Microphone Input'
   },
   'zh-CN': {
     appTitle: '桃子卡拉OK',
@@ -85,7 +96,7 @@ const translations = {
     roomSize: '房间大小',
     damping: '阻尼',
     bypassReverb: '绕过混响',
-    offsetMs: '人声偏移 (毫秒)',
+    offsetMs: '监听偏移 (毫秒)',
     early: '提前',
     inSync: '同步',
     routeBackingToMonitor: '耳返播放伴奏音轨',
@@ -131,7 +142,18 @@ const translations = {
     deleteConfirm: '您确定要删除“{name}”吗？',
     uiCrashRecovered: '用户界面崩溃已恢复',
     uiCrashMessage: '界面渲染出现异常，您的设置已安全保存。',
-    reloadApp: '重新加载应用'
+    reloadApp: '重新加载应用',
+    selectDevicesBeforePlay: '请在播放前选择以下设备：{devices}',
+    pitchShifting: '正在变调音频...',
+    failedToLoadAudio: '加载音频失败：{error}',
+    errorOccurred: '发生错误',
+    unableToLoadAudioBuffers: '无法加载音频缓存。',
+    audioRouting: '音频路由控制矩阵',
+    routingOutput: '主输出 (观众音响)',
+    routingMonitor: '耳返监听 (耳机)',
+    instrumentalStem: '伴奏音轨',
+    vocalStem: '原唱人声音轨',
+    microphone: '麦克风输入'
   }
 };
 

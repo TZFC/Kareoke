@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { SongItem, SongConfig, GlobalConfig } from '../types';
-import { loadAudioBuffer, pitchShiftBuffer } from '../utils/audio';
+import { loadAudioBuffer, pitchShiftBuffer, cloneBufferForContext } from '../utils/audio';
 import { formatTime } from '../utils/helpers';
 import { t } from '../i18n';
 
@@ -33,12 +33,49 @@ export const useAudioEngine = (
     selectedSongRef.current = selectedSong;
   }, [selectedSong]);
 
+  useEffect(() => {
+    if (audienceContextRef.current && globalConfig.audienceDevice) {
+      window.electronAPI.log('info', `Routing: Applying Audience device sinkId: ${globalConfig.audienceDevice}`);
+      (audienceContextRef.current as any).setSinkId(globalConfig.audienceDevice).catch((e: Error) => {
+        window.electronAPI.log('error', `Failed to set audience sinkId: ${e.message}`);
+      });
+    }
+  }, [globalConfig.audienceDevice]);
+
+  useEffect(() => {
+    if (monitorContextRef.current && globalConfig.monitorDevice) {
+      window.electronAPI.log('info', `Routing: Applying Monitor device sinkId: ${globalConfig.monitorDevice}`);
+      (monitorContextRef.current as any).setSinkId(globalConfig.monitorDevice).catch((e: Error) => {
+        window.electronAPI.log('error', `Failed to set monitor sinkId: ${e.message}`);
+      });
+    }
+  }, [globalConfig.monitorDevice]);
+
+  // Apply live volume changes instantly
+  useEffect(() => {
+    const nodes = playbackNodesRef.current;
+    if (nodes.audInstGain) nodes.audInstGain.gain.value = songConfig.instrumentalVolume;
+    if (nodes.monInstGain) nodes.monInstGain.gain.value = songConfig.instrumentalVolume;
+    if (nodes.audVocGain) nodes.audVocGain.gain.value = songConfig.vocalVolume;
+    if (nodes.monVocGain) nodes.monVocGain.gain.value = songConfig.vocalVolume;
+    
+    if (playingRef.current) {
+      window.electronAPI.log('info', `Live audio param updated: InstVol=${songConfig.instrumentalVolume.toFixed(2)}, VocVol=${songConfig.vocalVolume.toFixed(2)}`);
+    }
+  }, [songConfig.instrumentalVolume, songConfig.vocalVolume]);
+
   const audienceContextRef = useRef<AudioContext | null>(null);
   const monitorContextRef = useRef<AudioContext | null>(null);
   const instrumentBufferRef = useRef<AudioBuffer | null>(null);
   const vocalBufferRef = useRef<AudioBuffer | null>(null);
   const micStreamRef = useRef<MediaStream | null>(null);
   const playSourcesRef = useRef<AudioBufferSourceNode[]>([]);
+  const playbackNodesRef = useRef<{
+    audInstGain?: GainNode;
+    monInstGain?: GainNode;
+    audVocGain?: GainNode;
+    monVocGain?: GainNode;
+  }>({});
   
   const micNodesRef = useRef<{
     audienceGain?: GainNode;
@@ -55,7 +92,8 @@ export const useAudioEngine = (
   const pauseOffsetRef = useRef<number>(0);
   const shiftedInstrumentRef = useRef<AudioBuffer | null>(null);
   const shiftedVocalRef = useRef<AudioBuffer | null>(null);
-  const currentShiftedPitchRef = useRef<number>(999);
+  const currentShiftedInstPitchRef = useRef<number>(999);
+  const currentShiftedVocPitchRef = useRef<number>(999);
   const autoScrollFrame = useRef<number | null>(null);
 
   const needBuildAudioContext = async () => {
@@ -64,8 +102,8 @@ export const useAudioEngine = (
       if (globalConfigRef.current.audienceDevice) {
         try {
           await (audienceContextRef.current as any).setSinkId(globalConfigRef.current.audienceDevice);
-        } catch (e) {
-          console.error("Failed to set audience device sinkId", e);
+        } catch (e: any) {
+          window.electronAPI.log('error', `Failed to set audience device sinkId to ${globalConfigRef.current.audienceDevice}: ${e.message}`);
         }
       }
     }
@@ -74,8 +112,8 @@ export const useAudioEngine = (
       if (globalConfigRef.current.monitorDevice) {
         try {
           await (monitorContextRef.current as any).setSinkId(globalConfigRef.current.monitorDevice);
-        } catch (e) {
-          console.error("Failed to set monitor device sinkId", e);
+        } catch (e: any) {
+          window.electronAPI.log('error', `Failed to set monitor device sinkId to ${globalConfigRef.current.monitorDevice}: ${e.message}`);
         }
       }
     }
@@ -150,13 +188,15 @@ export const useAudioEngine = (
       audSource.connect(audBass);
       audBass.connect(audTreble);
       audTreble.connect(audGain);
-      audGain.connect(audienceCtx.destination);
 
-      audGain.connect(audDelay);
-      audDelay.connect(audFeedback);
-      audFeedback.connect(audDelay);
-      audDelay.connect(audDelayGain);
-      audDelayGain.connect(audienceCtx.destination);
+      if (gConfig.routeMicToAudience) {
+        audGain.connect(audienceCtx.destination);
+        audGain.connect(audDelay);
+        audDelay.connect(audFeedback);
+        audFeedback.connect(audDelay);
+        audDelay.connect(audDelayGain);
+        audDelayGain.connect(audienceCtx.destination);
+      }
 
       // 2. Monitor Context Mic Chain
       const monSource = monitorCtx.createMediaStreamSource(stream);
@@ -258,11 +298,11 @@ export const useAudioEngine = (
       const sConfig = songConfigRef.current;
 
       const missingDevices: string[] = [];
-      if (!gConfig.microphoneDevice) missingDevices.push('Microphone');
-      if (!gConfig.audienceDevice) missingDevices.push('Audience Speaker');
-      if (!gConfig.monitorDevice) missingDevices.push('Monitor Headphones');
+      if (!gConfig.microphoneDevice) missingDevices.push(t(locale, 'microphoneDevice'));
+      if (!gConfig.audienceDevice) missingDevices.push(t(locale, 'audienceDevice'));
+      if (!gConfig.monitorDevice) missingDevices.push(t(locale, 'monitorDevice'));
       if (missingDevices.length > 0) {
-        const msg = `Please select the following device(s) before playing: ${missingDevices.join(', ')}`;
+        const msg = t(locale, 'selectDevicesBeforePlay').replace('{devices}', missingDevices.join(', '));
         window.electronAPI.log('warn', `startPlayback: ${msg}`);
         setStatusMessage(msg);
         return;
@@ -282,21 +322,32 @@ export const useAudioEngine = (
         await monitorCtx.resume();
       }
 
-      const keyShift = sConfig.instrumentalPitch;
+      const instPitch = sConfig.instrumentalPitch;
+      const vocPitch = sConfig.vocalPitch;
 
-      if (currentShiftedPitchRef.current !== keyShift || !shiftedInstrumentRef.current || !shiftedVocalRef.current) {
-        window.electronAPI.log('info', `startPlayback: Pitch shifting to ${keyShift}`);
-        setStatusMessage("Pitch shifting audio...");
+      if (currentShiftedInstPitchRef.current !== instPitch || !shiftedInstrumentRef.current) {
+        window.electronAPI.log('info', `startPlayback: Pitch shifting instrumental to ${instPitch}`);
+        setStatusMessage(t(locale, 'pitchShifting'));
         await new Promise(resolve => setTimeout(resolve, 50));
-        shiftedInstrumentRef.current = pitchShiftBuffer(instrumentBufferRef.current!, keyShift, audienceCtx);
-        shiftedVocalRef.current = pitchShiftBuffer(vocalBufferRef.current!, keyShift, audienceCtx);
-        currentShiftedPitchRef.current = keyShift;
-        setStatusMessage("Ready");
+        shiftedInstrumentRef.current = pitchShiftBuffer(instrumentBufferRef.current!, instPitch, audienceCtx);
+        currentShiftedInstPitchRef.current = instPitch;
+        setStatusMessage(t(locale, 'statusReady'));
+      }
+      if (currentShiftedVocPitchRef.current !== vocPitch || !shiftedVocalRef.current) {
+        window.electronAPI.log('info', `startPlayback: Pitch shifting vocal to ${vocPitch}`);
+        setStatusMessage(t(locale, 'pitchShifting'));
+        await new Promise(resolve => setTimeout(resolve, 50));
+        shiftedVocalRef.current = pitchShiftBuffer(vocalBufferRef.current!, vocPitch, audienceCtx);
+        currentShiftedVocPitchRef.current = vocPitch;
+        setStatusMessage(t(locale, 'statusReady'));
       }
 
+      // AudioBuffers can be used across multiple contexts natively
       const instBuffer = shiftedInstrumentRef.current!;
       const vocBuffer = shiftedVocalRef.current!;
-      const now = audienceCtx.currentTime;
+
+      const audienceNow = audienceCtx.currentTime;
+      const monitorNow = monitorCtx.currentTime;
 
       window.electronAPI.log('info', 'startPlayback: Stopping existing sources');
       playSourcesRef.current.forEach(src => {
@@ -304,32 +355,60 @@ export const useAudioEngine = (
       });
       playSourcesRef.current = [];
 
-      window.electronAPI.log('info', 'startPlayback: Connecting backing track to audience');
-      const audInstSource = audienceCtx.createBufferSource();
-      audInstSource.buffer = instBuffer;
-      const audInstGain = audienceCtx.createGain();
-      audInstGain.gain.value = sConfig.instrumentalVolume;
-      audInstSource.connect(audInstGain);
-      audInstGain.connect(audienceCtx.destination);
+      let audInstSource: AudioBufferSourceNode | null = null;
+      let audInstGain: GainNode | null = null;
+      if (sConfig.routeBackingToAudience) {
+        window.electronAPI.log('info', 'startPlayback: Connecting backing track to audience');
+        audInstSource = audienceCtx.createBufferSource();
+        audInstSource.buffer = instBuffer;
+        audInstGain = audienceCtx.createGain();
+        audInstGain.gain.value = sConfig.instrumentalVolume;
+        audInstSource.connect(audInstGain);
+        audInstGain.connect(audienceCtx.destination);
+      }
 
       let monInstSource: AudioBufferSourceNode | null = null;
+      let monInstGain: GainNode | null = null;
       if (sConfig.routeBackingToMonitor) {
         window.electronAPI.log('info', 'startPlayback: Connecting backing track to monitor');
         monInstSource = monitorCtx.createBufferSource();
         monInstSource.buffer = instBuffer;
-        const monInstGain = monitorCtx.createGain();
+        monInstGain = monitorCtx.createGain();
         monInstGain.gain.value = sConfig.instrumentalVolume;
         monInstSource.connect(monInstGain);
         monInstGain.connect(monitorCtx.destination);
       }
 
-      window.electronAPI.log('info', 'startPlayback: Connecting vocal track to monitor');
-      const monVocSource = monitorCtx.createBufferSource();
-      monVocSource.buffer = vocBuffer;
-      const monVocGain = monitorCtx.createGain();
-      monVocGain.gain.value = sConfig.vocalVolume;
-      monVocSource.connect(monVocGain);
-      monVocGain.connect(monitorCtx.destination);
+      let audVocSource: AudioBufferSourceNode | null = null;
+      let audVocGain: GainNode | null = null;
+      if (sConfig.routeVocalToAudience) {
+        window.electronAPI.log('info', 'startPlayback: Connecting vocal track to audience');
+        audVocSource = audienceCtx.createBufferSource();
+        audVocSource.buffer = vocBuffer;
+        audVocGain = audienceCtx.createGain();
+        audVocGain.gain.value = sConfig.vocalVolume;
+        audVocSource.connect(audVocGain);
+        audVocGain.connect(audienceCtx.destination);
+      }
+
+      let monVocSource: AudioBufferSourceNode | null = null;
+      let monVocGain: GainNode | null = null;
+      if (sConfig.routeVocalToMonitor) {
+        window.electronAPI.log('info', 'startPlayback: Connecting vocal track to monitor');
+        monVocSource = monitorCtx.createBufferSource();
+        monVocSource.buffer = vocBuffer;
+        monVocGain = monitorCtx.createGain();
+        monVocGain.gain.value = sConfig.vocalVolume;
+        monVocSource.connect(monVocGain);
+        monVocGain.connect(monitorCtx.destination);
+      }
+
+      playbackNodesRef.current = {
+        audInstGain: audInstGain || undefined,
+        monInstGain: monInstGain || undefined,
+        audVocGain: audVocGain || undefined,
+        monVocGain: monVocGain || undefined
+      };
 
       window.electronAPI.log('info', 'startPlayback: Starting Mic Input');
       await startMicInput(audienceCtx, monitorCtx);
@@ -337,29 +416,36 @@ export const useAudioEngine = (
       const offsetSeconds = sConfig.offsetMs / 1000;
       const startOffset = pauseOffsetRef.current;
 
-      const instStartAt = now + Math.max(0, -offsetSeconds);
-      const vocStartAt = now + Math.max(0, offsetSeconds);
+      const audInstStartAt = audienceNow + Math.max(0, -offsetSeconds);
+      const audVocStartAt = audienceNow + Math.max(0, offsetSeconds);
+
+      const monInstStartAt = monitorNow + Math.max(0, -offsetSeconds);
+      const monVocStartAt = monitorNow + Math.max(0, offsetSeconds);
 
       const instOffset = startOffset;
       const vocOffset = startOffset + Math.max(0, offsetSeconds) - Math.max(0, -offsetSeconds);
 
-      window.electronAPI.log('info', `startPlayback: Executing audio source start commands. instStartAt=${instStartAt}, instOffset=${instOffset}, vocStartAt=${vocStartAt}, vocOffset=${vocOffset}`);
+      window.electronAPI.log(
+        'info',
+        `startPlayback: Executing audio source start commands. audInstStartAt=${audInstStartAt}, monInstStartAt=${monInstStartAt}, instOffset=${instOffset}, audVocStartAt=${audVocStartAt}, monVocStartAt=${monVocStartAt}, vocOffset=${vocOffset}`
+      );
       
-      audInstSource.start(instStartAt, Math.max(0, instOffset));
-      if (monInstSource) {
-        monInstSource.start(instStartAt, Math.max(0, instOffset));
-      }
-      monVocSource.start(vocStartAt, Math.max(0, vocOffset));
+      if (audInstSource) audInstSource.start(audInstStartAt, Math.max(0, instOffset));
+      if (monInstSource) monInstSource.start(monInstStartAt, Math.max(0, instOffset));
+      if (audVocSource) audVocSource.start(audVocStartAt, Math.max(0, vocOffset));
+      if (monVocSource) monVocSource.start(monVocStartAt, Math.max(0, vocOffset));
 
       window.electronAPI.log('info', 'startPlayback: Success');
-      playSourcesRef.current = [audInstSource, monVocSource];
-      if (monInstSource) {
-        playSourcesRef.current.push(monInstSource);
-      }
-      playStartRef.current = now;
+      playSourcesRef.current = [];
+      if (audInstSource) playSourcesRef.current.push(audInstSource);
+      if (monInstSource) playSourcesRef.current.push(monInstSource);
+      if (audVocSource) playSourcesRef.current.push(audVocSource);
+      if (monVocSource) playSourcesRef.current.push(monVocSource);
+
+      playStartRef.current = audienceNow;
       playingRef.current = true;
       setPlaying(true);
-      setStatusMessage(`${t(locale, 'playback')} · ${formatTime(pauseOffsetRef.current)}`);
+      setStatusMessage(t(locale, 'playback'));
       if (autoScrollFrame.current) cancelAnimationFrame(autoScrollFrame.current);
       autoScrollFrame.current = requestAnimationFrame(syncProgress);
     } catch (err: any) {
@@ -386,6 +472,9 @@ export const useAudioEngine = (
 
   const loadBuffers = async (song: SongItem) => {
     try {
+      stopPlayback();
+      setCurrentTime(0);
+      pauseOffsetRef.current = 0;
       window.electronAPI.log('info', `loadBuffers: Starting for "${song.name}"`);
       window.electronAPI.log('info', `loadBuffers: Instrumental path: ${song.instrumentalPath}`);
       window.electronAPI.log('info', `loadBuffers: Vocal path: ${song.vocalPath}`);
@@ -407,12 +496,13 @@ export const useAudioEngine = (
       vocalBufferRef.current = vocal;
       shiftedInstrumentRef.current = null;
       shiftedVocalRef.current = null;
-      currentShiftedPitchRef.current = 999;
+      currentShiftedInstPitchRef.current = 999;
+      currentShiftedVocPitchRef.current = 999;
       setDuration(Math.max(instrumental.duration, vocal.duration));
       window.electronAPI.log('info', `loadBuffers: Complete for "${song.name}"`);
     } catch (err: any) {
       window.electronAPI.log('error', `loadBuffers CRASHED: ${err.message}\n${err.stack}`);
-      setStatusMessage(`Failed to load audio: ${err.message}`);
+      setStatusMessage(t(locale, 'failedToLoadAudio').replace('{error}', err.message));
     }
   };
 

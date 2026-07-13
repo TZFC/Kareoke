@@ -1,19 +1,23 @@
 import React from 'react';
 import { t } from '../i18n';
-import { GlobalConfig, DeviceItem } from '../types';
+import { GlobalConfig, SongConfig, DeviceItem } from '../types';
 
 interface DeviceSelectorProps {
   locale: string;
   globalConfig: GlobalConfig;
+  songConfig: SongConfig;
   devices: DeviceItem[];
   saveGlobal: (config: GlobalConfig) => void;
+  updateConfig: (changes: Partial<SongConfig>) => void;
 }
 
 export const DeviceSelector: React.FC<DeviceSelectorProps> = ({
   locale,
   globalConfig,
+  songConfig,
   devices,
-  saveGlobal
+  saveGlobal,
+  updateConfig
 }) => {
   return (
     <div className="panel">
@@ -34,12 +38,6 @@ export const DeviceSelector: React.FC<DeviceSelectorProps> = ({
               <option key={device.deviceId} value={device.deviceId}>{device.label || t(locale, 'microphoneDevice')}</option>
             ))}
           </select>
-        </label>
-        <label className="checkbox-row" style={{ marginTop: 6 }}>
-          <input type="checkbox" checked={globalConfig.routeMicToMonitor} onChange={(e) => {
-            saveGlobal({ ...globalConfig, routeMicToMonitor: e.target.checked });
-          }} />
-          <span>{t(locale, 'routeMicToMonitor')}</span>
         </label>
       </div>
 
@@ -78,6 +76,72 @@ export const DeviceSelector: React.FC<DeviceSelectorProps> = ({
             ))}
           </select>
         </label>
+      </div>
+
+      <h3 className="panel-title" style={{ marginTop: 12 }}>{t(locale, 'audioRouting')}</h3>
+      <div className="control-group">
+        <table style={{ width: '100%', borderCollapse: 'collapse', color: 'var(--muted)', fontSize: '0.85rem' }}>
+          <thead>
+            <tr style={{ borderBottom: '1px solid var(--border)' }}>
+              <th style={{ textAlign: 'left', padding: '6px 0', fontSize: '0.8rem' }}></th>
+              <th style={{ textAlign: 'center', padding: '6px 0', width: '35%', fontSize: '0.8rem' }}>{t(locale, 'routingOutput')}</th>
+              <th style={{ textAlign: 'center', padding: '6px 0', width: '35%', fontSize: '0.8rem' }}>{t(locale, 'routingMonitor')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+              <td style={{ padding: '8px 0', fontWeight: 'bold', color: 'var(--text)' }}>{t(locale, 'instrumentalStem')}</td>
+              <td style={{ textAlign: 'center' }}>
+                <input 
+                  type="checkbox" 
+                  checked={songConfig.routeBackingToAudience} 
+                  onChange={(e) => updateConfig({ routeBackingToAudience: e.target.checked })} 
+                />
+              </td>
+              <td style={{ textAlign: 'center' }}>
+                <input 
+                  type="checkbox" 
+                  checked={songConfig.routeBackingToMonitor} 
+                  onChange={(e) => updateConfig({ routeBackingToMonitor: e.target.checked })} 
+                />
+              </td>
+            </tr>
+            <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+              <td style={{ padding: '8px 0', fontWeight: 'bold', color: 'var(--text)' }}>{t(locale, 'vocalStem')}</td>
+              <td style={{ textAlign: 'center' }}>
+                <input 
+                  type="checkbox" 
+                  checked={songConfig.routeVocalToAudience} 
+                  onChange={(e) => updateConfig({ routeVocalToAudience: e.target.checked })} 
+                />
+              </td>
+              <td style={{ textAlign: 'center' }}>
+                <input 
+                  type="checkbox" 
+                  checked={songConfig.routeVocalToMonitor} 
+                  onChange={(e) => updateConfig({ routeVocalToMonitor: e.target.checked })} 
+                />
+              </td>
+            </tr>
+            <tr>
+              <td style={{ padding: '8px 0', fontWeight: 'bold', color: 'var(--text)' }}>{t(locale, 'microphone')}</td>
+              <td style={{ textAlign: 'center' }}>
+                <input 
+                  type="checkbox" 
+                  checked={globalConfig.routeMicToAudience} 
+                  onChange={(e) => saveGlobal({ ...globalConfig, routeMicToAudience: e.target.checked })} 
+                />
+              </td>
+              <td style={{ textAlign: 'center' }}>
+                <input 
+                  type="checkbox" 
+                  checked={globalConfig.routeMicToMonitor} 
+                  onChange={(e) => saveGlobal({ ...globalConfig, routeMicToMonitor: e.target.checked })} 
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   );
