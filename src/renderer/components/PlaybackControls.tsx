@@ -1,6 +1,7 @@
 import React from 'react';
 import { t } from '../i18n';
 import { formatTime } from '../utils/helpers';
+import { EditableNumber } from './EditableNumber';
 
 interface PlaybackControlsProps {
   locale: string;
@@ -57,9 +58,21 @@ export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
         <button onClick={() => seekTo(0)}>{t(locale, 'reset')}</button>
       </div>
       <label className="range-label" style={{ marginTop: 10 }}>
-        <span>
-          {t(locale, 'offsetMs')}: {offsetMs} ms {offsetMs < 0 ? `(${t(locale, 'early')})` : `(${t(locale, 'inSync')})`}
-        </span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <span>
+            {t(locale, 'offsetMs')}: 
+            <EditableNumber 
+              value={offsetMs} 
+              onChange={val => updateConfig({ offsetMs: Math.round(val) })} 
+              toFixed={0} suffix=" ms" 
+              min={-1000} max={0} 
+            />
+            {offsetMs < 0 ? ` (${t(locale, 'early')})` : ` (${t(locale, 'inSync')})`}
+          </span>
+          <button onClick={() => updateConfig({ offsetMs: 0 })} style={{ fontSize: '0.75rem', padding: '2px 6px', opacity: 0.8 }}>
+            {t(locale, 'reset')}
+          </button>
+        </div>
         <input 
           type="range" 
           min="-1000" 

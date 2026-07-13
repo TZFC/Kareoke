@@ -1,8 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { t, Locale } from './i18n';
-import { SongConfig, SongItem, GlobalConfig, DeviceItem } from './types';
+import { SongConfig, SongItem, DeviceItem, GlobalConfig } from './types';
 import { parseLrc } from './utils/helpers';
 import { useAudioEngine } from './hooks/useAudioEngine';
+import { useSongLibrary } from './hooks/useSongLibrary';
+import { useConfigSync } from './hooks/useConfigSync';
 
 // Components
 import { DeviceSelector } from './components/DeviceSelector';
@@ -46,31 +48,56 @@ const defaultSongConfig: SongConfig = {
 
 function App() {
   const [locale, setLocale] = useState<Locale>('en-US');
-  const [songs, setSongs] = useState<SongItem[]>([]);
   const [selectedSong, setSelectedSong] = useState<SongItem | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
   const [progress, setProgress] = useState(0);
-  const [statusMessage, setStatusMessage] = useState(t(locale, 'statusReady'));
+  const [statusMessage, setStatusMessage] = useState(t('en-US', 'statusReady'));
   const [devices, setDevices] = useState<DeviceItem[]>([]);
-  const [globalConfig, setGlobalConfig] = useState<GlobalConfig>({
-    inputDevices: [],
-    outputDevices: [],
-    microphoneDevice: '',
-    audienceDevice: '',
-    monitorDevice: '',
-    micVolume: 0.8,
-    micBass: 0,
-    micTreble: 0,
-    micReverb: 0.3,
-    routeMicToAudience: true,
-    routeMicToMonitor: false,
-    language: 'en-US'
-  });
-  const [songConfig, setSongConfig] = useState<SongConfig>(defaultSongConfig);
   const [activeTab, setActiveTab] = useState<'lyrics' | 'notes'>('lyrics');
   const [editingLrc, setEditingLrc] = useState(false);
-  const savePendingRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Hook 1: Song Library Management
+  const {
+    songs,
+    setSongs,
+    searchTerm,
+    setSearchTerm,
+    refreshSongList,
+    handleDeleteSong,
+    handleRenameSong,
+    onDrop
+  } = useSongLibrary(
+    locale,
+    setStatusMessage,
+    defaultSongConfig,
+    selectedSong,
+    setSelectedSong,
+    (config) => setSongConfig(config)
+  );
+
+  // Hook 2: Config Syncing
+  const {
+    globalConfig,
+    songConfig,
+    setSongConfig,
+    saveGlobal,
+    loadGlobalConfig,
+    updateConfig
+  } = useConfigSync(
+    defaultSongConfig,
+    setLocale,
+    selectedSong,
+    setSelectedSong,
+    setSongs,
+    () => { updateMicParams(); },
+    (changes) => {
+      if (playing && changes.offsetMs !== undefined) {
+        window.electronAPI.log('info', `Live playback parameter changed. Triggering audio graph rebuild via seekTo().`);
+        seekTo(currentTime);
+      }
+    }
+  );
+
+  // Hook 3: Audio Engine
   const {
     playing,
     currentTime,
@@ -109,27 +136,6 @@ function App() {
     }).slice(0, 5);
   }, [searchTerm, songs]);
 
-  const saveGlobal = async (config: GlobalConfig) => {
-    setGlobalConfig(config);
-    await window.electronAPI.saveGlobalConfig(config);
-  };
-
-  const saveSongConfig = async (config: SongConfig, songName: string) => {
-    await window.electronAPI.saveSongConfig(songName, config);
-  };
-
-  const refreshSongList = async () => {
-    const list = await window.electronAPI.loadSongList();
-    setSongs(list);
-    if (selectedSong) {
-      const matched = list.find((song) => song.name === selectedSong.name);
-      if (matched) {
-        setSelectedSong(matched);
-        setSongConfig(matched.config || defaultSongConfig);
-      }
-    }
-  };
-
   const initializeDevices = async () => {
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -141,36 +147,6 @@ function App() {
       .filter((device) => device.kind === 'audioinput' || device.kind === 'audiooutput')
       .map((device) => ({ deviceId: device.deviceId, label: device.label || device.kind, kind: device.kind as 'audioinput' | 'audiooutput' }));
     setDevices(formatted);
-  };
-
-  const loadGlobalConfig = async () => {
-    const config = await window.electronAPI.loadGlobalConfig();
-    setGlobalConfig(config);
-    setLocale(config.language || 'en-US');
-  };
-
-  const restoreConfig = (song: SongItem | null) => {
-    if (!song) return;
-    const incoming = song.config || {};
-    const safeConfig: SongConfig = {
-      ...defaultSongConfig,
-      ...incoming
-    };
-    setSongConfig(safeConfig);
-  };
-
-  const updateConfig = (changes: Partial<SongConfig>) => {
-    window.electronAPI.log('info', `User input: Updated config keys: ${Object.keys(changes).map(k => `${k}=${(changes as any)[k]}`).join(', ')}`);
-    const next = { ...songConfig, ...changes };
-    setSongConfig(next);
-    if (selectedSong) {
-      if (savePendingRef.current) clearTimeout(savePendingRef.current);
-      savePendingRef.current = setTimeout(() => saveSongConfig(next, selectedSong.name), 250);
-    }
-    if (playing && changes.offsetMs !== undefined) {
-      window.electronAPI.log('info', `Live playback parameter changed. Triggering audio graph rebuild via seekTo().`);
-      seekTo(currentTime);
-    }
   };
 
   useEffect(() => {
@@ -185,70 +161,14 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (selectedSong) restoreConfig(selectedSong);
-  }, [selectedSong?.name]);
-
-  useEffect(() => {
     if (selectedSong) {
       loadBuffers(selectedSong).catch(() => setStatusMessage(t(locale, 'unableToLoadAudioBuffers')));
     }
   }, [selectedSong?.name]);
 
   useEffect(() => {
-    if (!selectedSong) return;
-    saveSongConfig(songConfig, selectedSong.name);
-    if (selectedSong.config !== songConfig) {
-      const updated = { ...selectedSong, config: songConfig };
-      setSelectedSong(updated);
-      setSongs((prev) => prev.map((song) => (song.name === updated.name ? updated : song)));
-    }
-  }, [songConfig]);
-
-  useEffect(() => {
-    updateMicParams();
-    saveGlobal(globalConfig);
-  }, [globalConfig]);
-
-  useEffect(() => {
     setStatusMessage(t(locale, 'statusReady'));
   }, [locale]);
-
-  const handleDeleteSong = async (e: React.MouseEvent, songName: string) => {
-    e.stopPropagation();
-    if (window.confirm(t(locale, 'deleteConfirm').replace('{name}', songName))) {
-      await window.electronAPI.deleteSong(songName);
-      const newSongs = await window.electronAPI.loadSongList();
-      setSongs(newSongs);
-      if (selectedSong?.name === songName) {
-        setSelectedSong(null);
-      }
-    }
-  };
-
-  const handleRenameSong = async (e: React.MouseEvent, song: SongItem) => {
-    e.stopPropagation();
-    const currentName = song.config?.displayName || song.name;
-    const newName = window.prompt(t(locale, 'renamePrompt'), currentName);
-    if (newName && newName.trim() && newName.trim() !== currentName) {
-      window.electronAPI.log('info', `User input: Renamed song "${song.name}" to "${newName.trim()}"`);
-      const updatedConfig = { ...(song.config || defaultSongConfig), displayName: newName.trim() };
-      await window.electronAPI.saveSongConfig(song.name, updatedConfig);
-      await refreshSongList();
-    }
-  };
-
-  const onDrop = async (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    if (event.dataTransfer.files.length === 0) return;
-    setStatusMessage(t(locale, 'processing'));
-    const file = event.dataTransfer.files[0];
-    try {
-      await window.electronAPI.processFile(file.path);
-      await refreshSongList();
-    } catch (e: any) {
-      setStatusMessage(e.message || t(locale, 'errorOccurred'));
-    }
-  };
 
   const onDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -301,22 +221,26 @@ function App() {
             seekTo={seekTo}
             updateConfig={updateConfig}
           />
-
-          <MixerPanel
-            locale={locale}
-            songConfig={songConfig}
-            updateConfig={updateConfig}
-          />
         </div>
 
-        <DeviceSelector
-          locale={locale}
-          globalConfig={globalConfig}
-          songConfig={songConfig}
-          devices={devices}
-          saveGlobal={saveGlobal}
-          updateConfig={updateConfig}
-        />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <DeviceSelector
+            locale={locale}
+            globalConfig={globalConfig}
+            songConfig={songConfig}
+            devices={devices}
+            saveGlobal={saveGlobal}
+            updateConfig={updateConfig}
+          />
+
+          <div className="panel">
+            <MixerPanel
+              locale={locale}
+              songConfig={songConfig}
+              updateConfig={updateConfig}
+            />
+          </div>
+        </div>
 
         <div className="panel note-panel" style={{ flexGrow: 1, minHeight: 0 }}>
           <MicMixerPanel

@@ -1,747 +1,355 @@
-[2026-07-12 23:55:44.643] [info]  Application Starting...
-[2026-07-12 23:55:44.672] [info]  Local media HTTP server started on port 42899
-[2026-07-12 23:55:44.871] [info]  Backend: Saving global config
-[2026-07-12 23:55:47.098] [info]  Backend: Loading global config
-[2026-07-12 23:55:47.102] [info]  Backend: Loading song list
-[2026-07-12 23:55:47.102] [info]  Backend: Saving global config
-[2026-07-12 23:55:47.800] [info]  Backend: Saving global config
-[2026-07-12 23:55:47.801] [info]  Backend: Saving global config
-[2026-07-12 23:55:49.191] [info]  User input: Selected song "1"
-[2026-07-12 23:55:49.192] [info]  [Renderer Info] User input: Selected song "1"
-[2026-07-12 23:55:49.193] [info]  loadBuffers: Starting for "1"
-[2026-07-12 23:55:49.193] [info]  [Renderer Info] loadBuffers: Starting for "1"
-[2026-07-12 23:55:49.194] [info]  loadBuffers: Instrumental path: F:\Kareoke\Kareoke\PeachyKareoke\instrumental\1.wav
-[2026-07-12 23:55:49.194] [info]  [Renderer Info] loadBuffers: Instrumental path: F:\Kareoke\Kareoke\PeachyKareoke\instrumental\1.wav
-[2026-07-12 23:55:49.194] [info]  loadBuffers: Vocal path: F:\Kareoke\Kareoke\PeachyKareoke\vocal\1.wav
-[2026-07-12 23:55:49.195] [info]  [Renderer Info] loadBuffers: Vocal path: F:\Kareoke\Kareoke\PeachyKareoke\vocal\1.wav
-[2026-07-12 23:55:49.195] [info]  loadBuffers: Building AudioContext
-[2026-07-12 23:55:49.195] [info]  [Renderer Info] loadBuffers: Building AudioContext
-[2026-07-12 23:55:49.206] [info]  loadBuffers: AudioContext state=running, sampleRate=48000
-[2026-07-12 23:55:49.206] [info]  [Renderer Info] loadBuffers: AudioContext state=running, sampleRate=48000
-[2026-07-12 23:55:49.206] [info]  loadBuffers: Fetching instrumental buffer
-[2026-07-12 23:55:49.207] [info]  [Renderer Info] loadBuffers: Fetching instrumental buffer
-[2026-07-12 23:55:49.207] [info]  loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\instrumental\1.wav
-[2026-07-12 23:55:49.207] [info]  [Renderer Info] loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\instrumental\1.wav
-[2026-07-12 23:55:49.209] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:55:49.230] [info]  loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\1.wav
-[2026-07-12 23:55:49.231] [info]  [Renderer Info] loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\1.wav
-[2026-07-12 23:55:49.321] [info]  loadAudioBuffer: ArrayBuffer received, size=45674540 bytes. Parsing WAV...
-[2026-07-12 23:55:49.322] [info]  [Renderer Info] loadAudioBuffer: ArrayBuffer received, size=45674540 bytes. Parsing WAV...
-[2026-07-12 23:55:49.322] [info]  parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=11418624
-[2026-07-12 23:55:49.323] [info]  [Renderer Info] parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=11418624
-[2026-07-12 23:55:49.407] [info]  loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\1.wav, duration=258.93s
-[2026-07-12 23:55:49.408] [info]  [Renderer Info] loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\1.wav, duration=258.93s
-[2026-07-12 23:55:49.408] [info]  loadBuffers: Instrumental loaded. duration=258.93s, channels=2
-[2026-07-12 23:55:49.408] [info]  [Renderer Info] loadBuffers: Instrumental loaded. duration=258.93s, channels=2
-[2026-07-12 23:55:49.409] [info]  loadBuffers: Fetching vocal buffer
-[2026-07-12 23:55:49.409] [info]  [Renderer Info] loadBuffers: Fetching vocal buffer
-[2026-07-12 23:55:49.409] [info]  loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\vocal\1.wav
-[2026-07-12 23:55:49.409] [info]  [Renderer Info] loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\vocal\1.wav
-[2026-07-12 23:55:49.412] [info]  loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\vocal\1.wav
-[2026-07-12 23:55:49.413] [info]  [Renderer Info] loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\vocal\1.wav
-[2026-07-12 23:55:49.510] [info]  loadAudioBuffer: ArrayBuffer received, size=45674540 bytes. Parsing WAV...
-[2026-07-12 23:55:49.511] [info]  [Renderer Info] loadAudioBuffer: ArrayBuffer received, size=45674540 bytes. Parsing WAV...
-[2026-07-12 23:55:49.511] [info]  parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=11418624
-[2026-07-12 23:55:49.511] [info]  [Renderer Info] parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=11418624
-[2026-07-12 23:55:49.585] [info]  loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\vocal\1.wav, duration=258.93s
-[2026-07-12 23:55:49.585] [info]  [Renderer Info] loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\vocal\1.wav, duration=258.93s
-[2026-07-12 23:55:49.585] [info]  loadBuffers: Vocal loaded. duration=258.93s, channels=2
-[2026-07-12 23:55:49.586] [info]  [Renderer Info] loadBuffers: Vocal loaded. duration=258.93s, channels=2
-[2026-07-12 23:55:49.586] [info]  loadBuffers: Complete for "1"
-[2026-07-12 23:55:49.586] [info]  [Renderer Info] loadBuffers: Complete for "1"
-[2026-07-12 23:55:50.396] [info]  User input: Clicked microphone device dropdown
-[2026-07-12 23:55:50.397] [info]  [Renderer Info] User input: Clicked microphone device dropdown
-[2026-07-12 23:55:52.566] [info]  User input: Selected microphone device: 9725881fd00a5085220de3c1edcce20e23c402027d5a70b10278f67ed43d7c64
-[2026-07-12 23:55:52.567] [info]  [Renderer Info] User input: Selected microphone device: 9725881fd00a5085220de3c1edcce20e23c402027d5a70b10278f67ed43d7c64
-[2026-07-12 23:55:52.568] [info]  Backend: Saving global config
-[2026-07-12 23:55:52.569] [info]  Backend: Saving global config
-[2026-07-12 23:55:52.569] [info]  User input: Clicked microphone device dropdown
-[2026-07-12 23:55:52.569] [info]  [Renderer Info] User input: Clicked microphone device dropdown
-[2026-07-12 23:55:53.435] [info]  User input: Clicked audience device dropdown
-[2026-07-12 23:55:53.436] [info]  [Renderer Info] User input: Clicked audience device dropdown
-[2026-07-12 23:55:56.890] [info]  User input: Selected audience device: 37a756757f845dc964d7f3bb43b8ef4113f0da0df919c6e069d78e1a05e56e36
-[2026-07-12 23:55:56.890] [info]  [Renderer Info] User input: Selected audience device: 37a756757f845dc964d7f3bb43b8ef4113f0da0df919c6e069d78e1a05e56e36
-[2026-07-12 23:55:56.891] [info]  Backend: Saving global config
-[2026-07-12 23:55:56.892] [info]  Routing: Applying Audience device sinkId: 37a756757f845dc964d7f3bb43b8ef4113f0da0df919c6e069d78e1a05e56e36
-[2026-07-12 23:55:56.892] [info]  [Renderer Info] Routing: Applying Audience device sinkId: 37a756757f845dc964d7f3bb43b8ef4113f0da0df919c6e069d78e1a05e56e36
-[2026-07-12 23:55:56.893] [info]  Backend: Saving global config
-[2026-07-12 23:55:56.893] [info]  User input: Clicked audience device dropdown
-[2026-07-12 23:55:56.893] [info]  [Renderer Info] User input: Clicked audience device dropdown
-[2026-07-12 23:55:57.372] [info]  User input: Clicked monitor device dropdown
-[2026-07-12 23:55:57.373] [info]  [Renderer Info] User input: Clicked monitor device dropdown
-[2026-07-12 23:56:02.133] [info]  User input: Selected monitor device: 74b9b3b145edac8a04213d2ab250964a39234f8ac173d6b5161f0fed494bbae7
-[2026-07-12 23:56:02.133] [info]  [Renderer Info] User input: Selected monitor device: 74b9b3b145edac8a04213d2ab250964a39234f8ac173d6b5161f0fed494bbae7
-[2026-07-12 23:56:02.135] [info]  Backend: Saving global config
-[2026-07-12 23:56:02.135] [info]  Routing: Applying Monitor device sinkId: 74b9b3b145edac8a04213d2ab250964a39234f8ac173d6b5161f0fed494bbae7
-[2026-07-12 23:56:02.135] [info]  [Renderer Info] Routing: Applying Monitor device sinkId: 74b9b3b145edac8a04213d2ab250964a39234f8ac173d6b5161f0fed494bbae7
-[2026-07-12 23:56:02.136] [info]  Backend: Saving global config
-[2026-07-12 23:56:02.136] [info]  User input: Clicked monitor device dropdown
-[2026-07-12 23:56:02.136] [info]  [Renderer Info] User input: Clicked monitor device dropdown
-[2026-07-12 23:56:04.432] [info]  startPlayback: Initiated
-[2026-07-12 23:56:04.432] [info]  [Renderer Info] startPlayback: Initiated
-[2026-07-12 23:56:04.433] [info]  startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:04.433] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:04.434] [info]  startPlayback: Pitch shifting instrumental to 4
-[2026-07-12 23:56:04.434] [info]  [Renderer Info] startPlayback: Pitch shifting instrumental to 4
-[2026-07-12 23:56:04.435] [info]  User input: Clicked button "播放"
-[2026-07-12 23:56:04.435] [info]  [Renderer Info] User input: Clicked button "播放"
-[2026-07-12 23:56:05.171] [info]  startPlayback: Pitch shifting vocal to 4
-[2026-07-12 23:56:05.171] [info]  [Renderer Info] startPlayback: Pitch shifting vocal to 4
-[2026-07-12 23:56:05.884] [info]  startPlayback: Stopping existing sources
-[2026-07-12 23:56:05.887] [info]  [Renderer Info] startPlayback: Stopping existing sources
-[2026-07-12 23:56:05.888] [info]  startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:05.888] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:05.889] [info]  startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:05.890] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:05.890] [info]  startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:05.890] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:05.891] [info]  startPlayback: Starting Mic Input
-[2026-07-12 23:56:05.891] [info]  [Renderer Info] startPlayback: Starting Mic Input
-[2026-07-12 23:56:05.915] [info]  startPlayback: Executing audio source start commands. audInstStartAt=16.77133333333333, monInstStartAt=16.760666666666665, instOffset=0, audVocStartAt=16.621333333333332, monVocStartAt=16.610666666666667, vocOffset=-0.15
-[2026-07-12 23:56:05.916] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=16.77133333333333, monInstStartAt=16.760666666666665, instOffset=0, audVocStartAt=16.621333333333332, monVocStartAt=16.610666666666667, vocOffset=-0.15
-[2026-07-12 23:56:05.917] [info]  startPlayback: Success
-[2026-07-12 23:56:05.918] [info]  [Renderer Info] startPlayback: Success
-[2026-07-12 23:56:37.929] [info]  User input: Updated config keys: offsetMs=-120
-[2026-07-12 23:56:37.929] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-120
-[2026-07-12 23:56:37.930] [info]  Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:56:37.930] [info]  [Renderer Info] Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:56:37.931] [info]  User input: seekTo 32.03s
-[2026-07-12 23:56:37.931] [info]  [Renderer Info] User input: seekTo 32.03s
-[2026-07-12 23:56:37.932] [info]  startPlayback: Initiated
-[2026-07-12 23:56:37.934] [info]  [Renderer Info] startPlayback: Initiated
-[2026-07-12 23:56:37.935] [info]  startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:37.937] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:37.938] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:37.939] [info]  startPlayback: Stopping existing sources
-[2026-07-12 23:56:37.939] [info]  [Renderer Info] startPlayback: Stopping existing sources
-[2026-07-12 23:56:37.940] [info]  startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:37.940] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:37.940] [info]  startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:37.940] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:37.941] [info]  startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:37.941] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:37.942] [info]  startPlayback: Starting Mic Input
-[2026-07-12 23:56:37.942] [info]  [Renderer Info] startPlayback: Starting Mic Input
-[2026-07-12 23:56:37.945] [info]  User input: Updated config keys: offsetMs=-90
-[2026-07-12 23:56:37.946] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-90
-[2026-07-12 23:56:37.947] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:37.962] [info]  User input: Updated config keys: offsetMs=-50
-[2026-07-12 23:56:37.962] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-50
-[2026-07-12 23:56:37.963] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:37.967] [info]  startPlayback: Executing audio source start commands. audInstStartAt=48.83266666666667, monInstStartAt=48.81933333333333, instOffset=32.029333333333334, audVocStartAt=48.68266666666667, monVocStartAt=48.669333333333334, vocOffset=31.879333333333335
-[2026-07-12 23:56:37.967] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=48.83266666666667, monInstStartAt=48.81933333333333, instOffset=32.029333333333334, audVocStartAt=48.68266666666667, monVocStartAt=48.669333333333334, vocOffset=31.879333333333335
-[2026-07-12 23:56:37.968] [info]  startPlayback: Success
-[2026-07-12 23:56:37.969] [info]  [Renderer Info] startPlayback: Success
-[2026-07-12 23:56:37.979] [info]  User input: Updated config keys: offsetMs=-20
-[2026-07-12 23:56:37.991] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-20
-[2026-07-12 23:56:37.993] [info]  Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:56:37.994] [info]  [Renderer Info] Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:56:37.995] [info]  User input: seekTo 32.03s
-[2026-07-12 23:56:38.014] [info]  [Renderer Info] User input: seekTo 32.03s
-[2026-07-12 23:56:38.016] [info]  startPlayback: Initiated
-[2026-07-12 23:56:38.017] [info]  [Renderer Info] startPlayback: Initiated
-[2026-07-12 23:56:38.017] [info]  startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:38.018] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:38.019] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:38.020] [info]  startPlayback: Stopping existing sources
-[2026-07-12 23:56:38.021] [info]  [Renderer Info] startPlayback: Stopping existing sources
-[2026-07-12 23:56:38.022] [info]  startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:38.022] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:38.023] [info]  startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:38.023] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:38.023] [info]  startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:38.024] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:38.024] [info]  startPlayback: Starting Mic Input
-[2026-07-12 23:56:38.024] [info]  [Renderer Info] startPlayback: Starting Mic Input
-[2026-07-12 23:56:38.025] [info]  User input: Updated config keys: offsetMs=0
-[2026-07-12 23:56:38.026] [info]  [Renderer Info] User input: Updated config keys: offsetMs=0
-[2026-07-12 23:56:38.026] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:38.047] [info]  startPlayback: Executing audio source start commands. audInstStartAt=48.812666666666665, monInstStartAt=48.79933333333333, instOffset=32.029333333333334, audVocStartAt=48.76266666666667, monVocStartAt=48.74933333333333, vocOffset=31.979333333333333
-[2026-07-12 23:56:38.048] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=48.812666666666665, monInstStartAt=48.79933333333333, instOffset=32.029333333333334, audVocStartAt=48.76266666666667, monVocStartAt=48.74933333333333, vocOffset=31.979333333333333
-[2026-07-12 23:56:38.048] [info]  startPlayback: Success
-[2026-07-12 23:56:38.049] [info]  [Renderer Info] startPlayback: Success
-[2026-07-12 23:56:38.277] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:42.542] [info]  User input: Updated config keys: instrumentalVolume=0.2
-[2026-07-12 23:56:42.543] [info]  [Renderer Info] User input: Updated config keys: instrumentalVolume=0.2
-[2026-07-12 23:56:42.543] [info]  Live audio param updated: InstVol=0.20, VocVol=0.00
-[2026-07-12 23:56:42.544] [info]  [Renderer Info] Live audio param updated: InstVol=0.20, VocVol=0.00
-[2026-07-12 23:56:42.544] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:42.562] [info]  User input: Updated config keys: instrumentalVolume=0.21
-[2026-07-12 23:56:42.562] [info]  [Renderer Info] User input: Updated config keys: instrumentalVolume=0.21
-[2026-07-12 23:56:42.563] [info]  Live audio param updated: InstVol=0.21, VocVol=0.00
-[2026-07-12 23:56:42.563] [info]  [Renderer Info] Live audio param updated: InstVol=0.21, VocVol=0.00
-[2026-07-12 23:56:42.564] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:42.595] [info]  User input: Updated config keys: instrumentalVolume=0.22
-[2026-07-12 23:56:42.596] [info]  [Renderer Info] User input: Updated config keys: instrumentalVolume=0.22
-[2026-07-12 23:56:42.596] [info]  Live audio param updated: InstVol=0.22, VocVol=0.00
-[2026-07-12 23:56:42.596] [info]  [Renderer Info] Live audio param updated: InstVol=0.22, VocVol=0.00
-[2026-07-12 23:56:42.597] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:42.629] [info]  User input: Updated config keys: instrumentalVolume=0.24
-[2026-07-12 23:56:42.629] [info]  [Renderer Info] User input: Updated config keys: instrumentalVolume=0.24
-[2026-07-12 23:56:42.631] [info]  Live audio param updated: InstVol=0.24, VocVol=0.00
-[2026-07-12 23:56:42.632] [info]  [Renderer Info] Live audio param updated: InstVol=0.24, VocVol=0.00
-[2026-07-12 23:56:42.632] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:42.645] [info]  User input: Updated config keys: instrumentalVolume=0.27
-[2026-07-12 23:56:42.646] [info]  [Renderer Info] User input: Updated config keys: instrumentalVolume=0.27
-[2026-07-12 23:56:42.646] [info]  Live audio param updated: InstVol=0.27, VocVol=0.00
-[2026-07-12 23:56:42.646] [info]  [Renderer Info] Live audio param updated: InstVol=0.27, VocVol=0.00
-[2026-07-12 23:56:42.647] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:42.662] [info]  User input: Updated config keys: instrumentalVolume=0.3
-[2026-07-12 23:56:42.662] [info]  [Renderer Info] User input: Updated config keys: instrumentalVolume=0.3
-[2026-07-12 23:56:42.663] [info]  Live audio param updated: InstVol=0.30, VocVol=0.00
-[2026-07-12 23:56:42.663] [info]  [Renderer Info] Live audio param updated: InstVol=0.30, VocVol=0.00
-[2026-07-12 23:56:42.663] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:42.679] [info]  User input: Updated config keys: instrumentalVolume=0.34
-[2026-07-12 23:56:42.679] [info]  [Renderer Info] User input: Updated config keys: instrumentalVolume=0.34
-[2026-07-12 23:56:42.680] [info]  Live audio param updated: InstVol=0.34, VocVol=0.00
-[2026-07-12 23:56:42.680] [info]  [Renderer Info] Live audio param updated: InstVol=0.34, VocVol=0.00
-[2026-07-12 23:56:42.680] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:42.695] [info]  User input: Updated config keys: instrumentalVolume=0.38
-[2026-07-12 23:56:42.697] [info]  [Renderer Info] User input: Updated config keys: instrumentalVolume=0.38
-[2026-07-12 23:56:42.702] [info]  Live audio param updated: InstVol=0.38, VocVol=0.00
-[2026-07-12 23:56:42.702] [info]  [Renderer Info] Live audio param updated: InstVol=0.38, VocVol=0.00
-[2026-07-12 23:56:42.703] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:42.712] [info]  User input: Updated config keys: instrumentalVolume=0.41
-[2026-07-12 23:56:42.712] [info]  [Renderer Info] User input: Updated config keys: instrumentalVolume=0.41
-[2026-07-12 23:56:42.713] [info]  Live audio param updated: InstVol=0.41, VocVol=0.00
-[2026-07-12 23:56:42.715] [info]  [Renderer Info] Live audio param updated: InstVol=0.41, VocVol=0.00
-[2026-07-12 23:56:42.715] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:42.729] [info]  User input: Updated config keys: instrumentalVolume=0.43
-[2026-07-12 23:56:42.729] [info]  [Renderer Info] User input: Updated config keys: instrumentalVolume=0.43
-[2026-07-12 23:56:42.729] [info]  Live audio param updated: InstVol=0.43, VocVol=0.00
-[2026-07-12 23:56:42.730] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.00
-[2026-07-12 23:56:42.730] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:42.980] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:44.061] [info]  User input: Updated config keys: vocalVolume=0.17
-[2026-07-12 23:56:44.062] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.17
-[2026-07-12 23:56:44.062] [info]  Live audio param updated: InstVol=0.43, VocVol=0.17
-[2026-07-12 23:56:44.062] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.17
-[2026-07-12 23:56:44.063] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:44.079] [info]  User input: Updated config keys: vocalVolume=0.18
-[2026-07-12 23:56:44.079] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.18
-[2026-07-12 23:56:44.080] [info]  Live audio param updated: InstVol=0.43, VocVol=0.18
-[2026-07-12 23:56:44.080] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.18
-[2026-07-12 23:56:44.080] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:44.095] [info]  User input: Updated config keys: vocalVolume=0.19
-[2026-07-12 23:56:44.096] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.19
-[2026-07-12 23:56:44.096] [info]  Live audio param updated: InstVol=0.43, VocVol=0.19
-[2026-07-12 23:56:44.096] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.19
-[2026-07-12 23:56:44.097] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:44.112] [info]  User input: Updated config keys: vocalVolume=0.2
-[2026-07-12 23:56:44.113] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.2
-[2026-07-12 23:56:44.113] [info]  Live audio param updated: InstVol=0.43, VocVol=0.20
-[2026-07-12 23:56:44.113] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.20
-[2026-07-12 23:56:44.114] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:44.129] [info]  User input: Updated config keys: vocalVolume=0.22
-[2026-07-12 23:56:44.129] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.22
-[2026-07-12 23:56:44.130] [info]  Live audio param updated: InstVol=0.43, VocVol=0.22
-[2026-07-12 23:56:44.130] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.22
-[2026-07-12 23:56:44.130] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:44.145] [info]  User input: Updated config keys: vocalVolume=0.24
-[2026-07-12 23:56:44.146] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.24
-[2026-07-12 23:56:44.146] [info]  Live audio param updated: InstVol=0.43, VocVol=0.24
-[2026-07-12 23:56:44.146] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.24
-[2026-07-12 23:56:44.147] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:44.162] [info]  User input: Updated config keys: vocalVolume=0.28
-[2026-07-12 23:56:44.162] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.28
-[2026-07-12 23:56:44.163] [info]  Live audio param updated: InstVol=0.43, VocVol=0.28
-[2026-07-12 23:56:44.163] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.28
-[2026-07-12 23:56:44.163] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:44.179] [info]  User input: Updated config keys: vocalVolume=0.32
-[2026-07-12 23:56:44.179] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.32
-[2026-07-12 23:56:44.180] [info]  Live audio param updated: InstVol=0.43, VocVol=0.32
-[2026-07-12 23:56:44.180] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.32
-[2026-07-12 23:56:44.180] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:44.195] [info]  User input: Updated config keys: vocalVolume=0.35
-[2026-07-12 23:56:44.196] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.35
-[2026-07-12 23:56:44.196] [info]  Live audio param updated: InstVol=0.43, VocVol=0.35
-[2026-07-12 23:56:44.197] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.35
-[2026-07-12 23:56:44.197] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:44.212] [info]  User input: Updated config keys: vocalVolume=0.38
-[2026-07-12 23:56:44.212] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.38
-[2026-07-12 23:56:44.213] [info]  Live audio param updated: InstVol=0.43, VocVol=0.38
-[2026-07-12 23:56:44.213] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.38
-[2026-07-12 23:56:44.214] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:44.229] [info]  User input: Updated config keys: vocalVolume=0.4
-[2026-07-12 23:56:44.229] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.4
-[2026-07-12 23:56:44.230] [info]  Live audio param updated: InstVol=0.43, VocVol=0.40
-[2026-07-12 23:56:44.231] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.40
-[2026-07-12 23:56:44.232] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:44.245] [info]  User input: Updated config keys: vocalVolume=0.41
-[2026-07-12 23:56:44.246] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.41
-[2026-07-12 23:56:44.246] [info]  Live audio param updated: InstVol=0.43, VocVol=0.41
-[2026-07-12 23:56:44.246] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.41
-[2026-07-12 23:56:44.247] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:44.496] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:45.528] [info]  User input: Updated config keys: vocalVolume=0.56
-[2026-07-12 23:56:45.528] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.56
-[2026-07-12 23:56:45.528] [info]  Live audio param updated: InstVol=0.43, VocVol=0.56
-[2026-07-12 23:56:45.529] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.56
-[2026-07-12 23:56:45.530] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:45.579] [info]  User input: Updated config keys: vocalVolume=0.57
-[2026-07-12 23:56:45.579] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.57
-[2026-07-12 23:56:45.580] [info]  Live audio param updated: InstVol=0.43, VocVol=0.57
-[2026-07-12 23:56:45.581] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.57
-[2026-07-12 23:56:45.581] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:45.596] [info]  User input: Updated config keys: vocalVolume=0.58
-[2026-07-12 23:56:45.596] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.58
-[2026-07-12 23:56:45.597] [info]  Live audio param updated: InstVol=0.43, VocVol=0.58
-[2026-07-12 23:56:45.597] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.58
-[2026-07-12 23:56:45.597] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:45.612] [info]  User input: Updated config keys: vocalVolume=0.59
-[2026-07-12 23:56:45.613] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.59
-[2026-07-12 23:56:45.613] [info]  Live audio param updated: InstVol=0.43, VocVol=0.59
-[2026-07-12 23:56:45.614] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.59
-[2026-07-12 23:56:45.614] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:45.629] [info]  User input: Updated config keys: vocalVolume=0.6
-[2026-07-12 23:56:45.629] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.6
-[2026-07-12 23:56:45.630] [info]  Live audio param updated: InstVol=0.43, VocVol=0.60
-[2026-07-12 23:56:45.630] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.60
-[2026-07-12 23:56:45.630] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:45.662] [info]  User input: Updated config keys: vocalVolume=0.61
-[2026-07-12 23:56:45.663] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.61
-[2026-07-12 23:56:45.663] [info]  Live audio param updated: InstVol=0.43, VocVol=0.61
-[2026-07-12 23:56:45.663] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.61
-[2026-07-12 23:56:45.664] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:45.679] [info]  User input: Updated config keys: vocalVolume=0.62
-[2026-07-12 23:56:45.679] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.62
-[2026-07-12 23:56:45.680] [info]  Live audio param updated: InstVol=0.43, VocVol=0.62
-[2026-07-12 23:56:45.680] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.62
-[2026-07-12 23:56:45.680] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:45.712] [info]  User input: Updated config keys: vocalVolume=0.63
-[2026-07-12 23:56:45.713] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.63
-[2026-07-12 23:56:45.713] [info]  Live audio param updated: InstVol=0.43, VocVol=0.63
-[2026-07-12 23:56:45.713] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.63
-[2026-07-12 23:56:45.714] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:45.729] [info]  User input: Updated config keys: vocalVolume=0.64
-[2026-07-12 23:56:45.729] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.64
-[2026-07-12 23:56:45.730] [info]  Live audio param updated: InstVol=0.43, VocVol=0.64
-[2026-07-12 23:56:45.730] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.64
-[2026-07-12 23:56:45.730] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:45.746] [info]  User input: Updated config keys: vocalVolume=0.65
-[2026-07-12 23:56:45.746] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.65
-[2026-07-12 23:56:45.746] [info]  Live audio param updated: InstVol=0.43, VocVol=0.65
-[2026-07-12 23:56:45.747] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.65
-[2026-07-12 23:56:45.747] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:45.762] [info]  User input: Updated config keys: vocalVolume=0.66
-[2026-07-12 23:56:45.763] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.66
-[2026-07-12 23:56:45.763] [info]  Live audio param updated: InstVol=0.43, VocVol=0.66
-[2026-07-12 23:56:45.763] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.66
-[2026-07-12 23:56:45.764] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:46.013] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:48.379] [info]  User input: Updated config keys: vocalVolume=0.65
-[2026-07-12 23:56:48.403] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.65
-[2026-07-12 23:56:48.406] [info]  Live audio param updated: InstVol=0.43, VocVol=0.65
-[2026-07-12 23:56:48.408] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.65
-[2026-07-12 23:56:48.431] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:48.432] [info]  User input: Updated config keys: vocalVolume=0.67
-[2026-07-12 23:56:48.432] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.67
-[2026-07-12 23:56:48.432] [info]  Live audio param updated: InstVol=0.43, VocVol=0.67
-[2026-07-12 23:56:48.433] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.67
-[2026-07-12 23:56:48.433] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:48.434] [info]  User input: Updated config keys: vocalVolume=0.69
-[2026-07-12 23:56:48.434] [info]  [Renderer Info] User input: Updated config keys: vocalVolume=0.69
-[2026-07-12 23:56:48.437] [info]  Live audio param updated: InstVol=0.43, VocVol=0.69
-[2026-07-12 23:56:48.440] [info]  [Renderer Info] Live audio param updated: InstVol=0.43, VocVol=0.69
-[2026-07-12 23:56:48.440] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:48.696] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:50.164] [info]  User input: Updated config keys: vocalPitch=3
-[2026-07-12 23:56:50.165] [info]  [Renderer Info] User input: Updated config keys: vocalPitch=3
-[2026-07-12 23:56:50.165] [info]  Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:56:50.165] [info]  [Renderer Info] Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:56:50.166] [info]  User input: seekTo 44.17s
-[2026-07-12 23:56:50.166] [info]  [Renderer Info] User input: seekTo 44.17s
-[2026-07-12 23:56:50.167] [info]  startPlayback: Initiated
-[2026-07-12 23:56:50.167] [info]  [Renderer Info] startPlayback: Initiated
-[2026-07-12 23:56:50.167] [info]  startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:50.168] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:50.168] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:50.168] [info]  startPlayback: Stopping existing sources
-[2026-07-12 23:56:50.169] [info]  [Renderer Info] startPlayback: Stopping existing sources
-[2026-07-12 23:56:50.169] [info]  startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:50.169] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:50.170] [info]  startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:50.170] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:50.170] [info]  startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:50.170] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:50.171] [info]  startPlayback: Starting Mic Input
-[2026-07-12 23:56:50.171] [info]  [Renderer Info] startPlayback: Starting Mic Input
-[2026-07-12 23:56:50.171] [info]  User input: Clicked button "降低 1 半音"
-[2026-07-12 23:56:50.172] [info]  [Renderer Info] User input: Clicked button "降低 1 半音"
-[2026-07-12 23:56:50.192] [info]  startPlayback: Executing audio source start commands. audInstStartAt=60.912, monInstStartAt=60.88, instOffset=44.168, audVocStartAt=60.912, monVocStartAt=60.88, vocOffset=44.168
-[2026-07-12 23:56:50.193] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=60.912, monInstStartAt=60.88, instOffset=44.168, audVocStartAt=60.912, monVocStartAt=60.88, vocOffset=44.168
-[2026-07-12 23:56:50.194] [info]  startPlayback: Success
-[2026-07-12 23:56:50.195] [info]  [Renderer Info] startPlayback: Success
-[2026-07-12 23:56:50.416] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:50.628] [info]  User input: Updated config keys: vocalPitch=2
-[2026-07-12 23:56:50.629] [info]  [Renderer Info] User input: Updated config keys: vocalPitch=2
-[2026-07-12 23:56:50.629] [info]  Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:56:50.630] [info]  [Renderer Info] Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:56:50.630] [info]  User input: seekTo 44.61s
-[2026-07-12 23:56:50.630] [info]  [Renderer Info] User input: seekTo 44.61s
-[2026-07-12 23:56:50.631] [info]  startPlayback: Initiated
-[2026-07-12 23:56:50.632] [info]  [Renderer Info] startPlayback: Initiated
-[2026-07-12 23:56:50.632] [info]  startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:50.632] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:50.633] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:50.633] [info]  startPlayback: Pitch shifting vocal to 3
-[2026-07-12 23:56:50.633] [info]  [Renderer Info] startPlayback: Pitch shifting vocal to 3
-[2026-07-12 23:56:50.634] [info]  User input: Clicked button "降低 1 半音"
-[2026-07-12 23:56:50.634] [info]  [Renderer Info] User input: Clicked button "降低 1 半音"
-[2026-07-12 23:56:51.385] [info]  startPlayback: Stopping existing sources
-[2026-07-12 23:56:51.385] [info]  [Renderer Info] startPlayback: Stopping existing sources
-[2026-07-12 23:56:51.386] [info]  startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:51.386] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:51.392] [info]  startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:51.392] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:51.393] [info]  startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:51.393] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:51.393] [info]  startPlayback: Starting Mic Input
-[2026-07-12 23:56:51.394] [info]  [Renderer Info] startPlayback: Starting Mic Input
-[2026-07-12 23:56:51.395] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:51.415] [info]  startPlayback: Executing audio source start commands. audInstStartAt=62.12266666666667, monInstStartAt=62.09866666666667, instOffset=44.608, audVocStartAt=62.12266666666667, monVocStartAt=62.09866666666667, vocOffset=44.608
-[2026-07-12 23:56:51.416] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=62.12266666666667, monInstStartAt=62.09866666666667, instOffset=44.608, audVocStartAt=62.12266666666667, monVocStartAt=62.09866666666667, vocOffset=44.608
-[2026-07-12 23:56:51.417] [info]  startPlayback: Success
-[2026-07-12 23:56:51.417] [info]  [Renderer Info] startPlayback: Success
-[2026-07-12 23:56:52.105] [info]  User input: Updated config keys: vocalPitch=1
-[2026-07-12 23:56:52.105] [info]  [Renderer Info] User input: Updated config keys: vocalPitch=1
-[2026-07-12 23:56:52.106] [info]  Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:56:52.106] [info]  [Renderer Info] Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:56:52.107] [info]  User input: seekTo 45.33s
-[2026-07-12 23:56:52.107] [info]  [Renderer Info] User input: seekTo 45.33s
-[2026-07-12 23:56:52.108] [info]  startPlayback: Initiated
-[2026-07-12 23:56:52.108] [info]  [Renderer Info] startPlayback: Initiated
-[2026-07-12 23:56:52.108] [info]  startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:52.109] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:52.109] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:52.109] [info]  startPlayback: Pitch shifting vocal to 2
-[2026-07-12 23:56:52.109] [info]  [Renderer Info] startPlayback: Pitch shifting vocal to 2
-[2026-07-12 23:56:52.110] [info]  User input: Clicked button "降低 1 半音"
-[2026-07-12 23:56:52.110] [info]  [Renderer Info] User input: Clicked button "降低 1 半音"
-[2026-07-12 23:56:52.895] [info]  startPlayback: Stopping existing sources
-[2026-07-12 23:56:52.896] [info]  [Renderer Info] startPlayback: Stopping existing sources
-[2026-07-12 23:56:52.897] [info]  startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:52.897] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:52.897] [info]  startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:52.897] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:52.898] [info]  startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:52.898] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:52.898] [info]  startPlayback: Starting Mic Input
-[2026-07-12 23:56:52.898] [info]  [Renderer Info] startPlayback: Starting Mic Input
-[2026-07-12 23:56:52.900] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:52.919] [info]  startPlayback: Executing audio source start commands. audInstStartAt=63.632, monInstStartAt=63.61066666666667, instOffset=45.327999999999996, audVocStartAt=63.632, monVocStartAt=63.61066666666667, vocOffset=45.327999999999996
-[2026-07-12 23:56:52.920] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=63.632, monInstStartAt=63.61066666666667, instOffset=45.327999999999996, audVocStartAt=63.632, monVocStartAt=63.61066666666667, vocOffset=45.327999999999996
-[2026-07-12 23:56:52.920] [info]  startPlayback: Success
-[2026-07-12 23:56:52.921] [info]  [Renderer Info] startPlayback: Success
-[2026-07-12 23:56:53.253] [info]  User input: Updated config keys: vocalPitch=0
-[2026-07-12 23:56:53.253] [info]  [Renderer Info] User input: Updated config keys: vocalPitch=0
-[2026-07-12 23:56:53.253] [info]  Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:56:53.254] [info]  [Renderer Info] Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:56:53.254] [info]  User input: seekTo 45.69s
-[2026-07-12 23:56:53.254] [info]  [Renderer Info] User input: seekTo 45.69s
-[2026-07-12 23:56:53.255] [info]  startPlayback: Initiated
-[2026-07-12 23:56:53.256] [info]  [Renderer Info] startPlayback: Initiated
-[2026-07-12 23:56:53.256] [info]  startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:53.256] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:53.256] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:53.257] [info]  startPlayback: Pitch shifting vocal to 1
-[2026-07-12 23:56:53.257] [info]  [Renderer Info] startPlayback: Pitch shifting vocal to 1
-[2026-07-12 23:56:53.258] [info]  User input: Clicked button "降低 1 半音"
-[2026-07-12 23:56:53.258] [info]  [Renderer Info] User input: Clicked button "降低 1 半音"
-[2026-07-12 23:56:54.080] [info]  startPlayback: Stopping existing sources
-[2026-07-12 23:56:54.081] [info]  [Renderer Info] startPlayback: Stopping existing sources
-[2026-07-12 23:56:54.082] [info]  startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:54.082] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:54.083] [info]  startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:54.083] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:54.083] [info]  startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:54.084] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:54.084] [info]  startPlayback: Starting Mic Input
-[2026-07-12 23:56:54.085] [info]  [Renderer Info] startPlayback: Starting Mic Input
-[2026-07-12 23:56:54.087] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:54.106] [info]  startPlayback: Executing audio source start commands. audInstStartAt=64.82133333333333, monInstStartAt=64.8, instOffset=45.687999999999995, audVocStartAt=64.82133333333333, monVocStartAt=64.8, vocOffset=45.687999999999995
-[2026-07-12 23:56:54.107] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=64.82133333333333, monInstStartAt=64.8, instOffset=45.687999999999995, audVocStartAt=64.82133333333333, monVocStartAt=64.8, vocOffset=45.687999999999995
-[2026-07-12 23:56:54.107] [info]  startPlayback: Success
-[2026-07-12 23:56:54.108] [info]  [Renderer Info] startPlayback: Success
-[2026-07-12 23:56:54.677] [info]  User input: Updated config keys: instrumentalPitch=3
-[2026-07-12 23:56:54.678] [info]  [Renderer Info] User input: Updated config keys: instrumentalPitch=3
-[2026-07-12 23:56:54.678] [info]  Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:56:54.678] [info]  [Renderer Info] Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:56:54.679] [info]  User input: seekTo 46.27s
-[2026-07-12 23:56:54.679] [info]  [Renderer Info] User input: seekTo 46.27s
-[2026-07-12 23:56:54.680] [info]  startPlayback: Initiated
-[2026-07-12 23:56:54.681] [info]  [Renderer Info] startPlayback: Initiated
-[2026-07-12 23:56:54.681] [info]  startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:54.681] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:54.682] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:54.682] [info]  startPlayback: Pitch shifting vocal to 0
-[2026-07-12 23:56:54.682] [info]  [Renderer Info] startPlayback: Pitch shifting vocal to 0
-[2026-07-12 23:56:54.683] [info]  User input: Clicked button "降低 1 半音"
-[2026-07-12 23:56:54.683] [info]  [Renderer Info] User input: Clicked button "降低 1 半音"
-[2026-07-12 23:56:54.736] [info]  startPlayback: Stopping existing sources
-[2026-07-12 23:56:54.738] [info]  [Renderer Info] startPlayback: Stopping existing sources
-[2026-07-12 23:56:54.739] [info]  startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:54.739] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:54.740] [info]  startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:54.740] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:54.740] [info]  startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:54.741] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:54.741] [info]  startPlayback: Starting Mic Input
-[2026-07-12 23:56:54.741] [info]  [Renderer Info] startPlayback: Starting Mic Input
-[2026-07-12 23:56:54.761] [info]  startPlayback: Executing audio source start commands. audInstStartAt=65.48266666666666, monInstStartAt=65.45066666666666, instOffset=46.26933333333333, audVocStartAt=65.48266666666666, monVocStartAt=65.45066666666666, vocOffset=46.26933333333333
-[2026-07-12 23:56:54.764] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=65.48266666666666, monInstStartAt=65.45066666666666, instOffset=46.26933333333333, audVocStartAt=65.48266666666666, monVocStartAt=65.45066666666666, vocOffset=46.26933333333333
-[2026-07-12 23:56:54.765] [info]  startPlayback: Success
-[2026-07-12 23:56:54.766] [info]  [Renderer Info] startPlayback: Success
-[2026-07-12 23:56:54.914] [info]  User input: Updated config keys: instrumentalPitch=2
-[2026-07-12 23:56:54.915] [info]  [Renderer Info] User input: Updated config keys: instrumentalPitch=2
-[2026-07-12 23:56:54.915] [info]  Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:56:54.916] [info]  [Renderer Info] Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:56:54.916] [info]  User input: seekTo 46.44s
-[2026-07-12 23:56:54.916] [info]  [Renderer Info] User input: seekTo 46.44s
-[2026-07-12 23:56:54.917] [info]  startPlayback: Initiated
-[2026-07-12 23:56:54.917] [info]  [Renderer Info] startPlayback: Initiated
-[2026-07-12 23:56:54.918] [info]  startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:54.918] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:56:54.918] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:54.919] [info]  startPlayback: Pitch shifting instrumental to 3
-[2026-07-12 23:56:54.919] [info]  [Renderer Info] startPlayback: Pitch shifting instrumental to 3
-[2026-07-12 23:56:54.920] [info]  User input: Clicked button "降低 1 半音"
-[2026-07-12 23:56:54.920] [info]  [Renderer Info] User input: Clicked button "降低 1 半音"
-[2026-07-12 23:56:55.676] [info]  startPlayback: Stopping existing sources
-[2026-07-12 23:56:55.677] [info]  [Renderer Info] startPlayback: Stopping existing sources
-[2026-07-12 23:56:55.678] [info]  startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:55.678] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
-[2026-07-12 23:56:55.679] [info]  startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:55.679] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
-[2026-07-12 23:56:55.679] [info]  startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:55.680] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:56:55.680] [info]  startPlayback: Starting Mic Input
-[2026-07-12 23:56:55.680] [info]  [Renderer Info] startPlayback: Starting Mic Input
-[2026-07-12 23:56:55.681] [info]  User input: Updated config keys: instrumentalPitch=1
-[2026-07-12 23:56:55.681] [info]  [Renderer Info] User input: Updated config keys: instrumentalPitch=1
-[2026-07-12 23:56:55.683] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:55.683] [info]  User input: Clicked button "降低 1 半音"
-[2026-07-12 23:56:55.683] [info]  [Renderer Info] User input: Clicked button "降低 1 半音"
-[2026-07-12 23:56:55.684] [info]  User input: Updated config keys: instrumentalPitch=0
-[2026-07-12 23:56:55.684] [info]  [Renderer Info] User input: Updated config keys: instrumentalPitch=0
-[2026-07-12 23:56:55.685] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:56:55.686] [info]  User input: Clicked button "降低 1 半音"
-[2026-07-12 23:56:55.686] [info]  [Renderer Info] User input: Clicked button "降低 1 半音"
-[2026-07-12 23:56:55.706] [info]  startPlayback: Executing audio source start commands. audInstStartAt=66.42133333333334, monInstStartAt=66.38933333333334, instOffset=46.437333333333335, audVocStartAt=66.42133333333334, monVocStartAt=66.38933333333334, vocOffset=46.437333333333335
-[2026-07-12 23:56:55.706] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=66.42133333333334, monInstStartAt=66.38933333333334, instOffset=46.437333333333335, audVocStartAt=66.42133333333334, monVocStartAt=66.38933333333334, vocOffset=46.437333333333335
-[2026-07-12 23:56:55.707] [info]  startPlayback: Success
-[2026-07-12 23:56:55.707] [info]  [Renderer Info] startPlayback: Success
-[2026-07-12 23:56:55.935] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:57:31.813] [info]  User input: Updated config keys: offsetMs=-10
-[2026-07-12 23:57:31.814] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-10
-[2026-07-12 23:57:31.814] [info]  Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:57:31.814] [info]  [Renderer Info] Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:57:31.814] [info]  User input: seekTo 82.56s
-[2026-07-12 23:57:31.815] [info]  [Renderer Info] User input: seekTo 82.56s
-[2026-07-12 23:57:31.815] [info]  startPlayback: Initiated
-[2026-07-12 23:57:31.816] [info]  [Renderer Info] startPlayback: Initiated
-[2026-07-12 23:57:31.816] [info]  startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:57:31.816] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:57:31.817] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:57:31.817] [info]  startPlayback: Pitch shifting instrumental to 0
-[2026-07-12 23:57:31.817] [info]  [Renderer Info] startPlayback: Pitch shifting instrumental to 0
-[2026-07-12 23:57:31.873] [info]  startPlayback: Stopping existing sources
-[2026-07-12 23:57:31.873] [info]  [Renderer Info] startPlayback: Stopping existing sources
-[2026-07-12 23:57:31.874] [info]  startPlayback: Connecting backing track to audience
-[2026-07-12 23:57:31.874] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
-[2026-07-12 23:57:31.874] [info]  startPlayback: Connecting backing track to monitor
-[2026-07-12 23:57:31.874] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
-[2026-07-12 23:57:31.875] [info]  startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:57:31.875] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:57:31.875] [info]  startPlayback: Starting Mic Input
-[2026-07-12 23:57:31.875] [info]  [Renderer Info] startPlayback: Starting Mic Input
-[2026-07-12 23:57:31.896] [info]  User input: Updated config keys: offsetMs=-20
-[2026-07-12 23:57:31.896] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-20
-[2026-07-12 23:57:31.897] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:57:31.899] [info]  startPlayback: Executing audio source start commands. audInstStartAt=102.61066666666666, monInstStartAt=102.58933333333333, instOffset=82.55733333333333, audVocStartAt=102.61066666666666, monVocStartAt=102.58933333333333, vocOffset=82.55733333333333
-[2026-07-12 23:57:31.899] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=102.61066666666666, monInstStartAt=102.58933333333333, instOffset=82.55733333333333, audVocStartAt=102.61066666666666, monVocStartAt=102.58933333333333, vocOffset=82.55733333333333
-[2026-07-12 23:57:31.900] [info]  startPlayback: Success
-[2026-07-12 23:57:31.901] [info]  [Renderer Info] startPlayback: Success
-[2026-07-12 23:57:32.147] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:57:33.096] [info]  User input: Updated config keys: offsetMs=-30
-[2026-07-12 23:57:33.097] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-30
-[2026-07-12 23:57:33.097] [info]  Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:57:33.097] [info]  [Renderer Info] Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:57:33.098] [info]  User input: seekTo 83.77s
-[2026-07-12 23:57:33.098] [info]  [Renderer Info] User input: seekTo 83.77s
-[2026-07-12 23:57:33.099] [info]  startPlayback: Initiated
-[2026-07-12 23:57:33.100] [info]  [Renderer Info] startPlayback: Initiated
-[2026-07-12 23:57:33.100] [info]  startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:57:33.101] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:57:33.101] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:57:33.102] [info]  startPlayback: Stopping existing sources
-[2026-07-12 23:57:33.102] [info]  [Renderer Info] startPlayback: Stopping existing sources
-[2026-07-12 23:57:33.102] [info]  startPlayback: Connecting backing track to audience
-[2026-07-12 23:57:33.102] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
-[2026-07-12 23:57:33.103] [info]  startPlayback: Connecting backing track to monitor
-[2026-07-12 23:57:33.103] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
-[2026-07-12 23:57:33.103] [info]  startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:57:33.103] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:57:33.104] [info]  startPlayback: Starting Mic Input
-[2026-07-12 23:57:33.104] [info]  [Renderer Info] startPlayback: Starting Mic Input
-[2026-07-12 23:57:33.126] [info]  startPlayback: Executing audio source start commands. audInstStartAt=103.86266666666667, monInstStartAt=103.83866666666667, instOffset=83.768, audVocStartAt=103.84266666666667, monVocStartAt=103.81866666666667, vocOffset=83.748
-[2026-07-12 23:57:33.126] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=103.86266666666667, monInstStartAt=103.83866666666667, instOffset=83.768, audVocStartAt=103.84266666666667, monVocStartAt=103.81866666666667, vocOffset=83.748
-[2026-07-12 23:57:33.127] [info]  startPlayback: Success
-[2026-07-12 23:57:33.128] [info]  [Renderer Info] startPlayback: Success
-[2026-07-12 23:57:33.130] [info]  User input: Updated config keys: offsetMs=-40
-[2026-07-12 23:57:33.131] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-40
-[2026-07-12 23:57:33.131] [info]  Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:57:33.131] [info]  [Renderer Info] Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:57:33.132] [info]  User input: seekTo 83.77s
-[2026-07-12 23:57:33.134] [info]  [Renderer Info] User input: seekTo 83.77s
-[2026-07-12 23:57:33.135] [info]  startPlayback: Initiated
-[2026-07-12 23:57:33.136] [info]  [Renderer Info] startPlayback: Initiated
-[2026-07-12 23:57:33.136] [info]  startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:57:33.137] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:57:33.137] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:57:33.138] [info]  startPlayback: Stopping existing sources
-[2026-07-12 23:57:33.139] [info]  [Renderer Info] startPlayback: Stopping existing sources
-[2026-07-12 23:57:33.140] [info]  startPlayback: Connecting backing track to audience
-[2026-07-12 23:57:33.140] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
-[2026-07-12 23:57:33.140] [info]  startPlayback: Connecting backing track to monitor
-[2026-07-12 23:57:33.141] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
-[2026-07-12 23:57:33.141] [info]  startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:57:33.141] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:57:33.142] [info]  startPlayback: Starting Mic Input
-[2026-07-12 23:57:33.142] [info]  [Renderer Info] startPlayback: Starting Mic Input
-[2026-07-12 23:57:33.146] [info]  User input: Updated config keys: offsetMs=-50
-[2026-07-12 23:57:33.146] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-50
-[2026-07-12 23:57:33.147] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:57:33.163] [info]  User input: Updated config keys: offsetMs=-60
-[2026-07-12 23:57:33.163] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-60
-[2026-07-12 23:57:33.164] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:57:33.165] [info]  startPlayback: Executing audio source start commands. audInstStartAt=103.91266666666667, monInstStartAt=103.88066666666667, instOffset=83.768, audVocStartAt=103.88266666666667, monVocStartAt=103.85066666666667, vocOffset=83.738
-[2026-07-12 23:57:33.167] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=103.91266666666667, monInstStartAt=103.88066666666667, instOffset=83.768, audVocStartAt=103.88266666666667, monVocStartAt=103.85066666666667, vocOffset=83.738
-[2026-07-12 23:57:33.168] [info]  startPlayback: Success
-[2026-07-12 23:57:33.168] [info]  [Renderer Info] startPlayback: Success
-[2026-07-12 23:57:33.180] [info]  User input: Updated config keys: offsetMs=-70
-[2026-07-12 23:57:33.180] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-70
-[2026-07-12 23:57:33.180] [info]  Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:57:33.181] [info]  [Renderer Info] Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:57:33.181] [info]  User input: seekTo 83.77s
-[2026-07-12 23:57:33.181] [info]  [Renderer Info] User input: seekTo 83.77s
-[2026-07-12 23:57:33.182] [info]  startPlayback: Initiated
-[2026-07-12 23:57:33.182] [info]  [Renderer Info] startPlayback: Initiated
-[2026-07-12 23:57:33.183] [info]  startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:57:33.183] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:57:33.183] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:57:33.184] [info]  startPlayback: Stopping existing sources
-[2026-07-12 23:57:33.184] [info]  [Renderer Info] startPlayback: Stopping existing sources
-[2026-07-12 23:57:33.184] [info]  startPlayback: Connecting backing track to audience
-[2026-07-12 23:57:33.185] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
-[2026-07-12 23:57:33.185] [info]  startPlayback: Connecting backing track to monitor
-[2026-07-12 23:57:33.185] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
-[2026-07-12 23:57:33.185] [info]  startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:57:33.185] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:57:33.186] [info]  startPlayback: Starting Mic Input
-[2026-07-12 23:57:33.186] [info]  [Renderer Info] startPlayback: Starting Mic Input
-[2026-07-12 23:57:33.196] [info]  User input: Updated config keys: offsetMs=-80
-[2026-07-12 23:57:33.197] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-80
-[2026-07-12 23:57:33.197] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:57:33.207] [info]  startPlayback: Executing audio source start commands. audInstStartAt=103.98266666666667, monInstStartAt=103.95866666666667, instOffset=83.768, audVocStartAt=103.92266666666667, monVocStartAt=103.89866666666667, vocOffset=83.708
-[2026-07-12 23:57:33.207] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=103.98266666666667, monInstStartAt=103.95866666666667, instOffset=83.768, audVocStartAt=103.92266666666667, monVocStartAt=103.89866666666667, vocOffset=83.708
-[2026-07-12 23:57:33.208] [info]  startPlayback: Success
-[2026-07-12 23:57:33.208] [info]  [Renderer Info] startPlayback: Success
-[2026-07-12 23:57:33.213] [info]  User input: Updated config keys: offsetMs=-90
-[2026-07-12 23:57:33.213] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-90
-[2026-07-12 23:57:33.214] [info]  Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:57:33.214] [info]  [Renderer Info] Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:57:33.214] [info]  User input: seekTo 83.77s
-[2026-07-12 23:57:33.215] [info]  [Renderer Info] User input: seekTo 83.77s
-[2026-07-12 23:57:33.215] [info]  startPlayback: Initiated
-[2026-07-12 23:57:33.216] [info]  [Renderer Info] startPlayback: Initiated
-[2026-07-12 23:57:33.216] [info]  startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:57:33.216] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:57:33.217] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:57:33.217] [info]  startPlayback: Stopping existing sources
-[2026-07-12 23:57:33.217] [info]  [Renderer Info] startPlayback: Stopping existing sources
-[2026-07-12 23:57:33.218] [info]  startPlayback: Connecting backing track to audience
-[2026-07-12 23:57:33.218] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
-[2026-07-12 23:57:33.218] [info]  startPlayback: Connecting backing track to monitor
-[2026-07-12 23:57:33.218] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
-[2026-07-12 23:57:33.219] [info]  startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:57:33.219] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:57:33.219] [info]  startPlayback: Starting Mic Input
-[2026-07-12 23:57:33.219] [info]  [Renderer Info] startPlayback: Starting Mic Input
-[2026-07-12 23:57:33.241] [info]  startPlayback: Executing audio source start commands. audInstStartAt=104.04266666666666, monInstStartAt=104.01066666666667, instOffset=83.768, audVocStartAt=103.96266666666666, monVocStartAt=103.93066666666667, vocOffset=83.688
-[2026-07-12 23:57:33.242] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=104.04266666666666, monInstStartAt=104.01066666666667, instOffset=83.768, audVocStartAt=103.96266666666666, monVocStartAt=103.93066666666667, vocOffset=83.688
-[2026-07-12 23:57:33.242] [info]  startPlayback: Success
-[2026-07-12 23:57:33.242] [info]  [Renderer Info] startPlayback: Success
-[2026-07-12 23:57:33.246] [info]  User input: Updated config keys: offsetMs=-100
-[2026-07-12 23:57:33.247] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-100
-[2026-07-12 23:57:33.248] [info]  Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:57:33.248] [info]  [Renderer Info] Live playback parameter changed. Triggering audio graph rebuild via seekTo().
-[2026-07-12 23:57:33.249] [info]  User input: seekTo 83.77s
-[2026-07-12 23:57:33.249] [info]  [Renderer Info] User input: seekTo 83.77s
-[2026-07-12 23:57:33.250] [info]  startPlayback: Initiated
-[2026-07-12 23:57:33.251] [info]  [Renderer Info] startPlayback: Initiated
-[2026-07-12 23:57:33.251] [info]  startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:57:33.252] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
-[2026-07-12 23:57:33.252] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:57:33.253] [info]  startPlayback: Stopping existing sources
-[2026-07-12 23:57:33.253] [info]  [Renderer Info] startPlayback: Stopping existing sources
-[2026-07-12 23:57:33.253] [info]  startPlayback: Connecting backing track to audience
-[2026-07-12 23:57:33.254] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
-[2026-07-12 23:57:33.254] [info]  startPlayback: Connecting backing track to monitor
-[2026-07-12 23:57:33.254] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
-[2026-07-12 23:57:33.254] [info]  startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:57:33.255] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
-[2026-07-12 23:57:33.255] [info]  startPlayback: Starting Mic Input
-[2026-07-12 23:57:33.255] [info]  [Renderer Info] startPlayback: Starting Mic Input
-[2026-07-12 23:57:33.279] [info]  startPlayback: Executing audio source start commands. audInstStartAt=104.08200000000001, monInstStartAt=104.06066666666668, instOffset=83.768, audVocStartAt=103.992, monVocStartAt=103.97066666666667, vocOffset=83.678
-[2026-07-12 23:57:33.279] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=104.08200000000001, monInstStartAt=104.06066666666668, instOffset=83.768, audVocStartAt=103.992, monVocStartAt=103.97066666666667, vocOffset=83.678
-[2026-07-12 23:57:33.284] [info]  startPlayback: Success
-[2026-07-12 23:57:33.285] [info]  [Renderer Info] startPlayback: Success
-[2026-07-12 23:57:33.497] [info]  Backend: Saving song config for "1"
-[2026-07-12 23:58:57.482] [info]  User input: pausePlayback
-[2026-07-12 23:58:57.483] [info]  [Renderer Info] User input: pausePlayback
-[2026-07-12 23:58:57.484] [info]  User input: Clicked button "播放"
-[2026-07-12 23:58:57.484] [info]  [Renderer Info] User input: Clicked button "播放"
-[2026-07-12 23:58:58.632] [info]  User input: Selected song "2"
-[2026-07-12 23:58:58.632] [info]  [Renderer Info] User input: Selected song "2"
-[2026-07-12 23:58:58.633] [info]  loadBuffers: Starting for "2"
-[2026-07-12 23:58:58.633] [info]  [Renderer Info] loadBuffers: Starting for "2"
-[2026-07-12 23:58:58.633] [info]  loadBuffers: Instrumental path: F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
-[2026-07-12 23:58:58.634] [info]  [Renderer Info] loadBuffers: Instrumental path: F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
-[2026-07-12 23:58:58.634] [info]  loadBuffers: Vocal path: F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
-[2026-07-12 23:58:58.634] [info]  [Renderer Info] loadBuffers: Vocal path: F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
-[2026-07-12 23:58:58.635] [info]  loadBuffers: Building AudioContext
-[2026-07-12 23:58:58.635] [info]  [Renderer Info] loadBuffers: Building AudioContext
-[2026-07-12 23:58:58.635] [info]  loadBuffers: AudioContext state=running, sampleRate=48000
-[2026-07-12 23:58:58.635] [info]  [Renderer Info] loadBuffers: AudioContext state=running, sampleRate=48000
-[2026-07-12 23:58:58.636] [info]  loadBuffers: Fetching instrumental buffer
-[2026-07-12 23:58:58.636] [info]  [Renderer Info] loadBuffers: Fetching instrumental buffer
-[2026-07-12 23:58:58.636] [info]  loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
-[2026-07-12 23:58:58.637] [info]  [Renderer Info] loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
-[2026-07-12 23:58:58.639] [info]  Backend: Saving song config for "2"
-[2026-07-12 23:58:58.642] [info]  loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
-[2026-07-12 23:58:58.643] [info]  [Renderer Info] loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
-[2026-07-12 23:58:58.702] [info]  loadAudioBuffer: ArrayBuffer received, size=24952876 bytes. Parsing WAV...
-[2026-07-12 23:58:58.703] [info]  [Renderer Info] loadAudioBuffer: ArrayBuffer received, size=24952876 bytes. Parsing WAV...
-[2026-07-12 23:58:58.703] [info]  parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=6238208
-[2026-07-12 23:58:58.703] [info]  [Renderer Info] parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=6238208
-[2026-07-12 23:58:58.744] [info]  loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav, duration=141.46s
-[2026-07-12 23:58:58.744] [info]  [Renderer Info] loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav, duration=141.46s
-[2026-07-12 23:58:58.745] [info]  loadBuffers: Instrumental loaded. duration=141.46s, channels=2
-[2026-07-12 23:58:58.745] [info]  [Renderer Info] loadBuffers: Instrumental loaded. duration=141.46s, channels=2
-[2026-07-12 23:58:58.745] [info]  loadBuffers: Fetching vocal buffer
-[2026-07-12 23:58:58.746] [info]  [Renderer Info] loadBuffers: Fetching vocal buffer
-[2026-07-12 23:58:58.746] [info]  loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
-[2026-07-12 23:58:58.746] [info]  [Renderer Info] loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
-[2026-07-12 23:58:58.752] [info]  loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
-[2026-07-12 23:58:58.752] [info]  [Renderer Info] loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
-[2026-07-12 23:58:58.805] [info]  loadAudioBuffer: ArrayBuffer received, size=24952876 bytes. Parsing WAV...
-[2026-07-12 23:58:58.806] [info]  [Renderer Info] loadAudioBuffer: ArrayBuffer received, size=24952876 bytes. Parsing WAV...
-[2026-07-12 23:58:58.806] [info]  parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=6238208
-[2026-07-12 23:58:58.806] [info]  [Renderer Info] parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=6238208
-[2026-07-12 23:58:58.846] [info]  loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav, duration=141.46s
-[2026-07-12 23:58:58.846] [info]  [Renderer Info] loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav, duration=141.46s
-[2026-07-12 23:58:58.847] [info]  loadBuffers: Vocal loaded. duration=141.46s, channels=2
-[2026-07-12 23:58:58.847] [info]  [Renderer Info] loadBuffers: Vocal loaded. duration=141.46s, channels=2
-[2026-07-12 23:58:58.847] [info]  loadBuffers: Complete for "2"
-[2026-07-12 23:58:58.848] [info]  [Renderer Info] loadBuffers: Complete for "2"
+[2026-07-13 00:26:55.359] [info]  Application Starting...
+[2026-07-13 00:26:55.386] [info]  Local media HTTP server started on port 42899
+[2026-07-13 00:26:55.643] [info]  Backend: Saving global config
+[2026-07-13 00:26:57.821] [info]  Backend: Loading global config
+[2026-07-13 00:26:57.823] [info]  Backend: Loading song list
+[2026-07-13 00:26:57.824] [info]  Backend: Saving global config
+[2026-07-13 00:28:40.854] [info]  User input: Clicked microphone device dropdown
+[2026-07-13 00:28:40.855] [info]  [Renderer Info] User input: Clicked microphone device dropdown
+[2026-07-13 00:28:43.063] [info]  User input: Selected microphone device: 9725881fd00a5085220de3c1edcce20e23c402027d5a70b10278f67ed43d7c64
+[2026-07-13 00:28:43.064] [info]  [Renderer Info] User input: Selected microphone device: 9725881fd00a5085220de3c1edcce20e23c402027d5a70b10278f67ed43d7c64
+[2026-07-13 00:28:43.065] [info]  Backend: Saving global config
+[2026-07-13 00:28:43.066] [info]  Backend: Saving global config
+[2026-07-13 00:28:43.066] [info]  User input: Clicked microphone device dropdown
+[2026-07-13 00:28:43.066] [info]  [Renderer Info] User input: Clicked microphone device dropdown
+[2026-07-13 00:28:49.067] [info]  User input: Clicked audience device dropdown
+[2026-07-13 00:28:49.068] [info]  [Renderer Info] User input: Clicked audience device dropdown
+[2026-07-13 00:28:56.675] [info]  User input: Selected audience device: communications
+[2026-07-13 00:28:56.675] [info]  [Renderer Info] User input: Selected audience device: communications
+[2026-07-13 00:28:56.677] [info]  Backend: Saving global config
+[2026-07-13 00:28:56.677] [info]  Backend: Saving global config
+[2026-07-13 00:28:56.678] [info]  User input: Clicked audience device dropdown
+[2026-07-13 00:28:56.678] [info]  [Renderer Info] User input: Clicked audience device dropdown
+[2026-07-13 00:28:57.459] [info]  User input: Clicked monitor device dropdown
+[2026-07-13 00:28:57.459] [info]  [Renderer Info] User input: Clicked monitor device dropdown
+[2026-07-13 00:28:58.403] [info]  User input: Selected monitor device: 74b9b3b145edac8a04213d2ab250964a39234f8ac173d6b5161f0fed494bbae7
+[2026-07-13 00:28:58.404] [info]  [Renderer Info] User input: Selected monitor device: 74b9b3b145edac8a04213d2ab250964a39234f8ac173d6b5161f0fed494bbae7
+[2026-07-13 00:28:58.405] [info]  Backend: Saving global config
+[2026-07-13 00:28:58.405] [info]  Backend: Saving global config
+[2026-07-13 00:28:58.405] [info]  User input: Clicked monitor device dropdown
+[2026-07-13 00:28:58.406] [info]  [Renderer Info] User input: Clicked monitor device dropdown
+[2026-07-13 00:29:00.007] [info]  User input: Selected song "2"
+[2026-07-13 00:29:00.007] [info]  [Renderer Info] User input: Selected song "2"
+[2026-07-13 00:29:00.008] [info]  loadBuffers: Starting for "2"
+[2026-07-13 00:29:00.009] [info]  [Renderer Info] loadBuffers: Starting for "2"
+[2026-07-13 00:29:00.009] [info]  loadBuffers: Instrumental path: F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
+[2026-07-13 00:29:00.009] [info]  [Renderer Info] loadBuffers: Instrumental path: F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
+[2026-07-13 00:29:00.010] [info]  loadBuffers: Vocal path: F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
+[2026-07-13 00:29:00.010] [info]  [Renderer Info] loadBuffers: Vocal path: F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
+[2026-07-13 00:29:00.011] [info]  loadBuffers: Building AudioContext
+[2026-07-13 00:29:00.011] [info]  [Renderer Info] loadBuffers: Building AudioContext
+[2026-07-13 00:29:00.025] [info]  Backend: Saving song config for "2"
+[2026-07-13 00:29:00.129] [info]  loadBuffers: AudioContext state=running, sampleRate=48000
+[2026-07-13 00:29:00.130] [info]  [Renderer Info] loadBuffers: AudioContext state=running, sampleRate=48000
+[2026-07-13 00:29:00.130] [info]  loadBuffers: Fetching instrumental buffer
+[2026-07-13 00:29:00.131] [info]  [Renderer Info] loadBuffers: Fetching instrumental buffer
+[2026-07-13 00:29:00.131] [info]  loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
+[2026-07-13 00:29:00.132] [info]  [Renderer Info] loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
+[2026-07-13 00:29:00.141] [info]  loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
+[2026-07-13 00:29:00.143] [info]  [Renderer Info] loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav
+[2026-07-13 00:29:00.200] [info]  loadAudioBuffer: ArrayBuffer received, size=24952876 bytes. Parsing WAV...
+[2026-07-13 00:29:00.200] [info]  [Renderer Info] loadAudioBuffer: ArrayBuffer received, size=24952876 bytes. Parsing WAV...
+[2026-07-13 00:29:00.201] [info]  parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=6238208
+[2026-07-13 00:29:00.201] [info]  [Renderer Info] parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=6238208
+[2026-07-13 00:29:00.249] [info]  loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav, duration=141.46s
+[2026-07-13 00:29:00.250] [info]  [Renderer Info] loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\instrumental\2.wav, duration=141.46s
+[2026-07-13 00:29:00.250] [info]  loadBuffers: Instrumental loaded. duration=141.46s, channels=2
+[2026-07-13 00:29:00.250] [info]  [Renderer Info] loadBuffers: Instrumental loaded. duration=141.46s, channels=2
+[2026-07-13 00:29:00.250] [info]  loadBuffers: Fetching vocal buffer
+[2026-07-13 00:29:00.251] [info]  [Renderer Info] loadBuffers: Fetching vocal buffer
+[2026-07-13 00:29:00.251] [info]  loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
+[2026-07-13 00:29:00.251] [info]  [Renderer Info] loadAudioBuffer: Fetching F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
+[2026-07-13 00:29:00.255] [info]  loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
+[2026-07-13 00:29:00.255] [info]  [Renderer Info] loadAudioBuffer: HTTP OK, reading arrayBuffer for F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav
+[2026-07-13 00:29:00.308] [info]  loadAudioBuffer: ArrayBuffer received, size=24952876 bytes. Parsing WAV...
+[2026-07-13 00:29:00.308] [info]  [Renderer Info] loadAudioBuffer: ArrayBuffer received, size=24952876 bytes. Parsing WAV...
+[2026-07-13 00:29:00.308] [info]  parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=6238208
+[2026-07-13 00:29:00.309] [info]  [Renderer Info] parseWav: channels=2, sampleRate=44100, bits=16, samples/ch=6238208
+[2026-07-13 00:29:00.352] [info]  loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav, duration=141.46s
+[2026-07-13 00:29:00.352] [info]  [Renderer Info] loadAudioBuffer: Parsed successfully for F:\Kareoke\Kareoke\PeachyKareoke\vocal\2.wav, duration=141.46s
+[2026-07-13 00:29:00.353] [info]  loadBuffers: Vocal loaded. duration=141.46s, channels=2
+[2026-07-13 00:29:00.353] [info]  [Renderer Info] loadBuffers: Vocal loaded. duration=141.46s, channels=2
+[2026-07-13 00:29:00.354] [info]  loadBuffers: Complete for "2"
+[2026-07-13 00:29:00.355] [info]  [Renderer Info] loadBuffers: Complete for "2"
+[2026-07-13 00:29:01.814] [info]  startPlayback: Initiated
+[2026-07-13 00:29:01.814] [info]  [Renderer Info] startPlayback: Initiated
+[2026-07-13 00:29:01.815] [info]  startPlayback: Ensuring AudioContexts are built
+[2026-07-13 00:29:01.815] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
+[2026-07-13 00:29:01.816] [info]  startPlayback: Stopping existing sources
+[2026-07-13 00:29:01.816] [info]  [Renderer Info] startPlayback: Stopping existing sources
+[2026-07-13 00:29:01.816] [info]  startPlayback: Connecting backing track to audience
+[2026-07-13 00:29:01.816] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
+[2026-07-13 00:29:01.817] [info]  startPlayback: Connecting backing track to monitor
+[2026-07-13 00:29:01.817] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
+[2026-07-13 00:29:01.817] [info]  startPlayback: Connecting vocal track to monitor
+[2026-07-13 00:29:01.818] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
+[2026-07-13 00:29:01.818] [info]  startPlayback: Starting Mic Input
+[2026-07-13 00:29:01.818] [info]  [Renderer Info] startPlayback: Starting Mic Input
+[2026-07-13 00:29:01.819] [info]  User input: Clicked button "Play"
+[2026-07-13 00:29:01.819] [info]  [Renderer Info] User input: Clicked button "Play"
+[2026-07-13 00:29:01.963] [info]  startPlayback: Executing audio source start commands. audInstStartAt=1.72, monInstStartAt=1.6906666666666668, instOffset=0, audVocStartAt=1.72, monVocStartAt=1.6906666666666668, vocOffset=0
+[2026-07-13 00:29:01.965] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=1.72, monInstStartAt=1.6906666666666668, instOffset=0, audVocStartAt=1.72, monVocStartAt=1.6906666666666668, vocOffset=0
+[2026-07-13 00:29:01.966] [info]  startPlayback: Success
+[2026-07-13 00:29:01.967] [info]  [Renderer Info] startPlayback: Success
+[2026-07-13 00:29:16.117] [info]  User input: Updated config keys: offsetMs=-10
+[2026-07-13 00:29:16.117] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-10
+[2026-07-13 00:29:16.117] [info]  Live playback parameter changed. Triggering audio graph rebuild via seekTo().
+[2026-07-13 00:29:16.118] [info]  [Renderer Info] Live playback parameter changed. Triggering audio graph rebuild via seekTo().
+[2026-07-13 00:29:16.118] [info]  User input: seekTo 14.29s
+[2026-07-13 00:29:16.118] [info]  [Renderer Info] User input: seekTo 14.29s
+[2026-07-13 00:29:16.119] [info]  startPlayback: Initiated
+[2026-07-13 00:29:16.119] [info]  [Renderer Info] startPlayback: Initiated
+[2026-07-13 00:29:16.120] [info]  startPlayback: Ensuring AudioContexts are built
+[2026-07-13 00:29:16.120] [info]  [Renderer Info] startPlayback: Ensuring AudioContexts are built
+[2026-07-13 00:29:16.120] [info]  Backend: Saving song config for "2"
+[2026-07-13 00:29:16.121] [info]  startPlayback: Stopping existing sources
+[2026-07-13 00:29:16.121] [info]  [Renderer Info] startPlayback: Stopping existing sources
+[2026-07-13 00:29:16.121] [info]  startPlayback: Connecting backing track to audience
+[2026-07-13 00:29:16.121] [info]  [Renderer Info] startPlayback: Connecting backing track to audience
+[2026-07-13 00:29:16.122] [info]  startPlayback: Connecting backing track to monitor
+[2026-07-13 00:29:16.122] [info]  [Renderer Info] startPlayback: Connecting backing track to monitor
+[2026-07-13 00:29:16.123] [info]  startPlayback: Connecting vocal track to monitor
+[2026-07-13 00:29:16.123] [info]  [Renderer Info] startPlayback: Connecting vocal track to monitor
+[2026-07-13 00:29:16.123] [info]  startPlayback: Starting Mic Input
+[2026-07-13 00:29:16.124] [info]  [Renderer Info] startPlayback: Starting Mic Input
+[2026-07-13 00:29:16.132] [info]  User input: Updated config keys: offsetMs=-20
+[2026-07-13 00:29:16.133] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-20
+[2026-07-13 00:29:16.133] [info]  Backend: Saving song config for "2"
+[2026-07-13 00:29:16.267] [info]  startPlayback: Executing audio source start commands. audInstStartAt=16.029333333333334, monInstStartAt=15.989333333333333, instOffset=14.290666666666665, audVocStartAt=16.029333333333334, monVocStartAt=15.989333333333333, vocOffset=14.290666666666665
+[2026-07-13 00:29:16.267] [info]  [Renderer Info] startPlayback: Executing audio source start commands. audInstStartAt=16.029333333333334, monInstStartAt=15.989333333333333, instOffset=14.290666666666665, audVocStartAt=16.029333333333334, monVocStartAt=15.989333333333333, vocOffset=14.290666666666665
+[2026-07-13 00:29:16.269] [info]  startPlayback: Success
+[2026-07-13 00:29:16.269] [info]  [Renderer Info] startPlayback: Success
+[2026-07-13 00:29:16.270] [info]  User input: Updated config keys: offsetMs=-60
+[2026-07-13 00:29:16.270] [info]  [Renderer Info] User input: Updated config keys: offsetMs=-60
+[2026-07-13 00:29:16.270] [info]  Backend: Saving song config for "2"
+[2026-07-13 00:29:16.520] [info]  Backend: Saving song config for "2"
+[2026-07-13 00:29:47.314] [info]  User input: Updated config keys: routeVocalToAudience=true
+[2026-07-13 00:29:47.315] [info]  [Renderer Info] User input: Updated config keys: routeVocalToAudience=true
+[2026-07-13 00:29:47.315] [info]  Backend: Saving song config for "2"
+[2026-07-13 00:29:47.566] [info]  Backend: Saving song config for "2"
+[2026-07-13 00:29:54.834] [info]  User input: Updated config keys: routeVocalToAudience=false
+[2026-07-13 00:29:54.835] [info]  [Renderer Info] User input: Updated config keys: routeVocalToAudience=false
+[2026-07-13 00:29:54.835] [info]  Backend: Saving song config for "2"
+[2026-07-13 00:29:55.087] [info]  Backend: Saving song config for "2"
+[2026-07-13 00:31:03.918] [info]  Backend: Saving global config
+[2026-07-13 00:31:03.919] [info]  Backend: Saving global config
+[2026-07-13 00:31:03.934] [info]  Backend: Saving global config
+[2026-07-13 00:31:03.935] [info]  Backend: Saving global config
+[2026-07-13 00:31:03.951] [info]  Backend: Saving global config
+[2026-07-13 00:31:03.951] [info]  Backend: Saving global config
+[2026-07-13 00:31:03.967] [info]  Backend: Saving global config
+[2026-07-13 00:31:03.968] [info]  Backend: Saving global config
+[2026-07-13 00:31:03.984] [info]  Backend: Saving global config
+[2026-07-13 00:31:03.985] [info]  Backend: Saving global config
+[2026-07-13 00:31:04.001] [info]  Backend: Saving global config
+[2026-07-13 00:31:04.001] [info]  Backend: Saving global config
+[2026-07-13 00:31:04.018] [info]  Backend: Saving global config
+[2026-07-13 00:31:04.019] [info]  Backend: Saving global config
+[2026-07-13 00:31:04.034] [info]  Backend: Saving global config
+[2026-07-13 00:31:04.034] [info]  Backend: Saving global config
+[2026-07-13 00:31:04.051] [info]  Backend: Saving global config
+[2026-07-13 00:31:04.051] [info]  Backend: Saving global config
+[2026-07-13 00:31:04.117] [info]  Backend: Saving global config
+[2026-07-13 00:31:04.118] [info]  Backend: Saving global config
+[2026-07-13 00:31:04.134] [info]  Backend: Saving global config
+[2026-07-13 00:31:04.135] [info]  Backend: Saving global config
+[2026-07-13 00:31:04.151] [info]  Backend: Saving global config
+[2026-07-13 00:31:04.151] [info]  Backend: Saving global config
+[2026-07-13 00:31:04.159] [info]  Backend: Saving global config
+[2026-07-13 00:31:04.160] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.184] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.186] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.201] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.202] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.217] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.218] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.234] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.235] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.251] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.251] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.267] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.268] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.284] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.284] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.301] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.301] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.317] [info]  Backend: Saving global config
+[2026-07-13 00:31:17.318] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.751] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.751] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.767] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.768] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.784] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.785] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.801] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.801] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.817] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.818] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.834] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.835] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.851] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.851] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.867] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.868] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.884] [info]  Backend: Saving global config
+[2026-07-13 00:31:19.885] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.117] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.118] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.151] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.154] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.167] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.168] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.184] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.185] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.201] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.202] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.217] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.218] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.234] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.235] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.251] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.251] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.267] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.268] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.284] [info]  Backend: Saving global config
+[2026-07-13 00:31:21.285] [info]  Backend: Saving global config
+[2026-07-13 00:31:27.647] [info]  Backend: Saving global config
+[2026-07-13 00:31:27.649] [info]  Backend: Saving global config
+[2026-07-13 00:31:29.076] [info]  Backend: Saving global config
+[2026-07-13 00:31:29.076] [info]  Backend: Saving global config
+[2026-07-13 00:31:29.101] [info]  Backend: Saving global config
+[2026-07-13 00:31:29.101] [info]  Backend: Saving global config
+[2026-07-13 00:31:29.583] [info]  Backend: Saving global config
+[2026-07-13 00:31:29.584] [info]  Backend: Saving global config
+[2026-07-13 00:31:29.673] [info]  Backend: Saving global config
+[2026-07-13 00:31:29.673] [info]  Backend: Saving global config
+[2026-07-13 00:31:29.693] [info]  Backend: Saving global config
+[2026-07-13 00:31:29.693] [info]  Backend: Saving global config
+[2026-07-13 00:31:30.103] [info]  Backend: Saving global config
+[2026-07-13 00:31:30.103] [info]  Backend: Saving global config
+[2026-07-13 00:31:30.117] [info]  Backend: Saving global config
+[2026-07-13 00:31:30.118] [info]  Backend: Saving global config
+[2026-07-13 00:31:30.454] [info]  Backend: Saving global config
+[2026-07-13 00:31:30.455] [info]  Backend: Saving global config
+[2026-07-13 00:31:30.467] [info]  Backend: Saving global config
+[2026-07-13 00:31:30.468] [info]  Backend: Saving global config
+[2026-07-13 00:31:30.484] [info]  Backend: Saving global config
+[2026-07-13 00:31:30.485] [info]  Backend: Saving global config
+[2026-07-13 00:31:30.501] [info]  Backend: Saving global config
+[2026-07-13 00:31:30.501] [info]  Backend: Saving global config
+[2026-07-13 00:31:30.517] [info]  Backend: Saving global config
+[2026-07-13 00:31:30.518] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.005] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.006] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.127] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.128] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.224] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.224] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.305] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.307] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.351] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.351] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.688] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.688] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.850] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.851] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.936] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.937] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.961] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.961] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.977] [info]  Backend: Saving global config
+[2026-07-13 00:31:31.977] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.037] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.037] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.051] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.051] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.084] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.087] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.117] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.119] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.134] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.149] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.157] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.157] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.167] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.168] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.184] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.185] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.217] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.218] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.236] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.236] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.401] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.402] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.494] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.495] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.506] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.508] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.522] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.523] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.555] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.555] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.584] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.585] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.601] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.601] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.617] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.618] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.634] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.635] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.651] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.651] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.667] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.668] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.684] [info]  Backend: Saving global config
+[2026-07-13 00:31:32.685] [info]  Backend: Saving global config
+[2026-07-13 00:31:33.153] [info]  Backend: Saving global config
+[2026-07-13 00:31:33.154] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.067] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.069] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.084] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.085] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.101] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.101] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.117] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.118] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.151] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.151] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.167] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.168] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.184] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.185] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.201] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.201] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.217] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.218] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.234] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.235] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.251] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.251] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.267] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.268] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.284] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.285] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.301] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.301] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.317] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.318] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.334] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.335] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.351] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.351] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.367] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.368] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.384] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.385] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.401] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.401] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.434] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.435] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.501] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.501] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.517] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.518] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.534] [info]  Backend: Saving global config
+[2026-07-13 00:31:34.535] [info]  Backend: Saving global config

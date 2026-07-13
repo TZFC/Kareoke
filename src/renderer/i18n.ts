@@ -76,7 +76,8 @@ const translations = {
     routingMonitor: 'Monitor (Singer)',
     instrumentalStem: 'Instrumental Track',
     vocalStem: 'Vocal Track',
-    microphone: 'Microphone Input'
+    microphone: 'Microphone Input',
+    disconnectedDevice: 'Disconnected Device'
   },
   'zh-CN': {
     appTitle: '桃子卡拉OK',
@@ -153,7 +154,8 @@ const translations = {
     routingMonitor: '耳返监听 (耳机)',
     instrumentalStem: '伴奏音轨',
     vocalStem: '原唱人声音轨',
-    microphone: '麦克风输入'
+    microphone: '麦克风输入',
+    disconnectedDevice: '未连接设备'
   }
 };
 

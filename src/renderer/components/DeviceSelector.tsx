@@ -19,6 +19,10 @@ export const DeviceSelector: React.FC<DeviceSelectorProps> = ({
   saveGlobal,
   updateConfig
 }) => {
+  const isMicMissing = Boolean(globalConfig.microphoneDevice && !devices.some(d => d.kind === 'audioinput' && d.deviceId === globalConfig.microphoneDevice));
+  const isAudMissing = Boolean(globalConfig.audienceDevice && !devices.some(d => d.kind === 'audiooutput' && d.deviceId === globalConfig.audienceDevice));
+  const isMonMissing = Boolean(globalConfig.monitorDevice && !devices.some(d => d.kind === 'audiooutput' && d.deviceId === globalConfig.monitorDevice));
+
   return (
     <div className="panel">
       <h3 className="panel-title">{t(locale, 'inputDevices')}</h3>
@@ -27,6 +31,7 @@ export const DeviceSelector: React.FC<DeviceSelectorProps> = ({
           <span>{t(locale, 'microphoneDevice')}</span>
           <select 
             value={globalConfig.microphoneDevice} 
+            style={{ color: isMicMissing ? '#ff4444' : 'inherit', borderColor: isMicMissing ? '#ff4444' : undefined }}
             onClick={() => window.electronAPI.log('info', 'User input: Clicked microphone device dropdown')}
             onChange={(e) => {
               window.electronAPI.log('info', `User input: Selected microphone device: ${e.target.value || 'none'}`);
@@ -34,6 +39,11 @@ export const DeviceSelector: React.FC<DeviceSelectorProps> = ({
             }}
           >
             <option value="">{t(locale, 'selectMicrophone')}</option>
+            {isMicMissing && (
+              <option value={globalConfig.microphoneDevice}>
+                [{t(locale, 'disconnectedDevice')}]
+              </option>
+            )}
             {devices.filter((device) => device.kind === 'audioinput').map((device) => (
               <option key={device.deviceId} value={device.deviceId}>{device.label || t(locale, 'microphoneDevice')}</option>
             ))}
@@ -47,6 +57,7 @@ export const DeviceSelector: React.FC<DeviceSelectorProps> = ({
           <span>{t(locale, 'audienceDevice')}</span>
           <select 
             value={globalConfig.audienceDevice} 
+            style={{ color: isAudMissing ? '#ff4444' : 'inherit', borderColor: isAudMissing ? '#ff4444' : undefined }}
             onClick={() => window.electronAPI.log('info', 'User input: Clicked audience device dropdown')}
             onChange={(e) => {
               window.electronAPI.log('info', `User input: Selected audience device: ${e.target.value || 'none'}`);
@@ -54,6 +65,11 @@ export const DeviceSelector: React.FC<DeviceSelectorProps> = ({
             }}
           >
             <option value="">{t(locale, 'selectAudience')}</option>
+            {isAudMissing && (
+              <option value={globalConfig.audienceDevice}>
+                [{t(locale, 'disconnectedDevice')}]
+              </option>
+            )}
             {devices.filter((device) => device.kind === 'audiooutput').map((device) => (
               <option key={device.deviceId} value={device.deviceId}>{device.label || t(locale, 'outputDevice')}</option>
             ))}
@@ -64,6 +80,7 @@ export const DeviceSelector: React.FC<DeviceSelectorProps> = ({
           <span>{t(locale, 'monitorDevice')}</span>
           <select 
             value={globalConfig.monitorDevice} 
+            style={{ color: isMonMissing ? '#ff4444' : 'inherit', borderColor: isMonMissing ? '#ff4444' : undefined }}
             onClick={() => window.electronAPI.log('info', 'User input: Clicked monitor device dropdown')}
             onChange={(e) => {
               window.electronAPI.log('info', `User input: Selected monitor device: ${e.target.value || 'none'}`);
@@ -71,6 +88,11 @@ export const DeviceSelector: React.FC<DeviceSelectorProps> = ({
             }}
           >
             <option value="">{t(locale, 'selectMonitor')}</option>
+            {isMonMissing && (
+              <option value={globalConfig.monitorDevice}>
+                [{t(locale, 'disconnectedDevice')}]
+              </option>
+            )}
             {devices.filter((device) => device.kind === 'audiooutput').map((device) => (
               <option key={device.deviceId} value={device.deviceId}>{device.label || t(locale, 'outputDevice')}</option>
             ))}
