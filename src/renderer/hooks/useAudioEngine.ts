@@ -3,6 +3,7 @@ import { SongItem, SongConfig, GlobalConfig } from '../types';
 import { loadAudioBuffer } from '../utils/audio';
 import { SoundTouchNode } from '@soundtouchjs/audio-worklet';
 import soundtouchWorkletUrl from '@soundtouchjs/audio-worklet/processor?url';
+import * as Tone from 'tone';
 import { formatTime } from '../utils/helpers';
 import { t } from '../i18n';
 
@@ -95,8 +96,8 @@ export const useAudioEngine = (
     audienceTrebleFilter?: BiquadFilterNode;
     monitorBassFilter?: BiquadFilterNode;
     monitorTrebleFilter?: BiquadFilterNode;
-    audienceDelayGain?: GainNode;
-    monitorDelayGain?: GainNode;
+    audienceReverb?: Tone.Freeverb;
+    monitorReverb?: Tone.Freeverb;
   }>({});
 
   const playStartRef = useRef<number>(0);
@@ -153,11 +154,11 @@ export const useAudioEngine = (
     if (nodes.monitorTrebleFilter) {
       nodes.monitorTrebleFilter.gain.setValueAtTime(gConfig.micTreble, 0);
     }
-    if (nodes.audienceDelayGain) {
-      nodes.audienceDelayGain.gain.setValueAtTime(gConfig.micReverb, 0);
+    if (nodes.audienceReverb) {
+      nodes.audienceReverb.wet.value = gConfig.micReverb;
     }
-    if (nodes.monitorDelayGain) {
-      nodes.monitorDelayGain.gain.setValueAtTime(gConfig.micReverb, 0);
+    if (nodes.monitorReverb) {
+      nodes.monitorReverb.wet.value = gConfig.micReverb;
     }
   };
 
@@ -190,13 +191,13 @@ export const useAudioEngine = (
       audTreble.frequency.value = 8000;
       audTreble.gain.value = gConfig.micTreble;
 
-      // Reverb/Delay for Audience
-      const audDelay = audienceCtx.createDelay();
-      audDelay.delayTime.value = 0.25;
-      const audFeedback = audienceCtx.createGain();
-      audFeedback.gain.value = 0.45;
-      const audDelayGain = audienceCtx.createGain();
-      audDelayGain.gain.value = gConfig.micReverb;
+      // Reverb for Audience
+      const audReverb = new Tone.Freeverb({
+        context: new Tone.Context(audienceCtx),
+        roomSize: 0.8,
+        dampening: 3000,
+        wet: gConfig.micReverb
+      });
 
       audSource.connect(audBass);
       audBass.connect(audTreble);
@@ -204,11 +205,9 @@ export const useAudioEngine = (
 
       if (gConfig.routeMicToAudience) {
         audGain.connect(audienceCtx.destination);
-        audGain.connect(audDelay);
-        audDelay.connect(audFeedback);
-        audFeedback.connect(audDelay);
-        audDelay.connect(audDelayGain);
-        audDelayGain.connect(audienceCtx.destination);
+        // Connect the native GainNode to the Tone.js Freeverb input node
+        audGain.connect(audReverb.input as unknown as AudioNode);
+        audReverb.connect(audienceCtx.destination);
       }
 
       // 2. Monitor Context Mic Chain
@@ -224,13 +223,13 @@ export const useAudioEngine = (
       monTreble.frequency.value = 8000;
       monTreble.gain.value = gConfig.micTreble;
 
-      // Reverb/Delay for Monitor
-      const monDelay = monitorCtx.createDelay();
-      monDelay.delayTime.value = 0.25;
-      const monFeedback = monitorCtx.createGain();
-      monFeedback.gain.value = 0.45;
-      const monDelayGain = monitorCtx.createGain();
-      monDelayGain.gain.value = gConfig.micReverb;
+      // Reverb for Monitor
+      const monReverb = new Tone.Freeverb({
+        context: new Tone.Context(monitorCtx),
+        roomSize: 0.8,
+        dampening: 3000,
+        wet: gConfig.micReverb
+      });
 
       monSource.connect(monBass);
       monBass.connect(monTreble);
@@ -238,11 +237,8 @@ export const useAudioEngine = (
 
       if (gConfig.routeMicToMonitor) {
         monGain.connect(monitorCtx.destination);
-        monGain.connect(monDelay);
-        monDelay.connect(monFeedback);
-        monFeedback.connect(monDelay);
-        monDelay.connect(monDelayGain);
-        monDelayGain.connect(monitorCtx.destination);
+        monGain.connect(monReverb.input as unknown as AudioNode);
+        monReverb.connect(monitorCtx.destination);
       }
 
       micNodesRef.current = {
@@ -252,8 +248,8 @@ export const useAudioEngine = (
         audienceTrebleFilter: audTreble,
         monitorBassFilter: monBass,
         monitorTrebleFilter: monTreble,
-        audienceDelayGain: audDelayGain,
-        monitorDelayGain: monDelayGain
+        audienceReverb: audReverb,
+        monitorReverb: monReverb
       };
     } catch (e) {
       console.error("Failed to start mic input", e);
