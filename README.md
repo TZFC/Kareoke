@@ -16,9 +16,12 @@ No lyrics? No problem. Peachy automatically generates perfectly timed `.lrc` lyr
 ### 🎵 AI Musical Notation (Jianpu)
 Whether you are practicing pitch or learning a song, Peachy uses **Spotify Basic Pitch** to track the pitch of the vocal stem and automatically converts it into **Numbered Musical Notation (Jianpu)**.
 
-### 🎛️ Real-time Audio DSP & Routing
+### 🎛️ Real-Time DSP Microphone Processing
 - **Hardware Routing Matrix:** Route your microphone independently to your headphones (Monitor) or your main speakers (Audience).
-- **Live Reverb & EQ:** Apply professional-grade studio reverb, bass, and treble adjustments to your microphone in real-time.
+- **Live Reverb & EQ:** Apply algorithmic reverb (with Room Size and Dampening), bass, and treble adjustments to your microphone in real-time.
+- **Real-Time Pitch Correction:** Auto-tune snaps your vocal pitch to key with zero latency.
+- **Audio Limiter:** Built-in Dynamics Compressor protects against digital clipping and distortion when singing loudly.
+- **Pitch & Volume Control:** Independently pitch-shift and volume-control the instrumental and vocal tracks to match your vocal range.
 - **Audio Limiter:** Built-in Dynamics Compressor protects against digital clipping and distortion when singing loudly.
 - **Pitch & Volume Control:** Independently pitch-shift and volume-control the instrumental and vocal tracks to match your vocal range.
 

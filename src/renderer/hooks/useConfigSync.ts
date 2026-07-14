@@ -21,6 +21,9 @@ export const useConfigSync = (
     micBass: 0,
     micTreble: 0,
     micReverb: 0.3,
+    micRoomSize: 0.8,
+    micDampening: 3000,
+    micAutoTune: false,
     routeMicToAudience: true,
     routeMicToMonitor: false,
     language: 'en-US'

@@ -35,6 +35,9 @@ export type GlobalConfig = {
   micBass: number;
   micTreble: number;
   micReverb: number;
+  micRoomSize: number;
+  micDampening: number;
+  micAutoTune: boolean;
   routeMicToAudience: boolean;
   routeMicToMonitor: boolean;
   language: Locale;

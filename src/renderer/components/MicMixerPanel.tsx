@@ -18,7 +18,7 @@ export const MicMixerPanel: React.FC<MicMixerPanelProps> = ({
     <>
       <h3 className="panel-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         {t(locale, 'micLiveMix')}
-        <button onClick={() => saveGlobal({ ...globalConfig, micVolume: 0.8, micBass: 0, micTreble: 0, micReverb: 0.3 })} style={{ fontSize: '0.75rem', padding: '2px 6px', opacity: 0.8 }}>
+        <button onClick={() => saveGlobal({ ...globalConfig, micVolume: 0.8, micBass: 0, micTreble: 0, micReverb: 0.3, micRoomSize: 0.8, micDampening: 3000, micAutoTune: false })} style={{ fontSize: '0.75rem', padding: '2px 6px', opacity: 0.8 }}>
           {t(locale, 'reset')}
         </button>
       </h3>
@@ -96,6 +96,51 @@ export const MicMixerPanel: React.FC<MicMixerPanelProps> = ({
             value={globalConfig.micReverb} 
             onChange={(e) => saveGlobal({ ...globalConfig, micReverb: Number(e.target.value) })} 
           />
+        </label>
+        <label className="range-label">
+          <span>
+            {t(locale, 'micRoomSize')}: 
+            <EditableNumber 
+              value={globalConfig.micRoomSize ?? 0.8} 
+              onChange={val => saveGlobal({ ...globalConfig, micRoomSize: val })} 
+              min={0} max={1} 
+            />
+          </span>
+          <input 
+            type="range" 
+            min="0" 
+            max="1" 
+            step="0.05" 
+            value={globalConfig.micRoomSize ?? 0.8} 
+            onChange={(e) => saveGlobal({ ...globalConfig, micRoomSize: Number(e.target.value) })} 
+          />
+        </label>
+        <label className="range-label">
+          <span>
+            {t(locale, 'micDampening')}: 
+            <EditableNumber 
+              value={globalConfig.micDampening ?? 3000} 
+              onChange={val => saveGlobal({ ...globalConfig, micDampening: val })} 
+              toFixed={0} suffix=" Hz" 
+              min={1000} max={8000} 
+            />
+          </span>
+          <input 
+            type="range" 
+            min="1000" 
+            max="8000" 
+            step="100" 
+            value={globalConfig.micDampening ?? 3000} 
+            onChange={(e) => saveGlobal({ ...globalConfig, micDampening: Number(e.target.value) })} 
+          />
+        </label>
+        <label className="checkbox-label" style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <input 
+            type="checkbox" 
+            checked={globalConfig.micAutoTune || false}
+            onChange={(e) => saveGlobal({ ...globalConfig, micAutoTune: e.target.checked })}
+          />
+          {t(locale, 'micAutoTune')}
         </label>
       </div>
     </>

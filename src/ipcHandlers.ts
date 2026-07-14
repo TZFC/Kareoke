@@ -61,6 +61,9 @@ export function registerIpcHandlers(options: IpcHandlerOptions) {
         micBass: 0,
         micTreble: 0,
         micReverb: 0.3,
+        micRoomSize: 0.8,
+        micDampening: 3000,
+        micAutoTune: false,
         routeMicToMonitor: false,
         language: 'en-US',
         ...parsed
@@ -76,6 +79,9 @@ export function registerIpcHandlers(options: IpcHandlerOptions) {
         micBass: 0,
         micTreble: 0,
         micReverb: 0.3,
+        micRoomSize: 0.8,
+        micDampening: 3000,
+        micAutoTune: false,
         routeMicToMonitor: false,
         language: 'en-US'
       };
