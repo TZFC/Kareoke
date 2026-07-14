@@ -17,8 +17,8 @@ Node.js 后端，负责处理繁重的工作、文件处理和 AI 推理。
 ### 2. 渲染进程 (`src/renderer/App.tsx`)
 React 前端，负责 UI 呈现和 Web Audio API 实时音频处理。逻辑被清晰地模块化为多个自定义 Hook：
 - **`useAudioContexts`：** 管理主要的 AudioContext 以及用于路由的子上下文（监听/观众）。
-- **`useMicEngine`：** 处理麦克风输入，配备实时 DSP 效果链（双二阶滤波器 EQ、Freeverb 混响）。
-- **`usePlaybackEngine`：** 管理分离出的音轨（人声与伴奏）的播放，应用变调和偏移计算。
+- **`useMicEngine`：** 处理麦克风输入，配备实时 DSP 效果链（双二阶滤波器 EQ、Freeverb 混响、DynamicsCompressorNode 限幅器）。
+- **`usePlaybackEngine`：** 管理分离出的音轨（人声与伴奏）的播放，应用变调和偏移计算。为优化渲染性能，播放进度通过 `MutableRefObject` 进行跟踪，而非 React 状态，从而绕过协调引擎实现 60fps 的流畅 UI 更新。
 - **`useConfigSync`：** 防抖并持久化保存用户的配置更改至本地磁盘。
 - **`useSongLibrary`：** 管理文件系统状态和曲库目录。
 
@@ -55,5 +55,5 @@ npm run build
 如需触发新的生产环境发布与自动更新：
 1. 更新 `package.json` 中的版本号。
 2. 提交并将代码推送到 GitHub。
-3. 创建并推送以 `v` 开头的 git 标签（例如：`git tag v0.1.1` 和 `git push origin v0.1.1`）。
+3. 转到 GitHub 上的 **Actions** 选项卡，选择 **Release** 工作流，然后点击 **Run workflow**。
 GitHub Action 将自动构建 NSIS 安装包并作为 GitHub Release 发布。应用程序启动时会自动检查更新。

@@ -19,7 +19,11 @@ Whether you are practicing pitch or learning a song, Peachy uses **Spotify Basic
 ### 🎛️ Real-time Audio DSP & Routing
 - **Hardware Routing Matrix:** Route your microphone independently to your headphones (Monitor) or your main speakers (Audience).
 - **Live Reverb & EQ:** Apply professional-grade studio reverb, bass, and treble adjustments to your microphone in real-time.
+- **Audio Limiter:** Built-in Dynamics Compressor protects against digital clipping and distortion when singing loudly.
 - **Pitch & Volume Control:** Independently pitch-shift and volume-control the instrumental and vocal tracks to match your vocal range.
+
+### 🎨 Dynamic Theme
+- **System Integrated:** Automatically switches between Dark and Light mode based on your Windows OS preference.
 
 ### 💾 Persistent Configuration
 Once you dial in the perfect pitch shift, reverb setting, or lyric offset for a song, Peachy remembers it! All configurations are saved automatically per-song.
@@ -36,9 +40,3 @@ Once you dial in the perfect pitch shift, reverb setting, or lyric offset for a 
 - At least 4GB of RAM (8GB+ recommended for faster AI processing)
 - No internet connection required! All AI processing is 100% offline.
 
-## Releases and Automated Updates
-To trigger a new production release and auto-update:
-1. Update the version number in `package.json`.
-2. Commit and push your changes to GitHub.
-3. Create and push a git tag starting with `v` (e.g., `git tag v0.1.1` and `git push origin v0.1.1`).
-The GitHub Action will automatically build the NSIS installer and publish it as a GitHub Release. The app will check for updates on startup.

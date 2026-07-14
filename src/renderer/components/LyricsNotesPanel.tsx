@@ -12,8 +12,7 @@ interface LyricsNotesPanelProps {
   editingLrc: boolean;
   setEditingLrc: (editing: boolean) => void;
   parsedLyrics: LyricLine[];
-  currentLyricIndex: number;
-  currentTime: number;
+  currentTimeRef: React.MutableRefObject<number>;
   duration: number;
 }
 
@@ -26,33 +25,66 @@ export const LyricsNotesPanel: React.FC<LyricsNotesPanelProps> = ({
   editingLrc,
   setEditingLrc,
   parsedLyrics,
-  currentLyricIndex,
-  currentTime,
+  currentTimeRef,
   duration
 }) => {
   const noteRef = useRef<HTMLTextAreaElement | null>(null);
   const lyricsContainerRef = useRef<HTMLDivElement | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
 
-  // Auto-scroll note text area by play progress
   useEffect(() => {
-    if (songConfig.autoScroll && noteRef.current && duration > 0) {
-      const ratio = currentTime / duration;
-      const tot = noteRef.current.scrollHeight - noteRef.current.clientHeight;
-      noteRef.current.scrollTop = tot * ratio;
-    }
-  }, [currentTime, duration, songConfig.autoScroll]);
-
-  // Auto-scroll lyrics elements by active index
-  useEffect(() => {
-    if (activeTab === 'lyrics' && songConfig.autoScroll && lyricsContainerRef.current && currentLyricIndex !== -1) {
-      const container = lyricsContainerRef.current;
-      const activeElement = container.children[currentLyricIndex] as HTMLElement;
-      if (activeElement) {
-        const top = activeElement.offsetTop - container.clientHeight / 2 + activeElement.clientHeight / 2;
-        container.scrollTo({ top, behavior: 'smooth' });
+    const updateLoop = () => {
+      const current = currentTimeRef.current;
+      
+      // Auto-scroll note
+      if (songConfig.autoScroll && noteRef.current && duration > 0) {
+        const ratio = current / duration;
+        const tot = noteRef.current.scrollHeight - noteRef.current.clientHeight;
+        noteRef.current.scrollTop = tot * ratio;
       }
-    }
-  }, [currentLyricIndex, activeTab, songConfig.autoScroll]);
+
+      // Sync Lyrics
+      if (activeTab === 'lyrics' && lyricsContainerRef.current) {
+        const container = lyricsContainerRef.current;
+        let activeIdx = -1;
+        for (let i = 0; i < parsedLyrics.length; i++) {
+          if (current >= parsedLyrics[i].time) {
+            activeIdx = i;
+          } else {
+            break;
+          }
+        }
+        
+        for (let i = 0; i < container.children.length; i++) {
+          const el = container.children[i] as HTMLElement;
+          if (i === activeIdx) {
+            el.style.fontSize = '1.25rem';
+            el.style.fontWeight = 'bold';
+            el.style.color = '#a78bfa';
+          } else {
+            el.style.fontSize = '1rem';
+            el.style.fontWeight = 'normal';
+            el.style.color = 'var(--muted)';
+          }
+        }
+
+        if (songConfig.autoScroll && activeIdx !== -1) {
+          const activeElement = container.children[activeIdx] as HTMLElement;
+          if (activeElement) {
+            const top = activeElement.offsetTop - container.clientHeight / 2 + activeElement.clientHeight / 2;
+            container.scrollTo({ top, behavior: 'smooth' });
+          }
+        }
+      }
+      
+      animationFrameRef.current = requestAnimationFrame(updateLoop);
+    };
+    
+    animationFrameRef.current = requestAnimationFrame(updateLoop);
+    return () => {
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+    };
+  }, [songConfig.autoScroll, duration, activeTab, parsedLyrics, currentTimeRef]);
 
   return (
     <>
@@ -103,9 +135,9 @@ export const LyricsNotesPanel: React.FC<LyricsNotesPanelProps> = ({
                   key={idx} 
                   style={{ 
                     textAlign: 'center', 
-                    fontSize: idx === currentLyricIndex ? '1.25rem' : '1rem', 
-                    fontWeight: idx === currentLyricIndex ? 'bold' : 'normal',
-                    color: idx === currentLyricIndex ? '#a78bfa' : 'var(--muted)',
+                    fontSize: '1rem', 
+                    fontWeight: 'normal',
+                    color: 'var(--muted)',
                     transition: 'all 0.2s ease',
                     padding: '4px 0'
                   }}

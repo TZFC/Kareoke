@@ -17,8 +17,8 @@ The Node.js backend handles heavy lifting, file processing, and AI inference.
 ### 2. Renderer Process (`src/renderer/App.tsx`)
 The React frontend handles the UI and real-time Web Audio API processing. The logic is cleanly modularized into custom hooks:
 - **`useAudioContexts`:** Manages the primary AudioContext and sub-contexts for routing (Monitor/Audience).
-- **`useMicEngine`:** Processes microphone input with a live DSP chain (BiquadFilter EQ, Freeverb).
-- **`usePlaybackEngine`:** Manages the playback of the split stems (Vocals & Backing), applying pitch-shifting and offset calculations.
+- **`useMicEngine`:** Processes microphone input with a live DSP chain (BiquadFilter EQ, Freeverb, DynamicsCompressorNode).
+- **`usePlaybackEngine`:** Manages the playback of the split stems, applying pitch-shifting and offset calculations. To optimize rendering, playhead position is tracked via a `MutableRefObject` instead of React state, bypassing the reconciliation engine for 60fps UI updates.
 - **`useConfigSync`:** Debounces and persists user configuration overrides to disk.
 - **`useSongLibrary`:** Manages the file system state and library catalog.
 
@@ -55,5 +55,5 @@ All AI dependencies are loaded locally.
 To trigger a new production release and auto-update:
 1. Update the version number in `package.json`.
 2. Commit and push your changes to GitHub.
-3. Create and push a git tag starting with `v` (e.g., `git tag v0.1.1` and `git push origin v0.1.1`).
+3. Go to the **Actions** tab on GitHub, select the **Release** workflow, and click **Run workflow**.
 The GitHub Action will automatically build the NSIS installer and publish it as a GitHub Release. The app will check for updates on startup.

@@ -26,7 +26,7 @@ export const useAudioEngine = (
   const {
     playing,
     playingRef,
-    currentTime,
+    currentTimeRef,
     duration,
     playbackNodesRef,
     startPlayback,
@@ -84,7 +84,7 @@ export const useAudioEngine = (
 
   return {
     playing,
-    currentTime,
+    currentTimeRef,
     duration,
     startPlayback,
     pausePlayback,

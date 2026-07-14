@@ -6,7 +6,7 @@ import { EditableNumber } from './EditableNumber';
 interface PlaybackControlsProps {
   locale: string;
   playing: boolean;
-  currentTime: number;
+  currentTimeRef: React.MutableRefObject<number>;
   duration: number;
   offsetMs: number;
   startPlayback: () => void;
@@ -18,7 +18,7 @@ interface PlaybackControlsProps {
 export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   locale,
   playing,
-  currentTime,
+  currentTimeRef,
   duration,
   offsetMs,
   startPlayback,
@@ -28,11 +28,36 @@ export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 }) => {
   const selectedSongDuration = formatTime(duration);
 
+  const progressRef = React.useRef<HTMLDivElement | null>(null);
+  const playheadRef = React.useRef<HTMLDivElement | null>(null);
+  const timeTextRef = React.useRef<HTMLSpanElement | null>(null);
+  const animationFrameRef = React.useRef<number | null>(null);
+
+  React.useEffect(() => {
+    const updateLoop = () => {
+      const current = currentTimeRef.current;
+      if (progressRef.current) {
+        progressRef.current.style.width = `${(duration > 0 ? (current / duration) * 100 : 0)}%`;
+      }
+      if (playheadRef.current) {
+        playheadRef.current.style.left = `${(duration > 0 ? (current / duration) * 100 : 0)}%`;
+      }
+      if (timeTextRef.current) {
+        timeTextRef.current.innerText = `${formatTime(current)} / ${selectedSongDuration}`;
+      }
+      animationFrameRef.current = requestAnimationFrame(updateLoop);
+    };
+    animationFrameRef.current = requestAnimationFrame(updateLoop);
+    return () => {
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+    };
+  }, [duration, selectedSongDuration, currentTimeRef]);
+
   return (
     <div className="timeline">
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
         <span>{t(locale, 'timelineHint')}</span>
-        <span>{formatTime(currentTime)} / {selectedSongDuration}</span>
+        <span ref={timeTextRef}>0:00 / {selectedSongDuration}</span>
       </div>
       <div 
         className="timeline-bar" 
@@ -43,12 +68,14 @@ export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
         }}
       >
         <div 
+          ref={progressRef}
           className="timeline-progress" 
-          style={{ width: `${(duration > 0 ? (currentTime / duration) * 100 : 0)}%` }} 
+          style={{ width: '0%' }} 
         />
         <div 
+          ref={playheadRef}
           className="playhead" 
-          style={{ left: `${(duration > 0 ? (currentTime / duration) * 100 : 0)}%` }} 
+          style={{ left: '0%' }} 
         />
       </div>
       <div style={{ display: 'flex', gap: '10px', marginTop: 10 }}>

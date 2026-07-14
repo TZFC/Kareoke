@@ -13,6 +13,8 @@ export const useMicEngine = () => {
     monitorTrebleFilter?: BiquadFilterNode;
     audienceReverb?: Tone.Freeverb;
     monitorReverb?: Tone.Freeverb;
+    audienceCompressor?: DynamicsCompressorNode;
+    monitorCompressor?: DynamicsCompressorNode;
   }>({});
 
   const updateMicParams = (gConfig: GlobalConfig) => {
@@ -87,14 +89,23 @@ export const useMicEngine = () => {
         wet: gConfig.micReverb
       });
 
+      // Compressor for Audience
+      const audCompressor = audienceCtx.createDynamicsCompressor();
+      audCompressor.threshold.value = -5;
+      audCompressor.knee.value = 15;
+      audCompressor.ratio.value = 10;
+      audCompressor.attack.value = 0.005;
+      audCompressor.release.value = 0.25;
+
       audSource.connect(audBass);
       audBass.connect(audTreble);
       audTreble.connect(audGain);
 
       if (gConfig.routeMicToAudience) {
-        audGain.connect(audienceCtx.destination);
+        audGain.connect(audCompressor);
         audGain.connect(audReverb.input as unknown as AudioNode);
-        audReverb.connect(audienceCtx.destination);
+        audReverb.connect(audCompressor);
+        audCompressor.connect(audienceCtx.destination);
       }
 
       // 2. Monitor Context Mic Chain
@@ -118,14 +129,23 @@ export const useMicEngine = () => {
         wet: gConfig.micReverb
       });
 
+      // Compressor for Monitor
+      const monCompressor = monitorCtx.createDynamicsCompressor();
+      monCompressor.threshold.value = -5;
+      monCompressor.knee.value = 15;
+      monCompressor.ratio.value = 10;
+      monCompressor.attack.value = 0.005;
+      monCompressor.release.value = 0.25;
+
       monSource.connect(monBass);
       monBass.connect(monTreble);
       monTreble.connect(monGain);
 
       if (gConfig.routeMicToMonitor) {
-        monGain.connect(monitorCtx.destination);
+        monGain.connect(monCompressor);
         monGain.connect(monReverb.input as unknown as AudioNode);
-        monReverb.connect(monitorCtx.destination);
+        monReverb.connect(monCompressor);
+        monCompressor.connect(monitorCtx.destination);
       }
 
       micNodesRef.current = {
@@ -136,7 +156,9 @@ export const useMicEngine = () => {
         monitorBassFilter: monBass,
         monitorTrebleFilter: monTreble,
         audienceReverb: audReverb,
-        monitorReverb: monReverb
+        monitorReverb: monReverb,
+        audienceCompressor: audCompressor,
+        monitorCompressor: monCompressor
       };
     } catch (error: any) {
       console.error("Failed to start mic input", error);

@@ -45,9 +45,6 @@ const fluent_ffmpeg_1 = __importDefault(require("fluent-ffmpeg"));
 const ffmpeg_static_1 = __importDefault(require("ffmpeg-static"));
 const electron_updater_1 = require("electron-updater");
 const ipcHandlers_1 = require("./ipcHandlers");
-const loadESM = async (modulePath) => {
-    return await new Function('modulePath', 'return import(modulePath)')(modulePath);
-};
 // Clear old logs on startup
 try {
     (0, fs_1.writeFileSync)(path.join(process.cwd(), 'peachy-kareoke.log'), '');

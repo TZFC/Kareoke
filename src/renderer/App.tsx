@@ -92,7 +92,7 @@ function App() {
     (changes) => {
       if (playing && changes.offsetMs !== undefined) {
         window.electronAPI.log('info', `Live playback parameter changed. Triggering audio graph rebuild via seekTo().`);
-        seekTo(currentTime);
+        seekTo(currentTimeRef.current);
       }
     }
   );
@@ -100,7 +100,7 @@ function App() {
   // Hook 3: Audio Engine
   const {
     playing,
-    currentTime,
+    currentTimeRef,
     duration,
     startPlayback,
     pausePlayback,
@@ -113,19 +113,6 @@ function App() {
   const parsedLyrics = useMemo(() => {
     return parseLrc(songConfig.lrcText || '');
   }, [songConfig.lrcText]);
-
-  const currentLyricIndex = useMemo(() => {
-    if (!parsedLyrics.length) return -1;
-    let index = -1;
-    for (let i = 0; i < parsedLyrics.length; i++) {
-      if (currentTime >= parsedLyrics[i].time) {
-        index = i;
-      } else {
-        break;
-      }
-    }
-    return index;
-  }, [parsedLyrics, currentTime]);
 
   const searchResults = useMemo(() => {
     if (!searchTerm.trim()) return songs.slice(0, 5);
@@ -213,7 +200,7 @@ function App() {
           <PlaybackControls
             locale={locale}
             playing={playing}
-            currentTime={currentTime}
+            currentTimeRef={currentTimeRef}
             duration={duration}
             offsetMs={songConfig.offsetMs}
             startPlayback={startPlayback}
@@ -258,8 +245,7 @@ function App() {
             editingLrc={editingLrc}
             setEditingLrc={setEditingLrc}
             parsedLyrics={parsedLyrics}
-            currentLyricIndex={currentLyricIndex}
-            currentTime={currentTime}
+            currentTimeRef={currentTimeRef}
             duration={duration}
           />
           

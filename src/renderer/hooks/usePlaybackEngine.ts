@@ -17,7 +17,7 @@ export const usePlaybackEngine = (
   stopMicInput: () => void
 ) => {
   const [playing, setPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
+  const currentTimeRef = useRef(0);
   const [duration, setDuration] = useState(0);
 
   const playingRef = useRef(false);
@@ -44,7 +44,7 @@ export const usePlaybackEngine = (
     const elapsed = audienceContextRef.current.currentTime - playStartRef.current;
     const target = pauseOffsetRef.current + elapsed;
     const clamped = Math.min(target, duration);
-    setCurrentTime(clamped);
+    currentTimeRef.current = clamped;
     
     if (clamped >= duration) {
       stopPlayback();
@@ -61,7 +61,7 @@ export const usePlaybackEngine = (
     });
     playSourcesRef.current = [];
     stopMicInput();
-    pauseOffsetRef.current = currentTime;
+    pauseOffsetRef.current = currentTimeRef.current;
     if (autoScrollFrame.current) {
       cancelAnimationFrame(autoScrollFrame.current);
       autoScrollFrame.current = null;
@@ -245,7 +245,7 @@ export const usePlaybackEngine = (
   const seekTo = (time: number) => {
     window.electronAPI.log('info', `User input: seekTo ${time.toFixed(2)}s`);
     const clamped = Math.max(0, Math.min(time, duration));
-    setCurrentTime(clamped);
+    currentTimeRef.current = clamped;
     pauseOffsetRef.current = clamped;
     if (playingRef.current) {
       stopPlayback();
@@ -256,7 +256,7 @@ export const usePlaybackEngine = (
   const loadBuffers = async (song: SongItem) => {
     try {
       stopPlayback();
-      setCurrentTime(0);
+      currentTimeRef.current = 0;
       pauseOffsetRef.current = 0;
       window.electronAPI.log('info', `loadBuffers: Starting for "${song.name}"`);
 
@@ -284,7 +284,7 @@ export const usePlaybackEngine = (
   return {
     playing,
     playingRef,
-    currentTime,
+    currentTimeRef,
     duration,
     playbackNodesRef,
     startPlayback,
