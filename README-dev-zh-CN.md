@@ -50,3 +50,10 @@ npm run build
 - **Demucs**: 存储于 `node_modules/demucs/htdemucs.onnx`
 - **Whisper**: 通过 `transformers.js` 获取或从缓存加载
 - **Basic Pitch**: 存储于 `node_modules/@spotify/basic-pitch/model/model.json`
+
+## 自动更新与发布
+如需触发新的生产环境发布与自动更新：
+1. 更新 `package.json` 中的版本号。
+2. 提交并将代码推送到 GitHub。
+3. 创建并推送以 `v` 开头的 git 标签（例如：`git tag v0.1.1` 和 `git push origin v0.1.1`）。
+GitHub Action 将自动构建 NSIS 安装包并作为 GitHub Release 发布。应用程序启动时会自动检查更新。

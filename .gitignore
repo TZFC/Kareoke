@@ -14,7 +14,11 @@ PeachyKareoke/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.log
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# Antigravity agents config
+.agents/

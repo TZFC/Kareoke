@@ -35,3 +35,10 @@ Once you dial in the perfect pitch shift, reverb setting, or lyric offset for a 
 - Windows 10 / 11
 - At least 4GB of RAM (8GB+ recommended for faster AI processing)
 - No internet connection required! All AI processing is 100% offline.
+
+## Releases and Automated Updates
+To trigger a new production release and auto-update:
+1. Update the version number in `package.json`.
+2. Commit and push your changes to GitHub.
+3. Create and push a git tag starting with `v` (e.g., `git tag v0.1.1` and `git push origin v0.1.1`).
+The GitHub Action will automatically build the NSIS installer and publish it as a GitHub Release. The app will check for updates on startup.

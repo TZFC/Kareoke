@@ -43,6 +43,8 @@ const http = __importStar(require("http"));
 const electron_log_1 = __importDefault(require("electron-log"));
 const fluent_ffmpeg_1 = __importDefault(require("fluent-ffmpeg"));
 const ffmpeg_static_1 = __importDefault(require("ffmpeg-static"));
+const electron_updater_1 = require("electron-updater");
+const ipcHandlers_1 = require("./ipcHandlers");
 const loadESM = async (modulePath) => {
     return await new Function('modulePath', 'return import(modulePath)')(modulePath);
 };
@@ -59,6 +61,9 @@ catch { }
 electron_log_1.default.transports.file.resolvePathFn = () => path.join(process.cwd(), 'peachy-kareoke.log');
 Object.assign(console, electron_log_1.default.functions);
 electron_log_1.default.info('Application Starting...');
+// Setup Auto Updater Logging
+electron_updater_1.autoUpdater.logger = electron_log_1.default;
+electron_updater_1.autoUpdater.logger.transports.file.level = 'info';
 if (ffmpeg_static_1.default) {
     fluent_ffmpeg_1.default.setFfmpegPath(ffmpeg_static_1.default);
 }
@@ -141,6 +146,12 @@ electron_1.app.whenReady().then(async () => {
     electron_1.nativeTheme.themeSource = 'system';
     await ensureDirectories();
     createWindow();
+    // Check for updates
+    if (electron_1.app.isPackaged) {
+        electron_updater_1.autoUpdater.checkForUpdatesAndNotify().catch(err => {
+            electron_log_1.default.error(`Auto-update error: ${err}`);
+        });
+    }
     electron_1.app.on('activate', () => {
         if (electron_1.BrowserWindow.getAllWindows().length === 0)
             createWindow();
@@ -160,248 +171,11 @@ electron_1.app.on('window-all-closed', () => {
         electron_1.app.quit();
     }
 });
-electron_1.ipcMain.handle('load-song-list', async () => {
-    electron_log_1.default.info('Backend: Loading song list');
-    await ensureDirectories();
-    const files = await fs_1.promises.readdir(sourceDir);
-    const songs = await Promise.all(files
-        .filter((file) => ['.mp3', '.wav'].includes(path.extname(file).toLowerCase()))
-        .map(async (file) => {
-        const name = path.basename(file, path.extname(file));
-        const configPath = path.join(configDir, `${name}.json`);
-        let config = {};
-        try {
-            config = JSON.parse(await fs_1.promises.readFile(configPath, 'utf-8'));
-        }
-        catch {
-            config = null;
-        }
-        return {
-            name,
-            file,
-            sourcePath: path.join(sourceDir, file),
-            vocalPath: path.join(vocalDir, `${name}.wav`),
-            instrumentalPath: path.join(instrumentalDir, `${name}.wav`),
-            config
-        };
-    }));
-    return songs;
-});
-electron_1.ipcMain.handle('load-global-config', async () => {
-    electron_log_1.default.info('Backend: Loading global config');
-    await ensureDirectories();
-    try {
-        const raw = await fs_1.promises.readFile(globalConfigPath, 'utf-8');
-        const parsed = JSON.parse(raw);
-        return {
-            inputDevices: [],
-            outputDevices: [],
-            microphoneDevice: '',
-            audienceDevice: '',
-            monitorDevice: '',
-            micVolume: 0.8,
-            micBass: 0,
-            micTreble: 0,
-            micReverb: 0.3,
-            routeMicToMonitor: false,
-            language: 'en-US',
-            ...parsed
-        };
-    }
-    catch {
-        return {
-            inputDevices: [],
-            outputDevices: [],
-            microphoneDevice: '',
-            audienceDevice: '',
-            monitorDevice: '',
-            micVolume: 0.8,
-            micBass: 0,
-            micTreble: 0,
-            micReverb: 0.3,
-            routeMicToMonitor: false,
-            language: 'en-US'
-        };
-    }
-});
-electron_1.ipcMain.handle('save-global-config', async (_, config) => {
-    electron_log_1.default.info('Backend: Saving global config');
-    await ensureDirectories();
-    await fs_1.promises.writeFile(globalConfigPath, JSON.stringify(config, null, 2), 'utf-8');
-    return true;
-});
-electron_1.ipcMain.handle('save-song-config', async (_, name, config) => {
-    electron_log_1.default.info(`Backend: Saving song config for "${name}"`);
-    await ensureDirectories();
-    const configPath = path.join(configDir, `${name}.json`);
-    await fs_1.promises.writeFile(configPath, JSON.stringify(config, null, 2), 'utf-8');
-    return true;
-});
-electron_1.ipcMain.on('log-message', (event, level, message) => {
-    if (level === 'error')
-        electron_log_1.default.error(message);
-    else if (level === 'warn')
-        electron_log_1.default.warn(message);
-    else
-        electron_log_1.default.info(message);
-    event.returnValue = true;
-});
-electron_1.ipcMain.handle('delete-song', async (_, name) => {
-    electron_log_1.default.info(`Deleting song: ${name}`);
-    await ensureDirectories();
-    const configPath = path.join(configDir, `${name}.json`);
-    const vocalFilePath = path.join(vocalDir, `${name}.wav`);
-    const instFilePath = path.join(instrumentalDir, `${name}.wav`);
-    const sourceFiles = await fs_1.promises.readdir(sourceDir);
-    const sourceFile = sourceFiles.find(f => path.basename(f, path.extname(f)) === name);
-    if (sourceFile) {
-        await fs_1.promises.unlink(path.join(sourceDir, sourceFile)).catch(() => { });
-    }
-    await fs_1.promises.unlink(configPath).catch(() => { });
-    await fs_1.promises.unlink(vocalFilePath).catch(() => { });
-    await fs_1.promises.unlink(instFilePath).catch(() => { });
-    electron_log_1.default.info(`Deleted song completely: ${name}`);
-    return true;
-});
-electron_1.ipcMain.handle('process-file', async (_, originalPath) => {
-    electron_log_1.default.info(`New song dragged in: ${originalPath}`);
-    await ensureDirectories();
-    let generatedLrc = '';
-    let generatedNmn = '';
-    const extension = path.extname(originalPath).toLowerCase();
-    if (!['.mp3', '.wav'].includes(extension)) {
-        throw new Error('只支持 WAV 和 MP3 文件 / Only WAV and MP3 files are supported.');
-    }
-    const fileName = path.basename(originalPath);
-    let targetName = path.basename(originalPath, extension);
-    const sourcePath = path.join(sourceDir, fileName);
-    const exists = await fs_1.promises
-        .access(sourcePath)
-        .then(() => true)
-        .catch(() => false);
-    if (exists) {
-        const response = await electron_1.dialog.showMessageBox({
-            type: 'question',
-            title: 'Duplicate file name',
-            message: `Song name "${targetName}" exists. Overwrite or rename current file?`,
-            buttons: ['Overwrite', 'Rename', 'Cancel'],
-            cancelId: 2,
-            defaultId: 1
-        });
-        if (response.response === 2) {
-            throw new Error('Cancelled');
-        }
-        if (response.response === 1) {
-            let suffix = 1;
-            let candidate = `${targetName}-${suffix}${extension}`;
-            let candidatePath = path.join(sourceDir, candidate);
-            while (await fs_1.promises.access(candidatePath).then(() => true).catch(() => false)) {
-                suffix += 1;
-                candidate = `${targetName}-${suffix}${extension}`;
-                candidatePath = path.join(sourceDir, candidate);
-            }
-            targetName = `${targetName}-${suffix}`;
-        }
-    }
-    const targetFileName = `${targetName}${extension}`;
-    const targetPath = path.join(sourceDir, targetFileName);
-    await fs_1.promises.copyFile(originalPath, targetPath);
-    // Progress Dispatcher for UI Updates
-    const sendProgress = (percent, message) => {
-        electron_1.BrowserWindow.getAllWindows().forEach((win) => {
-            win.webContents.send('processing-progress', { percent });
-            win.webContents.send('processing-status', { type: 'status', message });
-        });
-    };
-    const tempWavPath = path.join(electron_1.app.getPath('temp'), `peachy_${Date.now()}.wav`);
-    sendProgress(5, 'Normalizing audio format...');
-    await new Promise((resolve, reject) => {
-        (0, fluent_ffmpeg_1.default)(targetPath)
-            .toFormat('wav')
-            .audioFrequency(44100)
-            .audioChannels(2)
-            .on('end', () => resolve())
-            .on('error', (err) => reject(new Error(`FFmpeg error: ${err.message}`)))
-            .save(tempWavPath);
-    });
-    try {
-        const { separateStems } = await Promise.resolve().then(() => __importStar(require('./ai/separateStems')));
-        const { finalVocalPath } = await separateStems(tempWavPath, targetName, vocalDir, instrumentalDir, sendProgress, electron_log_1.default);
-        try {
-            sendProgress(96, 'Generating lyrics from vocals (AI)...');
-            // Dynamic import to avoid holding models in memory when not used
-            const { generateLRC } = await Promise.resolve().then(() => __importStar(require('./ai/generateLRC')));
-            generatedLrc = await generateLRC(finalVocalPath, sendProgress);
-        }
-        catch (e) {
-            electron_log_1.default.error('LRC Generation failed: ' + e.message);
-        }
-        try {
-            sendProgress(98, 'Extracting musical notation (AI)...');
-            const { generateNMN } = await Promise.resolve().then(() => __importStar(require('./ai/generateNMN')));
-            const f32leRawPath = path.join(electron_1.app.getPath('temp'), `peachy_nmn_${Date.now()}.raw`);
-            await new Promise((resolve, reject) => {
-                (0, fluent_ffmpeg_1.default)(finalVocalPath)
-                    .toFormat('f32le')
-                    .audioFrequency(22050)
-                    .audioChannels(1)
-                    .on('end', () => resolve())
-                    .on('error', (err) => reject(new Error(`FFmpeg error: ${err.message}`)))
-                    .save(f32leRawPath);
-            });
-            generatedNmn = await generateNMN(f32leRawPath, sendProgress);
-            await fs_1.promises.unlink(f32leRawPath).catch(() => { });
-        }
-        catch (e) {
-            electron_log_1.default.error('NMN Generation failed: ' + e.message);
-        }
-        electron_log_1.default.info(`Stored stems for ${targetName} successfully.`);
-        sendProgress(100, 'Separation complete');
-    }
-    catch (err) {
-        electron_log_1.default.error(`Separation failed: ${err.message}\n${err.stack}`);
-        throw err;
-    }
-    finally {
-        if ((0, fs_1.existsSync)(tempWavPath)) {
-            await fs_1.promises.unlink(tempWavPath).catch(() => { });
-        }
-    }
-    const configPath = path.join(configDir, `${targetName}.json`);
-    let existingConfig = {};
-    if ((0, fs_1.existsSync)(configPath)) {
-        try {
-            existingConfig = JSON.parse(await fs_1.promises.readFile(configPath, 'utf-8'));
-        }
-        catch (e) {
-            electron_log_1.default.error(`Failed to parse existing config for ${targetName}`);
-        }
-    }
-    const finalConfig = {
-        instrumentalVolume: 0.85,
-        instrumentalPitch: 0,
-        vocalVolume: 0.95,
-        vocalPitch: 0,
-        reverb: {
-            dry: 0.4,
-            wet: 0.18,
-            roomSize: 0.55,
-            damping: 0.45
-        },
-        reverbBypass: false,
-        offsetMs: 0,
-        autoScroll: true,
-        routeBackingToMonitor: true,
-        ...existingConfig,
-        notes: existingConfig.notes || generatedNmn,
-        lrcText: existingConfig.lrcText || generatedLrc,
-    };
-    await fs_1.promises.writeFile(configPath, JSON.stringify(finalConfig, null, 2), 'utf-8');
-    return {
-        name: targetName,
-        sourcePath: targetPath,
-        vocalPath: path.join(vocalDir, `${targetName}.wav`),
-        instrumentalPath: path.join(instrumentalDir, `${targetName}.wav`),
-        config: finalConfig
-    };
+(0, ipcHandlers_1.registerIpcHandlers)({
+    sourceDir,
+    vocalDir,
+    instrumentalDir,
+    configDir,
+    globalConfigPath,
+    ensureDirectories
 });

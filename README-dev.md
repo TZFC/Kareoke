@@ -50,3 +50,10 @@ All AI dependencies are loaded locally.
 - **Demucs**: Stored in `node_modules/demucs/htdemucs.onnx`
 - **Whisper**: Fetched or loaded from cache via `transformers.js`
 - **Basic Pitch**: Stored in `node_modules/@spotify/basic-pitch/model/model.json`
+
+## Releases and Automated Updates
+To trigger a new production release and auto-update:
+1. Update the version number in `package.json`.
+2. Commit and push your changes to GitHub.
+3. Create and push a git tag starting with `v` (e.g., `git tag v0.1.1` and `git push origin v0.1.1`).
+The GitHub Action will automatically build the NSIS installer and publish it as a GitHub Release. The app will check for updates on startup.

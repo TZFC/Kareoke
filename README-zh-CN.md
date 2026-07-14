@@ -35,3 +35,10 @@ Peachy Karaoke 内置了业界领先的 **Demucs** AI 模型。
 - Windows 10 / 11
 - 至少 4GB 内存（建议 8GB+ 以加快 AI 处理速度）
 - 无需连接互联网！所有 AI 处理均 100% 离线进行。
+
+## 自动更新与发布
+如需触发新的生产环境发布与自动更新：
+1. 更新 `package.json` 中的版本号。
+2. 提交并将代码推送到 GitHub。
+3. 创建并推送以 `v` 开头的 git 标签（例如：`git tag v0.1.1` 和 `git push origin v0.1.1`）。
+GitHub Action 将自动构建 NSIS 安装包并作为 GitHub Release 发布。应用程序启动时会自动检查更新。
