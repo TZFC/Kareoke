@@ -14,19 +14,40 @@ export const useMicEngine = () => {
     audienceTrebleFilter?: BiquadFilterNode;
     monitorBassFilter?: BiquadFilterNode;
     monitorTrebleFilter?: BiquadFilterNode;
+    audiencePreDelay?: DelayNode;
+    monitorPreDelay?: DelayNode;
     audienceReverb?: Tone.Freeverb;
     monitorReverb?: Tone.Freeverb;
+    audienceReverbGain?: GainNode;
+    monitorReverbGain?: GainNode;
     audienceCompressor?: DynamicsCompressorNode;
     monitorCompressor?: DynamicsCompressorNode;
     audPitchShift?: any;
     monPitchShift?: any;
+    monPitchShift?: any;
     micAutoTuneEnabled?: boolean;
     detectLoop?: number;
+    rebuildRouting?: (gConfig: GlobalConfig) => void;
+    lastRoutingState?: string;
   }>({});
 
   const updateMicParams = (gConfig: GlobalConfig) => {
     const nodes = micNodesRef.current;
     nodes.micAutoTuneEnabled = gConfig.micAutoTune;
+
+    const newRoutingState = JSON.stringify({
+      micAutoTune: gConfig.micAutoTune,
+      micBassActive: gConfig.micBass !== 0,
+      micTrebleActive: gConfig.micTreble !== 0,
+      micReverbActive: gConfig.micReverb > 0,
+      routeMicToAudience: gConfig.routeMicToAudience,
+      routeMicToMonitor: gConfig.routeMicToMonitor
+    });
+
+    if (nodes.lastRoutingState !== newRoutingState && nodes.rebuildRouting) {
+      nodes.rebuildRouting(gConfig);
+      nodes.lastRoutingState = newRoutingState;
+    }
     if (nodes.audienceGain) {
       nodes.audienceGain.gain.setValueAtTime(gConfig.micVolume, 0);
     }
@@ -45,13 +66,17 @@ export const useMicEngine = () => {
     if (nodes.monitorTrebleFilter) {
       nodes.monitorTrebleFilter.gain.setValueAtTime(gConfig.micTreble, 0);
     }
+    if (nodes.audienceReverbGain) {
+      nodes.audienceReverbGain.gain.value = gConfig.micReverb;
+    }
     if (nodes.audienceReverb) {
-      nodes.audienceReverb.wet.value = gConfig.micReverb;
       nodes.audienceReverb.roomSize.value = gConfig.micRoomSize;
       nodes.audienceReverb.dampening = gConfig.micDampening;
     }
+    if (nodes.monitorReverbGain) {
+      nodes.monitorReverbGain.gain.value = gConfig.micReverb;
+    }
     if (nodes.monitorReverb) {
-      nodes.monitorReverb.wet.value = gConfig.micReverb;
       nodes.monitorReverb.roomSize.value = gConfig.micRoomSize;
       nodes.monitorReverb.dampening = gConfig.micDampening;
     }
@@ -109,33 +134,26 @@ export const useMicEngine = () => {
       audTreble.frequency.value = 8000;
       audTreble.gain.value = gConfig.micTreble;
 
-      // Reverb for Audience
+      // Reverb & Pre-Delay for Audience
+      const audPreDelay = audienceCtx.createDelay(1.0);
+      audPreDelay.delayTime.value = 0.04;
+
       const audReverb = new Tone.Freeverb({
         context: new Tone.Context(audienceCtx),
         roomSize: gConfig.micRoomSize ?? 0.8,
         dampening: gConfig.micDampening ?? 3000,
-        wet: gConfig.micReverb
+        wet: 1
       });
 
-      // Compressor for Audience
+      const audReverbGain = audienceCtx.createGain();
+      audReverbGain.gain.value = gConfig.micReverb;
+
       const audCompressor = audienceCtx.createDynamicsCompressor();
       audCompressor.threshold.value = -5;
       audCompressor.knee.value = 15;
       audCompressor.ratio.value = 10;
       audCompressor.attack.value = 0.005;
       audCompressor.release.value = 0.25;
-
-      audSource.connect(audPitchShift);
-      audPitchShift.connect(audBass);
-      audBass.connect(audTreble);
-      audTreble.connect(audGain);
-
-      if (gConfig.routeMicToAudience) {
-        audGain.connect(audCompressor);
-        audGain.connect(audReverb.input as unknown as AudioNode);
-        audReverb.connect(audCompressor);
-        audCompressor.connect(audienceCtx.destination);
-      }
 
       // 2. Monitor Context Mic Chain
       const monSource = monitorCtx.createMediaStreamSource(stream);
@@ -155,15 +173,20 @@ export const useMicEngine = () => {
       monTreble.frequency.value = 8000;
       monTreble.gain.value = gConfig.micTreble;
 
-      // Reverb for Monitor
+      // Reverb & Pre-Delay for Monitor
+      const monPreDelay = monitorCtx.createDelay(1.0);
+      monPreDelay.delayTime.value = 0.04;
+
       const monReverb = new Tone.Freeverb({
         context: new Tone.Context(monitorCtx),
         roomSize: gConfig.micRoomSize ?? 0.8,
         dampening: gConfig.micDampening ?? 3000,
-        wet: gConfig.micReverb
+        wet: 1
       });
 
-      // Compressor for Monitor
+      const monReverbGain = monitorCtx.createGain();
+      monReverbGain.gain.value = gConfig.micReverb;
+
       const monCompressor = monitorCtx.createDynamicsCompressor();
       monCompressor.threshold.value = -5;
       monCompressor.knee.value = 15;
@@ -171,17 +194,89 @@ export const useMicEngine = () => {
       monCompressor.attack.value = 0.005;
       monCompressor.release.value = 0.25;
 
-      monSource.connect(monPitchShift);
-      monPitchShift.connect(monBass);
-      monBass.connect(monTreble);
-      monTreble.connect(monGain);
+      const analyser = audienceCtx.createAnalyser();
+      analyser.fftSize = 2048;
 
-      if (gConfig.routeMicToMonitor) {
-        monGain.connect(monCompressor);
-        monGain.connect(monReverb.input as unknown as AudioNode);
-        monReverb.connect(monCompressor);
-        monCompressor.connect(monitorCtx.destination);
-      }
+      const rebuildRouting = (config: GlobalConfig) => {
+        try { audSource.disconnect(); } catch (e) {}
+        try { audPitchShift.disconnect(); } catch (e) {}
+        try { audBass.disconnect(); } catch (e) {}
+        try { audTreble.disconnect(); } catch (e) {}
+        try { audGain.disconnect(); } catch (e) {}
+        try { audPreDelay.disconnect(); } catch (e) {}
+        try { audReverb.disconnect(); } catch (e) {}
+        try { audReverbGain.disconnect(); } catch (e) {}
+        try { audCompressor.disconnect(); } catch (e) {}
+
+        try { monSource.disconnect(); } catch (e) {}
+        try { monPitchShift.disconnect(); } catch (e) {}
+        try { monBass.disconnect(); } catch (e) {}
+        try { monTreble.disconnect(); } catch (e) {}
+        try { monGain.disconnect(); } catch (e) {}
+        try { monPreDelay.disconnect(); } catch (e) {}
+        try { monReverb.disconnect(); } catch (e) {}
+        try { monReverbGain.disconnect(); } catch (e) {}
+        try { monCompressor.disconnect(); } catch (e) {}
+
+        // Audience Chain
+        let audCurrent: AudioNode = audSource;
+        if (config.micAutoTune) {
+          audCurrent.connect(audPitchShift);
+          audCurrent = audPitchShift;
+        }
+        if (config.micBass !== 0) {
+          audCurrent.connect(audBass);
+          audCurrent = audBass;
+        }
+        if (config.micTreble !== 0) {
+          audCurrent.connect(audTreble);
+          audCurrent = audTreble;
+        }
+        audCurrent.connect(audGain);
+
+        if (config.routeMicToAudience) {
+          audGain.connect(audCompressor);
+          if (config.micReverb > 0) {
+            audGain.connect(audPreDelay);
+            audPreDelay.connect(audReverb.input as unknown as AudioNode);
+            audReverb.connect(audReverbGain);
+            audReverbGain.connect(audCompressor);
+          }
+          audCompressor.connect(audienceCtx.destination);
+        }
+
+        // Monitor Chain
+        let monCurrent: AudioNode = monSource;
+        if (config.micAutoTune) {
+          monCurrent.connect(monPitchShift);
+          monCurrent = monPitchShift;
+        }
+        if (config.micBass !== 0) {
+          monCurrent.connect(monBass);
+          monCurrent = monBass;
+        }
+        if (config.micTreble !== 0) {
+          monCurrent.connect(monTreble);
+          monCurrent = monTreble;
+        }
+        monCurrent.connect(monGain);
+
+        if (config.routeMicToMonitor) {
+          monGain.connect(monCompressor);
+          if (config.micReverb > 0) {
+            monGain.connect(monPreDelay);
+            monPreDelay.connect(monReverb.input as unknown as AudioNode);
+            monReverb.connect(monReverbGain);
+            monReverbGain.connect(monCompressor);
+          }
+          monCompressor.connect(monitorCtx.destination);
+        }
+
+        audSource.connect(analyser);
+      };
+
+      // Initial routing
+      rebuildRouting(gConfig);
 
       micNodesRef.current = {
         audienceGain: audGain,
@@ -190,19 +285,27 @@ export const useMicEngine = () => {
         audienceTrebleFilter: audTreble,
         monitorBassFilter: monBass,
         monitorTrebleFilter: monTreble,
+        audiencePreDelay: audPreDelay,
+        monitorPreDelay: monPreDelay,
         audienceReverb: audReverb,
         monitorReverb: monReverb,
+        audienceReverbGain: audReverbGain,
+        monitorReverbGain: monReverbGain,
         audienceCompressor: audCompressor,
         monitorCompressor: monCompressor,
         audPitchShift,
         monPitchShift,
-        micAutoTuneEnabled: gConfig.micAutoTune
+        micAutoTuneEnabled: gConfig.micAutoTune,
+        rebuildRouting,
+        lastRoutingState: JSON.stringify({
+          micAutoTune: gConfig.micAutoTune,
+          micBassActive: gConfig.micBass !== 0,
+          micTrebleActive: gConfig.micTreble !== 0,
+          micReverbActive: gConfig.micReverb > 0,
+          routeMicToAudience: gConfig.routeMicToAudience,
+          routeMicToMonitor: gConfig.routeMicToMonitor
+        })
       };
-
-      // Set up Pitch Detection Loop
-      const analyser = audienceCtx.createAnalyser();
-      analyser.fftSize = 2048;
-      audSource.connect(analyser);
 
       const detector = PitchDetector.forFloat32Array(analyser.fftSize);
       const inputBuffer = new Float32Array(analyser.fftSize);

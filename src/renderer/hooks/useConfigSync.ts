@@ -20,7 +20,7 @@ export const useConfigSync = (
     micVolume: 0.8,
     micBass: 0,
     micTreble: 0,
-    micReverb: 0.3,
+    micReverb: 0,
     micRoomSize: 0.8,
     micDampening: 3000,
     micAutoTune: false,

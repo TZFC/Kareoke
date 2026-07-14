@@ -18,7 +18,7 @@ export const MicMixerPanel: React.FC<MicMixerPanelProps> = ({
     <>
       <h3 className="panel-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         {t(locale, 'micLiveMix')}
-        <button onClick={() => saveGlobal({ ...globalConfig, micVolume: 0.8, micBass: 0, micTreble: 0, micReverb: 0.3, micRoomSize: 0.8, micDampening: 3000, micAutoTune: false })} style={{ fontSize: '0.75rem', padding: '2px 6px', opacity: 0.8 }}>
+        <button onClick={() => saveGlobal({ ...globalConfig, micVolume: 0.8, micBass: 0, micTreble: 0, micReverb: 0, micRoomSize: 0.8, micDampening: 3000, micAutoTune: false })} style={{ fontSize: '0.75rem', padding: '2px 6px', opacity: 0.8 }}>
           {t(locale, 'reset')}
         </button>
       </h3>
