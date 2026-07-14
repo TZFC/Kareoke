@@ -24,8 +24,8 @@ export async function generateLRC(
     const transcriber = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
       progress_callback: (info: any) => {
         if (info.status === 'progress' || info.status === 'downloading') {
-          const p = typeof info.progress === 'number' ? info.progress : 0;
-          progressCallback(80 + Math.floor(p * 0.05), `Downloading Whisper model... ${Math.floor(p)}%`);
+          const progressVal = typeof info.progress === 'number' ? info.progress : 0;
+          progressCallback(80 + Math.floor(progressVal * 0.05), `Downloading Whisper model... ${Math.floor(progressVal)}%`);
         } else if (info.status === 'ready') {
           progressCallback(85, 'Whisper model ready.');
         }

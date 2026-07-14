@@ -138,8 +138,8 @@ export const useMicEngine = () => {
         audienceReverb: audReverb,
         monitorReverb: monReverb
       };
-    } catch (e) {
-      console.error("Failed to start mic input", e);
+    } catch (error: any) {
+      console.error("Failed to start mic input", error);
     }
   };
 

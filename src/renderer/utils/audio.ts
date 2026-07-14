@@ -39,8 +39,8 @@ export const parseWavToAudioBuffer = (arrayBuffer: ArrayBuffer, context: AudioCo
       } else if (bitsPerSample === 32) {
         channelData[i] = view.getFloat32(byteIndex, true);
       } else if (bitsPerSample === 24) {
-        const s = (view.getUint8(byteIndex) | (view.getUint8(byteIndex + 1) << 8) | (view.getInt8(byteIndex + 2) << 16));
-        channelData[i] = s / 8388608;
+        const sampleVal = (view.getUint8(byteIndex) | (view.getUint8(byteIndex + 1) << 8) | (view.getInt8(byteIndex + 2) << 16));
+        channelData[i] = sampleVal / 8388608;
       }
     }
   }

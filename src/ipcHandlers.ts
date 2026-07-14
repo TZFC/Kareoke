@@ -242,7 +242,7 @@ export function registerIpcHandlers(options: IpcHandlerOptions) {
     if (existsSync(configPath)) {
       try {
         existingConfig = JSON.parse(await fs.readFile(configPath, 'utf-8'));
-      } catch (e) {
+      } catch (error: any) {
         log.error(`Failed to parse existing config for ${targetName}`);
       }
     }

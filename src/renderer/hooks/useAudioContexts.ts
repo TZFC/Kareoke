@@ -10,8 +10,8 @@ export const useAudioContexts = (globalConfig: GlobalConfig) => {
   useEffect(() => {
     if (audienceContextRef.current && globalConfig.audienceDevice) {
       window.electronAPI.log('info', `Routing: Applying Audience device sinkId: ${globalConfig.audienceDevice}`);
-      (audienceContextRef.current as any).setSinkId(globalConfig.audienceDevice).catch((e: Error) => {
-        window.electronAPI.log('error', `Failed to set audience sinkId: ${e.message}`);
+      (audienceContextRef.current as any).setSinkId(globalConfig.audienceDevice).catch((error: Error) => {
+        window.electronAPI.log('error', `Failed to set audience sinkId: ${error.message}`);
       });
     }
   }, [globalConfig.audienceDevice]);
@@ -19,8 +19,8 @@ export const useAudioContexts = (globalConfig: GlobalConfig) => {
   useEffect(() => {
     if (monitorContextRef.current && globalConfig.monitorDevice) {
       window.electronAPI.log('info', `Routing: Applying Monitor device sinkId: ${globalConfig.monitorDevice}`);
-      (monitorContextRef.current as any).setSinkId(globalConfig.monitorDevice).catch((e: Error) => {
-        window.electronAPI.log('error', `Failed to set monitor sinkId: ${e.message}`);
+      (monitorContextRef.current as any).setSinkId(globalConfig.monitorDevice).catch((error: Error) => {
+        window.electronAPI.log('error', `Failed to set monitor sinkId: ${error.message}`);
       });
     }
   }, [globalConfig.monitorDevice]);
@@ -28,23 +28,23 @@ export const useAudioContexts = (globalConfig: GlobalConfig) => {
   const needBuildAudioContext = async (gConfig: GlobalConfig) => {
     if (!audienceContextRef.current) {
       audienceContextRef.current = new AudioContext({ latencyHint: 'interactive' });
-      try { await SoundTouchNode.register(audienceContextRef.current, soundtouchWorkletUrl); } catch (e) { window.electronAPI.log('warn', `Failed to register SoundTouchNode on audienceCtx`); }
+      try { await SoundTouchNode.register(audienceContextRef.current, soundtouchWorkletUrl); } catch (error) { window.electronAPI.log('warn', `Failed to register SoundTouchNode on audienceCtx`); }
       if (gConfig.audienceDevice) {
         try {
           await (audienceContextRef.current as any).setSinkId(gConfig.audienceDevice);
-        } catch (e: any) {
-          window.electronAPI.log('error', `Failed to set audience device sinkId to ${gConfig.audienceDevice}: ${e.message}`);
+        } catch (error: any) {
+          window.electronAPI.log('error', `Failed to set audience device sinkId to ${gConfig.audienceDevice}: ${error.message}`);
         }
       }
     }
     if (!monitorContextRef.current) {
       monitorContextRef.current = new AudioContext({ latencyHint: 'interactive' });
-      try { await SoundTouchNode.register(monitorContextRef.current, soundtouchWorkletUrl); } catch (e) { window.electronAPI.log('warn', `Failed to register SoundTouchNode on monitorCtx`); }
+      try { await SoundTouchNode.register(monitorContextRef.current, soundtouchWorkletUrl); } catch (error) { window.electronAPI.log('warn', `Failed to register SoundTouchNode on monitorCtx`); }
       if (gConfig.monitorDevice) {
         try {
           await (monitorContextRef.current as any).setSinkId(gConfig.monitorDevice);
-        } catch (e: any) {
-          window.electronAPI.log('error', `Failed to set monitor device sinkId to ${gConfig.monitorDevice}: ${e.message}`);
+        } catch (error: any) {
+          window.electronAPI.log('error', `Failed to set monitor device sinkId to ${gConfig.monitorDevice}: ${error.message}`);
         }
       }
     }

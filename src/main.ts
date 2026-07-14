@@ -9,9 +9,6 @@ import ffmpegStatic from 'ffmpeg-static';
 import { autoUpdater } from 'electron-updater';
 import { registerIpcHandlers } from './ipcHandlers';
 
-const loadESM = async (modulePath: string) => {
-  return await new Function('modulePath', 'return import(modulePath)')(modulePath);
-};
 
 // Clear old logs on startup
 try { writeFileSync(path.join(process.cwd(), 'peachy-kareoke.log'), ''); } catch {}
